@@ -1,0 +1,37 @@
+---
+import { SITE } from '../lib/site';
+---
+
+<a class="logo" href="/" aria-label={`${SITE.name} 首页`}>
+  <span class="mark" aria-hidden="true">L</span>
+  <span class="wordmark">{SITE.name}</span>
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: var(--gradient);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.02em;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+  }
+  .wordmark {
+    font-weight: 650;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+  }
+</style>

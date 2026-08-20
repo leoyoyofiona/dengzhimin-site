@@ -1,0 +1,92 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from './Icon.astro';
+import { SECTIONS, formatDate, type Section } from '../lib/site';
+
+interface Props {
+  slug: Section['slug'];
+  post: CollectionEntry<'teaching' | 'research' | 'work' | 'life' | 'papers'>;
+}
+const { slug, post } = Astro.props;
+const section = SECTIONS.find((s) => s.slug === slug)!;
+const { Content } = await post.render();
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <article class="article">
+    <div class="container">
+      <header class="article-head">
+        <a class="back" href={`/${slug}/`}>
+          <span class="back-arrow"><Icon name="arrow-right" size={16} /></span>
+          返回{section.title}
+        </a>
+        <h1 class="display article-title">{post.data.title}</h1>
+        <p class="article-desc secondary">{post.data.description}</p>
+        <div class="article-meta">
+          <time class="meta-time"><Icon name="calendar" size={15} />{formatDate(post.data.date)}</time>
+          {post.data.tags.map((t) => (
+            <span class="badge">{t}</span>
+          ))}
+        </div>
+      </header>
+
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) 4rem;
+  }
+  .article .container {
+    max-width: 820px;
+  }
+  .article-head {
+    margin-bottom: 2.5rem;
+  }
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    transition: color var(--speed) var(--ease);
+  }
+  .back:hover {
+    color: var(--accent);
+  }
+  .back-arrow {
+    display: inline-flex;
+    transform: scaleX(-1);
+  }
+  .article-title {
+    font-size: var(--text-4xl);
+    letter-spacing: -0.03em;
+  }
+  .article-desc {
+    margin-top: 1rem;
+    font-size: var(--text-xl);
+    line-height: 1.6;
+  }
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+  .meta-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+    margin-right: 0.25rem;
+  }
+</style>

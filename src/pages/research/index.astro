@@ -1,0 +1,198 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import Typewriter from '../../components/Typewriter.astro';
+import { SECTIONS, TOPICS, firstImage } from '../../lib/site';
+import { getCollection } from 'astro:content';
+
+const slug = 'research';
+const section = SECTIONS.find((s) => s.slug === slug)!;
+const posts = await getCollection('research');
+const published = posts
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// 统计每个主题的文章数
+const topicCounts = new Map<string, number>();
+for (const p of published) {
+  for (const t of p.data.topics) {
+    topicCounts.set(t, (topicCounts.get(t) ?? 0) + 1);
+  }
+}
+---
+
+<BaseLayout
+  title={section.title}
+  description={`${section.title}（${section.en}）—— ${section.description}`}
+>
+  <section class="page-head">
+    <div class="container">
+      <p class="eyebrow">{section.en}</p>
+      <h1 class="display page-title">{section.title}</h1>
+      <Typewriter text={section.description} />
+    </div>
+  </section>
+
+  <section class="container topic-bar">
+    <div class="topic-scroll">
+      <button class="topic-chip active" data-topic="all">
+        全部
+        <span class="topic-count">{published.length}</span>
+      </button>
+      {
+        TOPICS.filter((t) => (topicCounts.get(t.slug) ?? 0) > 0).map((t) => (
+          <button
+            class="topic-chip"
+            data-topic={t.slug}
+            style={`--tc: ${t.color}`}
+          >
+            <span class="topic-dot"></span>
+            {t.title}
+            <span class="topic-count">{topicCounts.get(t.slug) ?? 0}</span>
+          </button>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="container list-body">
+    <div class="grid dock-grid" id="post-grid">
+      {
+        published.map((post) => (
+          <PostCard
+            title={post.data.title}
+            description={post.data.description}
+            date={post.data.date}
+            tags={post.data.tags}
+            href={`/${slug}/${post.slug}/`}
+            gradient={section.gradient}
+            featured={post.data.featured}
+            section={section.title}
+            sectionColor={section.color}
+            image={firstImage(post.body) ?? undefined}
+            data-topics={post.data.topics.join(' ')}
+          />
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('.topic-chip');
+  const cards = document.querySelectorAll<HTMLElement>('#post-grid > *');
+
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const topic = chip.dataset.topic ?? 'all';
+      chips.forEach((c) => c.classList.toggle('active', c === chip));
+      cards.forEach((card) => {
+        const cardTopics = (card.dataset.topics ?? '').split(' ').filter(Boolean);
+        const show = topic === 'all' || cardTopics.includes(topic);
+        card.classList.toggle('hidden', !show);
+      });
+    });
+  });
+</script>
+
+<style>
+  .page-head {
+    position: relative;
+    padding-block: clamp(1.5rem, 3vw, 2.25rem) clamp(1rem, 2vw, 1.5rem);
+    overflow: hidden;
+  }
+  .page-head::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    left: -10%;
+    width: 60%;
+    height: 140%;
+    background: var(--gradient-soft);
+    filter: blur(90px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .page-title {
+    font-size: var(--text-2xl);
+    margin-top: 0.35rem;
+  }
+  .page-sub {
+    margin-top: 0.4rem;
+    font-size: var(--text-sm);
+    max-width: 28rem;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .topic-bar {
+    margin-bottom: 1.5rem;
+  }
+  .topic-scroll {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .topic-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.42rem 0.9rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    transition:
+      color var(--speed) var(--ease),
+      border-color var(--speed) var(--ease),
+      background var(--speed) var(--ease);
+  }
+  .topic-chip:hover {
+    color: var(--text);
+    border-color: color-mix(in srgb, var(--tc, var(--accent)) 45%, var(--border));
+  }
+  .topic-chip.active {
+    color: var(--tc, var(--accent));
+    border-color: color-mix(in srgb, var(--tc, var(--accent)) 50%, transparent);
+    background: color-mix(in srgb, var(--tc, var(--accent)) 8%, transparent);
+    font-weight: 600;
+  }
+  .topic-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--tc);
+    flex-shrink: 0;
+  }
+  .topic-count {
+    font-size: 0.75em;
+    opacity: 0.65;
+  }
+
+  .list-body {
+    padding-bottom: 4rem;
+    max-width: 1320px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+  }
+  .grid > .hidden {
+    display: none;
+  }
+
+  @media (max-width: 1080px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 560px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,427 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { SECTIONS, formatDate, firstImage } from '../lib/site';
+import { getCollection } from 'astro:content';
+
+// 聚合所有栏目文章，按栏目分组
+const sectionPosts = await Promise.all(
+  SECTIONS.map(async (s) => {
+    const all = (await getCollection(s.slug)).filter((p) => !p.data.draft);
+    const sorted = [...all].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+    return { section: s, total: all.length, posts: sorted };
+  }),
+);
+---
+
+<BaseLayout footer={false}>
+  <section class="home">
+    <div class="sections">
+      {
+        sectionPosts.map(({ section: s, total, posts }) => (
+          <div class="srow">
+            <div class="srow-head">
+              <div class="srow-left">
+                <a class="srow-title" href={`/${s.slug}/`} style={`--c: ${s.color}`}>
+                  {s.title}
+                </a>
+                <span class="srow-stats">
+                  <span class="stat"><Icon name="doc" size={12} />{total} 篇</span>
+                  <span class="stat"><Icon name="eye" size={12} /><span data-reads={s.slug}>0</span> 次阅读</span>
+                </span>
+              </div>
+              <a class="srow-more" href={`/${s.slug}/`}>
+                查看全部 <Icon name="arrow-right" size={13} />
+              </a>
+            </div>
+            <div class="srow-body">
+              <div class="updates-grid" data-scroll>
+                {
+                  posts.map((post) => {
+                    const img = firstImage(post.body);
+                    return (
+                      <a
+                        class="ucard"
+                        href={`/${s.slug}/${post.slug}/`}
+                        style={`--c: ${s.color}`}
+                      >
+                        {img && (
+                          <div class="ucard-cover">
+                            <img src={img} alt="" loading="lazy" />
+                            <span class="ucard-tag" style={`color: var(--c)`}>
+                              {s.title}
+                            </span>
+                            <div class="ucard-preview">
+                              <p>{post.data.description}</p>
+                            </div>
+                          </div>
+                        )}
+                        <div class="ucard-body">
+                          {!img && (
+                            <span class="ucard-tag ucard-tag--inline" style={`color: var(--c)`}>
+                              {s.title}
+                            </span>
+                          )}
+                          <h3 class="ucard-title">{post.data.title}</h3>
+                          <div class="ucard-foot">
+                            <time class="ucard-date">{formatDate(post.data.date)}</time>
+                            <Icon name="arrow-right" size={14} />
+                          </div>
+                        </div>
+                        {!img && (
+                          <div class="ucard-preview ucard-preview--body">
+                            <p>{post.data.description}</p>
+                          </div>
+                        )}
+                      </a>
+                    );
+                  })
+                }
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .home {
+    min-height: calc(100vh - var(--header-h));
+    min-height: calc(100dvh - var(--header-h));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 1.5rem;
+    padding: clamp(1rem, 3vw, 2rem) var(--gutter);
+  }
+
+  /* ===== 按主题分行的卡片区 ===== */
+  .sections {
+    width: 100%;
+    max-width: var(--maxw);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .srow-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+  .srow-title {
+    font-size: var(--text-md);
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.9rem;
+    margin: -0.35rem -0.9rem;
+    border-radius: var(--radius-full);
+    transition:
+      color 0.3s var(--ease-out),
+      background-color 0.3s var(--ease-out),
+      box-shadow 0.3s var(--ease-out);
+  }
+  .srow-title::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--c);
+    flex-shrink: 0;
+    transition: transform 0.3s var(--ease-out), background-color 0.3s var(--ease-out);
+  }
+  .srow-title:hover {
+    color: #fff;
+    background: var(--c);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--c) 45%, transparent);
+  }
+  .srow-title:hover::before {
+    background: #fff;
+    transform: scale(1.2);
+  }
+  .srow-left {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    min-width: 0;
+  }
+  .srow-stats {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+    white-space: nowrap;
+  }
+  .stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .stat svg {
+    opacity: 0.75;
+  }
+  .srow-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+    text-decoration: none;
+    transition: color var(--speed) var(--ease);
+  }
+  .srow-more:hover {
+    color: var(--c);
+  }
+  .srow-body {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, #000 0%, #000 96%, transparent 100%);
+    mask-image: linear-gradient(to right, #000 0%, #000 96%, transparent 100%);
+  }
+  .updates-grid {
+    display: flex;
+    gap: 1.25rem;
+    width: max-content;
+    transition: transform 1s var(--ease-out);
+    will-change: transform;
+  }
+  .ucard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: clamp(220px, calc((var(--maxw) - 3 * 1.25rem) / 4), 300px);
+    flex-shrink: 0;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--bg-glass-strong);
+    -webkit-backdrop-filter: saturate(180%) blur(24px);
+    backdrop-filter: saturate(180%) blur(24px);
+    overflow: hidden;
+    text-decoration: none;
+    transition:
+      transform 0.45s var(--ease-out),
+      box-shadow 0.45s var(--ease-out),
+      border-color 0.45s var(--ease-out),
+      opacity 0.45s var(--ease-out);
+    will-change: transform;
+  }
+  .ucard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: color-mix(in srgb, var(--c) 55%, transparent);
+    opacity: 0;
+    transition: opacity 0.45s var(--ease-out);
+    z-index: 2;
+  }
+  .ucard:hover::before {
+    opacity: 1;
+  }
+  .ucard:hover {
+    border-color: color-mix(in srgb, var(--c) 40%, var(--border));
+  }
+  .ucard-cover {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--bg-glass);
+  }
+  .ucard-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s var(--ease-out);
+  }
+  .ucard:hover .ucard-cover img {
+    transform: scale(1.06);
+  }
+  .ucard-tag {
+    position: absolute;
+    top: 0.7rem;
+    left: 0.7rem;
+    padding: 0.22rem 0.6rem;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--bg-glass) 72%, transparent);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
+  }
+  /* 悬停预览：从底部滑入的摘要 */
+  .ucard-preview {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1rem 1.1rem;
+    background: color-mix(in srgb, var(--bg-glass-strong) 88%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    backdrop-filter: saturate(180%) blur(16px);
+    border-top: 1px solid color-mix(in srgb, var(--c) 25%, transparent);
+    transform: translateY(102%);
+    transition: transform 0.45s var(--ease-out);
+    z-index: 1;
+  }
+  .ucard-preview p {
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    color: var(--text-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .ucard:hover .ucard-preview {
+    transform: translateY(0);
+  }
+  .ucard-preview--body {
+    position: static;
+    margin: 0 1.1rem 1rem;
+    padding: 0;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border: none;
+    transform: none;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.4s var(--ease-out), max-height 0.45s var(--ease-out);
+  }
+  .ucard-preview--body p {
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+  }
+  .ucard:hover .ucard-preview--body {
+    opacity: 1;
+    max-height: 6rem;
+  }
+  .ucard-tag--inline {
+    position: static;
+    align-self: flex-start;
+    background: color-mix(in srgb, var(--c) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+  }
+  .ucard-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem 1.1rem 1.05rem;
+    flex: 1;
+  }
+  .ucard-title {
+    font-size: var(--text-md);
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--text);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: color var(--speed) var(--ease);
+  }
+  .ucard:hover .ucard-title {
+    color: var(--c);
+  }
+  .ucard-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    color: var(--text-tertiary);
+    transition: color var(--speed) var(--ease);
+  }
+  .ucard:hover .ucard-foot {
+    color: var(--c);
+  }
+  .ucard-date {
+    font-size: var(--text-xs);
+  }
+
+  @media (max-width: 900px) {
+    .home {
+      padding-block: 1.5rem;
+    }
+    .ucard {
+      width: clamp(200px, 42vw, 260px);
+    }
+  }
+  @media (max-width: 560px) {
+    .ucard {
+      width: 78vw;
+    }
+  }
+</style>
+
+<script>
+  // ===== 主题行滑动：超过 4 篇时，hover 向左平滑露出更多 =====
+  document.querySelectorAll('.srow').forEach(function (row) {
+    const body = row.querySelector('.srow-body');
+    const grid = row.querySelector('.updates-grid');
+    if (!body || !grid) return;
+
+    row.addEventListener('mouseenter', function () {
+      const overflow = grid.scrollWidth - body.clientWidth;
+      if (overflow > 8) {
+        grid.style.transform = 'translateX(-' + overflow + 'px)';
+      }
+    });
+    row.addEventListener('mouseleave', function () {
+      grid.style.transform = 'translateX(0)';
+    });
+    // 窗口尺寸变化时重置
+    window.addEventListener('resize', function () {
+      grid.style.transform = 'translateX(0)';
+    });
+  });
+
+  // ===== 阅读次数统计（localStorage 本机计数）=====
+  const READS_KEY = 'leodeng-reads';
+  function loadReads() {
+    try {
+      return JSON.parse(localStorage.getItem(READS_KEY) || '{}');
+    } catch (e) {
+      return {};
+    }
+  }
+  function saveReads(map) {
+    try {
+      localStorage.setItem(READS_KEY, JSON.stringify(map));
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  const reads = loadReads();
+  // 填充各主题阅读次数
+  document.querySelectorAll('[data-reads]').forEach(function (el) {
+    const slug = el.dataset.reads;
+    el.textContent = String(reads[slug] || 0);
+  });
+  // 点击文章卡片 → 对应主题阅读数 +1
+  document.querySelectorAll('.ucard').forEach(function (card) {
+    card.addEventListener('click', function () {
+      const href = card.getAttribute('href') || '';
+      // href 形如 /teaching/slug/
+      const m = href.match(/^\/([^/]+)\//);
+      if (!m) return;
+      const slug = m[1];
+      reads[slug] = (reads[slug] || 0) + 1;
+      saveReads(reads);
+      const el = document.querySelector('[data-reads="' + slug + '"]');
+      if (el) el.textContent = String(reads[slug]);
+    });
+  });
+</script>

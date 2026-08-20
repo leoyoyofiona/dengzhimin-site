@@ -1,0 +1,72 @@
+---
+interface Props {
+  text: string;
+  class?: string;
+}
+const { text, class: className = 'page-sub secondary' } = Astro.props;
+---
+
+<p class={className} data-typewriter>
+  <span class="tw-ghost" aria-hidden="true">{text}</span>
+  <span class="tw-live" data-tw-live></span>
+</p>
+
+<style>
+  [data-typewriter] {
+    position: relative;
+  }
+  .tw-ghost {
+    visibility: hidden;
+    white-space: nowrap;
+    display: block;
+  }
+  .tw-live {
+    position: absolute;
+    left: 0;
+    top: 0;
+    white-space: nowrap;
+  }
+</style>
+
+<script>
+  // 打字机效果：扫描所有 [data-typewriter]，逐个循环打字
+  // 用隐形占位固定宽度，打字过程不影响布局
+  (function () {
+    if (window.__typewriterInit) return;
+    window.__typewriterInit = true;
+
+    function run(host) {
+      const ghost = host.querySelector('.tw-ghost');
+      const live = host.querySelector('.tw-live');
+      if (!ghost || !live) return;
+      const full = ghost.textContent || '';
+      let i = 0;
+      let deleting = false;
+      live.textContent = '';
+      function tick() {
+        if (!deleting) {
+          i++;
+          live.textContent = full.slice(0, i);
+          if (i >= full.length) {
+            deleting = true;
+            setTimeout(tick, 2400);
+            return;
+          }
+          setTimeout(tick, 95);
+        } else {
+          i--;
+          live.textContent = full.slice(0, i);
+          if (i <= 0) {
+            deleting = false;
+            setTimeout(tick, 600);
+            return;
+          }
+          setTimeout(tick, 48);
+        }
+      }
+      setTimeout(tick, 300);
+    }
+
+    document.querySelectorAll('[data-typewriter]').forEach(run);
+  })();
+</script>

@@ -1,0 +1,17 @@
+# Render Blueprint —— 一键部署 dengzhimin.cn（Astro 静态站）
+# 用法：把本仓库推到 GitHub 后，在 Render 上 Import 这个仓库
+# 会自动按此配置创建 Static Site，构建产物为 ./dist
+services:
+  - type: web
+    name: dengzhimin-site
+    runtime: static
+    rootDir: .
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN

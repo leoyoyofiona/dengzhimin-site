@@ -1,0 +1,8 @@
+---
+import SectionLayout from '../../components/SectionLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('life');
+---
+
+<SectionLayout slug="life" posts={posts} />

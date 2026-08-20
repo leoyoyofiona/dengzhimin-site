@@ -1,0 +1,321 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import Typewriter from '../components/Typewriter.astro';
+import { SITE } from '../lib/site';
+---
+
+<BaseLayout title="留言板" description={`在 ${SITE.name} 的留言板说点什么。`}>
+  <section class="page-head">
+    <div class="container">
+      <p class="eyebrow">Guestbook</p>
+      <h1 class="display page-title">留言板</h1>
+      <Typewriter text="想说什么就说什么。留个言，证明你来过。" />
+    </div>
+  </section>
+
+  <section class="container board-body">
+    <div class="compose card">
+      <div class="compose-head">
+        <span class="compose-icon"><Icon name="message" size={18} /></span>
+        <h2 class="compose-title">写留言</h2>
+      </div>
+      <div class="compose-row">
+        <input
+          id="guest-name"
+          class="name-input"
+          type="text"
+          maxlength="20"
+          placeholder="你的昵称（可选）"
+          autocomplete="off"
+        />
+      </div>
+      <textarea
+        id="guest-text"
+        class="msg-input"
+        rows="3"
+        maxlength="500"
+        placeholder="想说点什么…（⌘/Ctrl + Enter 快捷发布）"
+      ></textarea>
+      <div class="compose-foot">
+        <span class="count-hint" id="count-hint">0 / 500</span>
+        <button class="btn btn-primary" id="send-btn">
+          发布留言 <Icon name="arrow-right" size={14} />
+        </button>
+      </div>
+    </div>
+
+    <div class="messages card">
+      <div class="messages-head">
+        <h2 class="messages-title">所有留言</h2>
+        <span class="messages-count" id="msg-count">0 条</span>
+      </div>
+      <div class="msg-list" id="msg-list">
+        <div class="empty-state">
+          <p class="empty-title">还没有留言</p>
+          <p class="secondary">做第一个留言的人吧。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const KEY = 'leodeng-guestbook';
+  const MAX = 200;
+
+  function load() {
+    try {
+      return JSON.parse(localStorage.getItem(KEY) || '[]');
+    } catch (e) {
+      return [];
+    }
+  }
+  function save(list) {
+    localStorage.setItem(KEY, JSON.stringify(list));
+  }
+
+  const nameInput = document.getElementById('guest-name');
+  const textInput = document.getElementById('guest-text');
+  const sendBtn = document.getElementById('send-btn');
+  const listEl = document.getElementById('msg-list');
+  const countEl = document.getElementById('msg-count');
+  const countHint = document.getElementById('count-hint');
+
+  function fmt(t) {
+    const d = new Date(t);
+    const pad = (n) => String(n).padStart(2, '0');
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : c === '"' ? '&quot;' : '&#39;';
+    });
+  }
+
+  function render() {
+    const list = load();
+    countEl.textContent = list.length + ' 条';
+    if (list.length === 0) {
+      listEl.innerHTML = '<div class="empty-state"><p class="empty-title">还没有留言</p><p class="secondary">做第一个留言的人吧。</p></div>';
+      return;
+    }
+    const items = list
+      .slice()
+      .reverse()
+      .map(function (m) {
+        const name = m.name || '匿名';
+        return (
+          '<div class="msg">' +
+            '<div class="msg-top">' +
+              '<span class="msg-avatar">' + esc(name.slice(0, 1)) + '</span>' +
+              '<span class="msg-name">' + esc(name) + '</span>' +
+              '<time class="msg-time">' + fmt(m.time) + '</time>' +
+            '</div>' +
+            '<p class="msg-text">' + esc(m.text) + '</p>' +
+          '</div>'
+        );
+      })
+      .join('');
+    listEl.innerHTML = items;
+    listEl.scrollTop = 0;
+  }
+
+  textInput.addEventListener('input', function () {
+    countHint.textContent = textInput.value.length + ' / 500';
+  });
+
+  function send() {
+    const text = textInput.value.trim();
+    if (!text) {
+      textInput.focus();
+      return;
+    }
+    const list = load();
+    list.push({ name: nameInput.value.trim(), text: text, time: Date.now() });
+    save(list.slice(-MAX));
+    textInput.value = '';
+    nameInput.value = '';
+    countHint.textContent = '0 / 500';
+    render();
+  }
+
+  sendBtn.addEventListener('click', send);
+  textInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) send();
+  });
+
+  render();
+</script>
+
+<style>
+  .page-head {
+    position: relative;
+    padding-block: clamp(1.5rem, 3vw, 2.25rem) clamp(1rem, 2vw, 1.5rem);
+    overflow: hidden;
+  }
+  .page-head::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    left: -10%;
+    width: 60%;
+    height: 140%;
+    background: var(--gradient-soft);
+    filter: blur(90px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .page-title {
+    font-size: var(--text-2xl);
+    margin-top: 0.35rem;
+  }
+  .page-sub {
+    margin-top: 0.4rem;
+    font-size: var(--text-sm);
+    max-width: 28rem;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .board-body {
+    padding-bottom: 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 720px;
+  }
+
+  .compose,
+  .messages {
+    padding: 1.5rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .compose-head,
+  .messages-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .messages-head {
+    justify-content: space-between;
+  }
+  .compose-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+    background: var(--gradient);
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .compose-title,
+  .messages-title {
+    font-size: var(--text-lg);
+    font-weight: 600;
+  }
+  .name-input,
+  .msg-input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-glass);
+    padding: 0.7rem 0.95rem;
+    font-family: inherit;
+    font-size: var(--text-base);
+    color: var(--text);
+    transition: border-color var(--speed) var(--ease), box-shadow var(--speed) var(--ease);
+  }
+  .name-input {
+    max-width: 320px;
+  }
+  .name-input:focus,
+  .msg-input:focus {
+    outline: none;
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+  .msg-input {
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.6;
+  }
+  .compose-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .count-hint {
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+  }
+
+  .messages-count {
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+  }
+  .msg-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    overflow-y: auto;
+    max-height: 460px;
+    padding-right: 0.3rem;
+  }
+  .msg {
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-glass);
+  }
+  .msg-top {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: 0.4rem;
+  }
+  .msg-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--gradient);
+    color: #fff;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .msg-name {
+    font-weight: 600;
+    font-size: var(--text-sm);
+  }
+  .msg-time {
+    margin-left: auto;
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+  }
+  .msg-text {
+    font-size: var(--text-base);
+    line-height: 1.65;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 2rem 1rem;
+  }
+  .empty-title {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+</style>

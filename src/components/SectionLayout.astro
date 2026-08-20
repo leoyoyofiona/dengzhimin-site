@@ -1,0 +1,127 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from './PostCard.astro';
+import Typewriter from './Typewriter.astro';
+import { SECTIONS, firstImage, type Section } from '../lib/site';
+
+interface Props {
+  slug: Section['slug'];
+  posts: CollectionEntry<'teaching' | 'research' | 'work' | 'life' | 'papers'>[];
+}
+const { slug, posts } = Astro.props;
+const section = SECTIONS.find((s) => s.slug === slug)!;
+const published = posts
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout
+  title={section.title}
+  description={`${section.title}（${section.en}）—— ${section.description}`}
+>
+  <section class="page-head">
+    <div class="container">
+      <p class="eyebrow">{section.en}</p>
+      <h1 class="display page-title">{section.title}</h1>
+      <Typewriter text={section.description} />
+    </div>
+  </section>
+
+  <section class="container list-body">
+    {
+      published.length > 0 ? (
+        <div class="grid dock-grid">
+          {
+            published.map((post) => (
+              <PostCard
+                title={post.data.title}
+                description={post.data.description}
+                date={post.data.date}
+                tags={post.data.tags}
+                href={`/${slug}/${post.slug}/`}
+                gradient={section.gradient}
+                featured={post.data.featured}
+                section={section.title}
+                sectionColor={section.color}
+                image={firstImage(post.body) ?? undefined}
+              />
+            ))
+          }
+        </div>
+      ) : (
+        <div class="empty card">
+          <p class="empty-title">这里还是一片空白</p>
+          <p class="secondary">在 <code>src/content/{slug}/</code> 目录下新增 Markdown 文件即可发表文章。</p>
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    position: relative;
+    padding-block: clamp(1.5rem, 3vw, 2.25rem) clamp(1rem, 2vw, 1.5rem);
+    overflow: hidden;
+  }
+  .page-head::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    left: -10%;
+    width: 60%;
+    height: 140%;
+    background: var(--gradient-soft);
+    filter: blur(90px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .page-title {
+    font-size: var(--text-2xl);
+    margin-top: 0.35rem;
+  }
+  .page-sub {
+    margin-top: 0.4rem;
+    font-size: var(--text-sm);
+    max-width: 28rem;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .list-body {
+    padding-bottom: 4rem;
+    max-width: 1320px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+  }
+  .empty {
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+  .empty-title {
+    font-size: var(--text-xl);
+    font-weight: 600;
+  }
+  .empty code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--bg-glass);
+    padding: 0.1rem 0.4rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+
+  @media (max-width: 1080px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 560px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
