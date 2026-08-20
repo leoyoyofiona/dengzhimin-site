@@ -69,10 +69,10 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
         // 访问口令（混淆存储，避免源码直接可见）
         var KEY = 'dengzhimin-access';
         var PASS = String.fromCharCode(108, 101, 111, 50, 48, 50, 54);
-        var gate = document.getElementById('site-gate');
-        var input = document.getElementById('gate-input');
-        var btn = document.getElementById('gate-btn');
-        var err = document.getElementById('gate-error');
+        var gate = null;
+        var input = null;
+        var btn = null;
+        var err = null;
 
         function entered() {
           try {
@@ -98,23 +98,30 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
             showGate();
           }
         }
-        if (btn) {
-          btn.addEventListener('click', function () {
-            if (input && input.value === PASS) {
-              unlock();
-            } else {
-              if (err) err.hidden = false;
-              if (input) input.value = '';
-              if (input) input.focus();
-            }
-          });
-        }
-        if (input) {
-          input.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') btn && btn.click();
-          });
-        }
-        check();
+        // 等待 DOM 加载完成后再绑定（脚本在 head，gate 元素在 body）
+        document.addEventListener('DOMContentLoaded', function () {
+          gate = document.getElementById('site-gate');
+          input = document.getElementById('gate-input');
+          btn = document.getElementById('gate-btn');
+          err = document.getElementById('gate-error');
+          if (btn) {
+            btn.addEventListener('click', function () {
+              if (input && input.value === PASS) {
+                unlock();
+              } else {
+                if (err) err.hidden = false;
+                if (input) input.value = '';
+                if (input) input.focus();
+              }
+            });
+          }
+          if (input) {
+            input.addEventListener('keydown', function (e) {
+              if (e.key === 'Enter') btn && btn.click();
+            });
+          }
+          check();
+        });
       })();
     </script>
   </head>
