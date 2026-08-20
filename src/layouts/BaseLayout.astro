@@ -63,8 +63,82 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
         }
       })();
     </script>
+
+    <script is:inline>
+      (function () {
+        // 访问口令（混淆存储，避免源码直接可见）
+        var KEY = 'dengzhimin-access';
+        var PASS = String.fromCharCode(108, 101, 111, 50, 48, 50, 54);
+        var gate = document.getElementById('site-gate');
+        var input = document.getElementById('gate-input');
+        var btn = document.getElementById('gate-btn');
+        var err = document.getElementById('gate-error');
+
+        function entered() {
+          try {
+            return sessionStorage.getItem(KEY) === 'ok';
+          } catch (e) {
+            return false;
+          }
+        }
+        function showGate() {
+          if (gate) gate.hidden = false;
+          if (input) input.focus();
+        }
+        function unlock() {
+          try {
+            sessionStorage.setItem(KEY, 'ok');
+          } catch (e) {}
+          if (gate) gate.hidden = true;
+          if (input) input.value = '';
+          if (err) err.hidden = true;
+        }
+        function check() {
+          if (!entered()) {
+            showGate();
+          }
+        }
+        if (btn) {
+          btn.addEventListener('click', function () {
+            if (input && input.value === PASS) {
+              unlock();
+            } else {
+              if (err) err.hidden = false;
+              if (input) input.value = '';
+              if (input) input.focus();
+            }
+          });
+        }
+        if (input) {
+          input.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') btn && btn.click();
+          });
+        }
+        check();
+      })();
+    </script>
   </head>
   <body>
+    <!-- 访问口令门 -->
+    <div class="gate" id="site-gate" hidden>
+      <div class="gate-card glass">
+        <h1 class="gate-title">LEODENG</h1>
+        <p class="gate-sub">这个站点暂未公开，输入口令继续访问。</p>
+        <div class="gate-form">
+          <input
+            class="gate-input"
+            id="gate-input"
+            type="password"
+            placeholder="输入访问口令"
+            autocomplete="off"
+            autofocus
+          />
+          <button class="btn btn-primary gate-btn" id="gate-btn">进入</button>
+        </div>
+        <p class="gate-error" id="gate-error" hidden>口令不正确，请重试。</p>
+      </div>
+    </div>
+
     <a class="skip-link" href="#main">跳到主要内容</a>
     <Header />
     <main id="main" style="padding-top: var(--header-h)">

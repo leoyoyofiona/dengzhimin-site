@@ -559,3 +559,72 @@ h4 {
 .skip-link:focus {
   top: 1rem;
 }
+
+/* ============================ 访问口令门 ============================ */
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gutter);
+  background:
+    radial-gradient(560px 400px at 12% 8%, rgba(10, 132, 255, 0.1), transparent 62%),
+    radial-gradient(680px 460px at 88% 16%, rgba(94, 92, 230, 0.1), transparent 62%),
+    radial-gradient(620px 420px at 46% 92%, rgba(198, 59, 212, 0.08), transparent 62%),
+    var(--bg);
+}
+.gate[hidden] {
+  display: none;
+}
+.gate-card {
+  width: min(380px, 100%);
+  padding: 2.4rem 2.2rem;
+  border-radius: var(--radius-xl);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  box-shadow: var(--shadow-lg);
+}
+.gate-title {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.gate-sub {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+.gate-form {
+  display: flex;
+  gap: 0.6rem;
+  width: 100%;
+  margin-top: 0.4rem;
+}
+.gate-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-glass);
+  font-family: inherit;
+  font-size: var(--text-base);
+  color: var(--text);
+  transition: border-color var(--speed) var(--ease), box-shadow var(--speed) var(--ease);
+}
+.gate-input:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.gate-btn {
+  flex-shrink: 0;
+}
+.gate-error {
+  font-size: var(--text-sm);
+  color: #ff375f;
+}
