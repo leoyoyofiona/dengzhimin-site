@@ -60,7 +60,7 @@ const section = { title: '黑/白板前的冥想', en: 'Teaching', color: '#3b82
               <span class="group-dot" style={`background: ${group.color}`} />
               <h2 class="group-title">{group.title}</h2>
               <span class="group-count">{group.items.length} 篇</span>
-              <p class="group-desc">{group.desc}</p>
+              <Typewriter text={group.desc} class="group-desc" />
             </div>
             {
               group.items.length > 0 ? (
