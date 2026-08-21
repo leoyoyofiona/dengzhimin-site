@@ -1,101 +1,159 @@
 ---
-title: "GitHub 热门 · 2026-08-21"
-description: "本周高星项目精选（≥1K★）：Agent 团队、AI 水印治理、编程范式、推理引擎等。"
+title: "GitHub 热门榜 Top 10 · 2026-08-21"
+description: "GitHub 全球 star 数最高的 10 个项目：编程自学、开源学习资源、AI 助手等。"
 date: 2026-08-21
-tags: ["GitHub", "开源", "高星项目"]
+tags: ["GitHub", "开源", "Top10"]
 featured: true
 ---
 
-## yetone/cumora — 跨平台 Agent 团队聊天
+按 star 数排名，GitHub 全球最受欢迎的 10 个项目。
+
+## 1. codecrafters-io/build-your-own-x — 亲手重造技术
+
+★ 541,682
+
+> Master programming by recreating your favorite technologies from scratch.
+
+"通过重造你最喜欢的技术来精通编程"——从零手写 Git、数据库、操作系统、编译器、区块链等，是程序员进阶的经典学习路径。
+
+→ [github.com/codecrafters-io/build-your-own-x](https://github.com/codecrafters-io/build-your-own-x)
 
 <figure>
-  <img src="/images/github/cumora.png" alt="cumora 项目海报" loading="lazy" />
+  <img src="/images/github/top-build-own-x.png" alt="codecrafters-io/build-your-own-x" loading="lazy" />
 </figure>
 
-★ 2797 · TypeScript
+## 2. sindresorhus/awesome — 一切 Awesome 的源头
 
-> Where agent teams gather. Cross-platform team chat where AI agents work together.
+★ 498,392
 
-跨平台团队聊天工具，让人和多个 AI Agent 在同一空间协作、分工执行任务。对研究团队和开发者协作很有参考价值。
+> Awesome lists about all kinds of interesting topics.
 
-→ [github.com/yetone/cumora](https://github.com/yetone/cumora)
+各种精选清单的鼻祖——从编程语言、框架到工具、资源，数千个领域都有 awesome 清单，是发现好东西的入口。
 
-## dmmulroy/anti-slop — 拒绝"低证据"代码的 Lint 规则
+→ [github.com/sindresorhus/awesome](https://github.com/sindresorhus/awesome)
 
 <figure>
-  <img src="/images/github/anti-slop.png" alt="anti-slop 项目海报" loading="lazy" />
+  <img src="/images/github/top-awesome.png" alt="sindresorhus/awesome" loading="lazy" />
 </figure>
 
-★ 3187 · JavaScript/TypeScript
+## 3. public-apis/public-apis — 免费 API 大全
 
-> Opinionated Oxlint rules for rejecting low-evidence TypeScript and JavaScript.
+★ 467,473
 
-一套"有态度"的 Oxlint 规则，专门**拒绝低证据的 TS/JS 代码**——防止 AI 生成代码里的空话、猜测和没有依据的实现。AI 代码审查的实用工具。
+> A collective list of free APIs.
 
-→ [github.com/dmmulroy/anti-slop](https://github.com/dmmulroy/anti-slop)
+免费公开 API 的集体清单——想找天气、金融、影视、数据等任意领域的免费接口，这里都有，做项目找数据的宝库。
 
-## s1dashu/ip-as-logo-skill — 把 IP 变成 Logo 的 Agent Skill
+→ [github.com/public-apis/public-apis](https://github.com/public-apis/public-apis)
 
 <figure>
-  <img src="/images/github/ip-logo.png" alt="ip-as-logo-skill 项目海报" loading="lazy" />
+  <img src="/images/github/top-public-apis.png" alt="public-apis/public-apis" loading="lazy" />
 </figure>
 
-★ 3286 · Agent Skill
+## 4. freeCodeCamp/freeCodeCamp — 免费学编程
 
-> A compact Agent Skill for highly simplified, rounded, subtly neo-skeuomorphic logo generation.
+★ 454,394
 
-输入 IP（域名、产品名），自动生成**高度简化、圆润、低调**的 Logo。设计类 Agent 应用的代表，小巧实用。
+> freeCodeCamp.org's open-source codebase and curriculum.
 
-→ [github.com/s1dashu/ip-as-logo-skill](https://github.com/s1dashu/ip-as-logo-skill)
+免费学编程的开放平台——从 HTML 到机器学习，全免费课程 + 认证，全球数百万人的编程入门之地。
 
-## cordiverse/paper — 时空可组合的编程范式
+→ [github.com/freeCodeCamp/freeCodeCamp](https://github.com/freeCodeCamp/freeCodeCamp)
 
 <figure>
-  <img src="/images/github/paper.png" alt="paper 项目海报" loading="lazy" />
+  <img src="/images/github/top-freecodecamp.png" alt="freeCodeCamp/freeCodeCamp" loading="lazy" />
 </figure>
 
-★ 2544 · 研究项目
+## 5. EbookFoundation/free-programming-books — 免费编程书单
 
-> A Programming Paradigm for Spatiotemporal Composability.
+★ 394,885
 
-一种面向**时空可组合性**的编程范式研究项目。探索如何让程序在空间与时间维度上自然组合，偏学术、前沿。
+> Freely available programming books.
 
-→ [github.com/cordiverse/paper](https://github.com/cordiverse/paper)
+免费编程书籍清单——几十种语言的免费技术书籍、教程集合，找电子书和资料的第一站。
 
-## antirez/h3.c — Mac 上的 MiniMax H3 推理引擎
+→ [github.com/EbookFoundation/free-programming-books](https://github.com/EbookFoundation/free-programming-books)
 
 <figure>
-  <img src="/images/github/h3c.png" alt="h3.c 项目海报" loading="lazy" />
+  <img src="/images/github/top-free-books.png" alt="EbookFoundation/free-programming-books" loading="lazy" />
 </figure>
 
-★ 2314 · C
+## 6. openclaw/openclaw — 你的私人 AI 助手
 
-> MiniMax H3 inference engine for Mac computers.
+★ 386,963
 
-Redis 作者 antirez 的作品——面向 Mac 的 **MiniMax H3 推理引擎**。单文件 C 实现，在 Mac 上本地跑模型推理，性能导向。
+> Your own personal AI assistant. Any OS. Any Platform.
 
-→ [github.com/antirez/h3.c](https://github.com/antirez/h3.c)
+跨平台个人 AI 助手——任何操作系统都能跑，本周上升最快的 AI Agent 项目。
 
-## guillaumemeyer/watermarks-remover — 移除 AI 来源痕迹
+→ [github.com/openclaw/openclaw](https://github.com/openclaw/openclaw)
 
 <figure>
-  <img src="/images/github/watermark.png" alt="watermarks-remover 项目海报" loading="lazy" />
+  <img src="/images/github/top-openclaw.png" alt="openclaw/openclaw" loading="lazy" />
 </figure>
 
-★ 16215 · Python
+## 7. donnemartin/system-design-primer — 系统设计入门
 
-> Strip multi-vendor AI provenance marks: Unicode text hygiene, statistical rewrite hooks, and C2PA/metadata from PNG/JPEG/SVG/PDF/DOCX/HTML/MD.
+★ 365,178
 
-移除多家 AI 工具留下的**来源痕迹**——Unicode 文本净化、统计改写钩子、以及从 PNG/JPEG/SVG/PDF/DOCX 等格式中剥离 C2PA 元数据。触及 AI 内容溯源与披露的伦理议题。
+> Learn how to design large-scale systems.
 
-→ [github.com/guillaumemeyer/watermarks-remover](https://github.com/guillaumemeyer/watermarks-remover)
+学习如何设计大型系统——从基础概念到完整案例，面试系统设计题的必备资料。
+
+→ [github.com/donnemartin/system-design-primer](https://github.com/donnemartin/system-design-primer)
+
+<figure>
+  <img src="/images/github/top-sys-design.png" alt="donnemartin/system-design-primer" loading="lazy" />
+</figure>
+
+## 8. nilbuild/developer-roadmap — 开发者路线图
+
+★ 365,039
+
+> Interactive roadmaps, guides and other educational content.
+
+交互式开发者学习路线图——前端、后端、运维、AI 等各方向的学习路径，一步步带你入门。
+
+→ [github.com/nilbuild/developer-roadmap](https://github.com/nilbuild/developer-roadmap)
+
+<figure>
+  <img src="/images/github/top-dev-roadmap.png" alt="nilbuild/developer-roadmap" loading="lazy" />
+</figure>
+
+## 9. jwasham/coding-interview-university — 编程面试大学
+
+★ 359,385
+
+> A complete computer science study plan to become a software engineer.
+
+成为软件工程师的完整计算机科学学习计划——从零基础到面试，一份长期自学的经典路线。
+
+→ [github.com/jwasham/coding-interview-university](https://github.com/jwasham/coding-interview-university)
+
+<figure>
+  <img src="/images/github/top-coding-uni.png" alt="jwasham/coding-interview-university" loading="lazy" />
+</figure>
+
+## 10. vinta/awesome-python — Python 精选清单
+
+★ 315,219
+
+> The definitive list that answers "I want to do X in Python, which library should I use?"
+
+Python 库的权威清单——"我想用 Python 做 X，该用哪个库"，这里都有答案，Python 开发者必备。
+
+→ [github.com/vinta/awesome-python](https://github.com/vinta/awesome-python)
+
+<figure>
+  <img src="/images/github/top-awesome-py.png" alt="vinta/awesome-python" loading="lazy" />
+</figure>
 
 ## 观察
 
-这周高星项目有几个方向值得注意：
+全球 Top 10 的特点很清晰：
 
-1. **Agent 持续主流**——cumora 让 Agent 团队协作，ip-as-logo-skill 展示"小而美"的 Agent Skill
-2. **AI 内容治理博弈**——watermarks-remover（移除溯源）与溯源工具并存，AI 生成内容的标识争议升温
-3. **性能与极致**——antirez 的 h3.c 单文件推理引擎，回归"小而快"
+1. **学习资源占半壁江山**——build-your-own-x、freeCodeCamp、free-programming-books、system-design-primer、developer-roadmap、coding-interview-university，6 个都是学习类
+2. **精选清单是刚需**——awesome、awesome-python、public-apis 帮助在海量信息中找路
+3. **AI 首次进入 Top10**——openclaw（个人 AI 助手）排名第 6，是榜单里唯一的 AI 项目
 
 > 想搬运某个方向的项目？在留言板告诉我，下期安排。
