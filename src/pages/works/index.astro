@@ -41,14 +41,23 @@ import { works } from '../../data/works';
                 </div>
               </div>
 
-              <!-- 背面：高清大图 + 操作按钮 -->
+              <!-- 背面：动态演示（GIF）或高清图 + 操作按钮 -->
               <div class="flip-face flip-back card">
                 <div class="back-media">
-                  <img
-                    src={w.posterHd ? `/images/works/hd/${w.posterHd}` : (w.poster ? `/images/works/${w.poster}` : '')}
-                    alt={`${w.title} 全貌`}
-                    loading="lazy"
-                  />
+                  {w.demo ? (
+                    <img
+                      class="back-demo"
+                      src={`/images/works/${w.demo}`}
+                      alt={`${w.title} 动态演示`}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <img
+                      src={w.posterHd ? `/images/works/hd/${w.posterHd}` : (w.poster ? `/images/works/${w.poster}` : '')}
+                      alt={`${w.title} 全貌`}
+                      loading="lazy"
+                    />
+                  )}
                 </div>
                 <div class="back-actions">
                   <h3 class="back-title">{w.title}</h3>
@@ -303,6 +312,10 @@ import { works } from '../../data/works';
     height: 100%;
     object-fit: cover;
     display: block;
+  }
+  /* 动态演示 GIF：完整显示，铺满留白 */
+  .back-media .back-demo {
+    object-fit: cover;
   }
   .back-media::after {
     content: '';

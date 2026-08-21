@@ -24,6 +24,8 @@ export interface Work {
   poster?: string;
   /** 高清全貌预览图（public/images/works/hd/ 下的文件名） */
   posterHd?: string;
+  /** 动态演示 GIF（public/images/works/ 下的文件名），翻转背面播放 */
+  demo?: string;
   tags: string[];
   featured?: boolean;
 }
@@ -40,6 +42,7 @@ export const works: Work[] = [
     featured: true,
     poster: 'poster-lotto.png',
     posterHd: 'poster-lotto.png',
+    demo: 'demo-lotto.gif',
   },
   {
     title: '福彩',
@@ -51,6 +54,7 @@ export const works: Work[] = [
     tags: ['彩票', '工具'],
     poster: 'poster-welfare.png',
     posterHd: 'poster-welfare.png',
+    demo: 'demo-welfare.gif',
   },
   {
     title: '足彩',
@@ -62,6 +66,7 @@ export const works: Work[] = [
     tags: ['足球', '彩票', '工具'],
     poster: 'poster-football.png',
     posterHd: 'poster-football.png',
+    demo: 'demo-football.gif',
   },
   {
     title: '世界杯',
@@ -95,6 +100,7 @@ export const works: Work[] = [
     tags: ['周星驰', '电影'],
     poster: 'poster-stephen.jpg',
     posterHd: 'poster-stephen.jpg',
+    demo: 'demo-stephen.gif',
   },
   {
     title: '中英泰翻译',
