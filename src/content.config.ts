@@ -8,6 +8,8 @@ const post = defineCollection({
     description: z.string(),
     date: z.coerce.date(),
     tags: z.array(z.string()).default([]),
+    /** 毛选精读子分类：heiban=黑板前的冥想，baiban=白板前的冥想，仅 maoxuan 文章使用 */
+    sub: z.enum(['heiban', 'baiban']).optional(),
     /** 每日文摘细分主题（对应 TOPICS slug），仅 research 栏目使用 */
     topics: z.array(z.string()).default([]),
     featured: z.boolean().default(false),

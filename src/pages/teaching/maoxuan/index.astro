@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PostCard from '../../../components/PostCard.astro';
 import Typewriter from '../../../components/Typewriter.astro';
+import Icon from '../../../components/Icon.astro';
 import { getCollection } from 'astro:content';
 import { firstImage } from '../../../lib/site';
 
@@ -16,6 +17,17 @@ const posts = all
     if (ao !== bo) return ao - bo;
     return b.data.date.getTime() - a.data.date.getTime();
   });
+
+// 两个子分类
+const SUBS = [
+  { key: 'heiban', title: '黑板前的冥想', desc: '站在黑板前，把经典讲清楚、想透彻', color: '#3b82f6' },
+  { key: 'baiban', title: '白板前的冥想', desc: '站在白板前，让想法自由生长、连成一片', color: '#0ea5e9' },
+] as const;
+
+const grouped = SUBS.map((sub) => ({
+  ...sub,
+  items: posts.filter((p) => p.data.sub === sub.key),
+}));
 
 const section = { title: '黑/白板前的冥想', en: 'Teaching', color: '#3b82f6', gradient: 'linear-gradient(120deg, #0a84ff, #00c6ff)' };
 ---
@@ -36,30 +48,49 @@ const section = { title: '黑/白板前的冥想', en: 'Teaching', color: '#3b82
 
   <section class="container list-body">
     {
-      posts.length > 0 ? (
-        <div class="grid dock-grid">
-          {
-            posts.map((post) => (
-              <PostCard
-                title={post.data.title}
-                description={post.data.description}
-                date={post.data.date}
-                tags={post.data.tags}
-                href={`/teaching/${post.slug}/`}
-                gradient={section.gradient}
-                featured={post.data.featured}
-                section="毛选精读"
-                sectionColor={section.color}
-                image={firstImage(post.body) ?? undefined}
-              />
-            ))
-          }
-        </div>
-      ) : (
+      posts.length === 0 ? (
         <div class="empty card">
           <p class="empty-title">这里还是一片空白</p>
           <p class="secondary">在 <code>src/content/teaching/maoxuan/</code> 目录下新增 Markdown 文件即可发表精读文章。</p>
         </div>
+      ) : (
+        grouped.map((group) => (
+          <div class="group">
+            <div class="group-head">
+              <span class="group-dot" style={`background: ${group.color}`} />
+              <h2 class="group-title">{group.title}</h2>
+              <span class="group-count">{group.items.length} 篇</span>
+              <p class="group-desc">{group.desc}</p>
+            </div>
+            {
+              group.items.length > 0 ? (
+                <div class="grid dock-grid">
+                  {
+                    group.items.map((post) => (
+                      <PostCard
+                        title={post.data.title}
+                        description={post.data.description}
+                        date={post.data.date}
+                        tags={post.data.tags}
+                        href={`/teaching/${post.slug}/`}
+                        gradient={section.gradient}
+                        featured={post.data.featured}
+                        section="毛选精读"
+                        sectionColor={section.color}
+                        image={firstImage(post.body) ?? undefined}
+                      />
+                    ))
+                  }
+                </div>
+              ) : (
+                <div class="group-empty">
+                  <Icon name="book" size={14} />
+                  <span>这个分类还没有文章，慢慢来。</span>
+                </div>
+              )
+            }
+          </div>
+        ))
       )
     }
   </section>
@@ -99,6 +130,53 @@ const section = { title: '黑/白板前的冥想', en: 'Teaching', color: '#3b82
     padding-bottom: 4rem;
     max-width: 1320px;
   }
+
+  /* ===== 子分类分组 ===== */
+  .group + .group {
+    margin-top: 2.5rem;
+  }
+  .group-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .group-dot {
+    align-self: center;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .group-title {
+    font-size: var(--text-lg);
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  .group-count {
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+  }
+  .group-desc {
+    width: 100%;
+    margin-top: 0.15rem;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    padding-left: 1.15rem;
+  }
+  .group-empty {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius-lg, 16px);
+    border: 1px dashed var(--border);
+    color: var(--text-tertiary);
+    font-size: var(--text-sm);
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
