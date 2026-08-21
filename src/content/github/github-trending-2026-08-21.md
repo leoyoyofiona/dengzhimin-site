@@ -6,8 +6,6 @@ tags: ["GitHub", "开源", "高星项目"]
 featured: true
 ---
 
-本周 GitHub 高星项目精选（均为 ≥1K★ 的热门仓库），图文并茂，简单介绍清楚。
-
 ## yetone/cumora — 跨平台 Agent 团队聊天
 
 <figure>
