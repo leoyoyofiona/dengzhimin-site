@@ -1,4 +1,4 @@
-# 界面局部放大串接动画: 镜头在画面主要区域间平滑推拉（更大聚焦）
+# 界面局部放大串接动画: 连续镜头路径（推近/平移/拉回），高帧率丝滑
 # 用法: python3 make-kenburns.py <src.png> <out.gif> [fps] [outwidth]
 import sys
 import os
@@ -6,71 +6,75 @@ from PIL import Image
 
 src = sys.argv[1]
 out = sys.argv[2]
-fps = float(sys.argv[3]) if len(sys.argv) > 3 else 6
+fps = float(sys.argv[3]) if len(sys.argv) > 3 else 10
 outw = int(sys.argv[4]) if len(sys.argv) > 4 else 560
 
 img = Image.open(src).convert('RGB')
 W, H = img.size
 OUTH = int(H * outw / W)
 
-# 焦点区域（相对坐标 0-1）：更聚焦的局部，横向三区
-regions = [
-    (0.00, 0.05, 0.48, 0.95),  # 左区（窄、聚焦）
-    (0.26, 0.05, 0.74, 0.95),  # 中区
-    (0.52, 0.05, 1.00, 0.95),  # 右区
-]
-# 竖图改上中下
+# 镜头关键帧序列 (cx, cy, zoom)：全景 → 各区推近 → 回全景
+# zoom 2.5 = 镜头推得较远，界面元素大而清晰
 if H > W:
-    regions = [
-        (0.05, 0.00, 0.95, 0.45),
-        (0.05, 0.28, 0.95, 0.72),
-        (0.05, 0.55, 0.95, 1.00),
+    # 竖图：上中下巡览
+    keys = [
+        (0.50, 0.50, 1.0),
+        (0.50, 0.24, 2.5),
+        (0.50, 0.50, 2.5),
+        (0.50, 0.76, 2.5),
+        (0.50, 0.50, 1.0),
+    ]
+else:
+    # 横图：左中右巡览
+    keys = [
+        (0.50, 0.50, 1.0),
+        (0.24, 0.50, 2.5),
+        (0.50, 0.50, 2.5),
+        (0.76, 0.50, 2.5),
+        (0.50, 0.50, 1.0),
     ]
 
-# 放大参数：镜头推近到 2.0 倍，让局部界面元素更大更清楚
-MAX_ZOOM = 2.0
-FRAMES_PER_REGION = 3
+FRAMES_PER_SEG = 8  # 每段关键帧之间的插值帧数（越高越流畅）
 
-def crop_region(region, zoom=1.0):
-    x0, y0, x1, y1 = region
-    cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
-    w = (x1 - x0) / zoom
-    h = (y1 - y0) / zoom
-    bx0 = max(0, cx - w / 2)
-    bx1 = min(1, cx + w / 2)
-    by0 = max(0, cy - h / 2)
-    by1 = min(1, cy + h / 2)
-    box = (int(bx0 * W), int(by0 * H), int(bx1 * W), int(by1 * H))
-    return box
+def lerp(a, b, t):
+    return a + (b - a) * t
+
+def view_box(cx, cy, zoom):
+    # 根据中心与缩放计算视图框（相对坐标），保持与输出一致的宽高比
+    vw = 1.0 / zoom
+    vh = vw
+    # 限制中心范围，避免越界
+    cx = max(vw / 2, min(1 - vw / 2, cx))
+    cy = max(vh / 2, min(1 - vh / 2, cy))
+    x0 = int((cx - vw / 2) * W)
+    x1 = int((cx + vw / 2) * W)
+    y0 = int((cy - vh / 2) * H)
+    y1 = int((cy + vh / 2) * H)
+    return (x0, y0, x1, y1)
 
 frames = []
 
-def add_frame(region, zoom):
-    box = crop_region(region, zoom)
+def add_frame(cx, cy, zoom):
+    box = view_box(cx, cy, zoom)
     c = img.crop(box)
     frames.append(c.resize((outw, OUTH), Image.LANCZOS))
 
-# 全景开场（短暂）
-add_frame((0.0, 0.0, 1.0, 1.0), 1.0)
-# 依次推入每个区域：zoom 1.0 → 2.0（大幅推近），区域内微扫，再拉回
-for reg in regions:
-    # 推入
-    for z in range(FRAMES_PER_REGION):
-        zoom = 1.0 + (MAX_ZOOM - 1.0) * (z / FRAMES_PER_REGION)
-        add_frame(reg, zoom)
-    # 区域内横向微扫，增强动态感
-    for z in range(FRAMES_PER_REGION):
-        shift = (z / FRAMES_PER_REGION) * 0.06
-        sx0 = max(0, reg[0] + shift * 0.5)
-        sx1 = min(1, reg[2] + shift * 0.5)
-        add_frame((sx0, reg[1], sx1, reg[3]), MAX_ZOOM)
-    # 拉回
-    for z in range(FRAMES_PER_REGION):
-        zoom = MAX_ZOOM - (MAX_ZOOM - 1.0) * (z / FRAMES_PER_REGION)
-        add_frame(reg, zoom)
+# 连续路径插值：镜头沿关键帧序列平滑移动
+for seg in range(len(keys) - 1):
+    k0 = keys[seg]
+    k1 = keys[seg + 1]
+    for i in range(FRAMES_PER_SEG):
+        t = i / FRAMES_PER_SEG
+        # 缓入缓出，让运动更丝滑
+        ease = t * t * (3 - 2 * t)
+        cx = lerp(k0[0], k1[0], ease)
+        cy = lerp(k0[1], k1[1], ease)
+        zoom = lerp(k0[2], k1[2], ease)
+        add_frame(cx, cy, zoom)
 
-# 结束回到全景
-add_frame((0.0, 0.0, 1.0, 1.0), 1.0)
+# 结尾短暂停留全景
+for _ in range(3):
+    add_frame(0.5, 0.5, 1.0)
 
 duration = int(1000 / fps)
 frames[0].save(

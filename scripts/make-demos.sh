@@ -9,7 +9,7 @@ for pair in \
   src="${pair%%|*}"
   name="${pair##*|}"
   echo "=== $name ==="
-  .pdfvenv/bin/python3 scripts/make-kenburns.py "$src" "/tmp/$name.gif" 4 480 2>&1 | tail -1
+  .pdfvenv/bin/python3 scripts/make-kenburns.py "$src" "/tmp/$name.gif" 10 480 2>&1 | tail -1
   .pdfvenv/bin/python3 - "$name" << PYEOF
 import sys
 from PIL import Image
@@ -23,7 +23,7 @@ frames[0].save(
     f'public/images/works/{name}.webp',
     save_all=True,
     append_images=frames[1:],
-    duration=250,
+    duration=100,
     loop=0,
     format='WEBP',
     quality=72,
