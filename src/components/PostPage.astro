@@ -6,7 +6,7 @@ import { SECTIONS, formatDate, type Section } from '../lib/site';
 
 interface Props {
   slug: Section['slug'];
-  post: CollectionEntry<'teaching' | 'research' | 'work' | 'life' | 'papers'>;
+  post: CollectionEntry<'teaching' | 'research' | 'work' | 'life' | 'papers' | 'github'>;
 }
 const { slug, post } = Astro.props;
 const section = SECTIONS.find((s) => s.slug === slug)!;

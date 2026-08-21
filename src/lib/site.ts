@@ -11,7 +11,7 @@ export const SITE = {
 } as const;
 
 export interface Section {
-  slug: 'teaching' | 'research' | 'work' | 'life' | 'papers';
+  slug: 'teaching' | 'research' | 'work' | 'life' | 'papers' | 'github';
   title: string;
   en: string;
   description: string;
@@ -20,7 +20,7 @@ export interface Section {
   color: string;
 }
 
-/** 五大栏目 */
+/** 六大栏目 */
 export const SECTIONS: Section[] = [
   {
     slug: 'teaching',
@@ -48,6 +48,15 @@ export const SECTIONS: Section[] = [
     icon: 'flask',
     gradient: 'linear-gradient(120deg, #0e7490, #22d3ee)',
     color: '#0891b2',
+  },
+  {
+    slug: 'github',
+    title: 'GitHub热门搬运',
+    en: 'GitHub Trending',
+    description: 'GitHub 上值得关注的热门项目，搬过来看看',
+    icon: 'github',
+    gradient: 'linear-gradient(120deg, #24292f, #57606a)',
+    color: '#374151',
   },
   {
     slug: 'work',

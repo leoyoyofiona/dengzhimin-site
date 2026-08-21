@@ -21,4 +21,5 @@ export const collections = {
   work: post,
   life: post,
   papers: post,
+  github: post,
 };
