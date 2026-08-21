@@ -26,7 +26,7 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
 ---
 
 <!doctype html>
-<html lang="zh-CN" data-theme="light" data-theme-mode="auto">
+<html lang="zh-CN" data-theme="light" data-theme-mode="auto" data-gate={gate}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -70,8 +70,8 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
     <script is:inline>
       (function () {
         // 访问口令（混淆存储，避免源码直接可见）
-        // gate 类型：site=全站，maoxuan=毛选精读
-        var GATE = {gate === 'maoxuan' ? 'maoxuan' : 'site'};
+        // gate 类型：site=全站，maoxuan=毛选精读（从 html data-gate 读取）
+        var GATE = document.documentElement.getAttribute('data-gate') === 'maoxuan' ? 'maoxuan' : 'site';
         var KEY = GATE === 'maoxuan' ? 'maoxuan-access' : 'dengzhimin-access';
         var GATE_ID = GATE === 'maoxuan' ? 'maoxuan-gate' : 'site-gate';
         var PASS = String.fromCharCode(108, 101, 111, 50, 48, 50, 54);
