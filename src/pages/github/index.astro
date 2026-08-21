@@ -1,8 +1,219 @@
 ---
-import SectionLayout from '../../components/SectionLayout.astro';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import Typewriter from '../../components/Typewriter.astro';
+import Icon from '../../components/Icon.astro';
 import { getCollection } from 'astro:content';
+import { SECTIONS, GH_CATEGORIES, firstImage } from '../../lib/site';
 
-const posts = await getCollection('github');
+const section = SECTIONS.find((s) => s.slug === 'github')!;
+const all = await getCollection('github');
+
+function sortPosts(list: CollectionEntry<'github'>[]) {
+  return [...list].sort((a, b) => {
+    const ao = a.data.order ?? 999;
+    const bo = b.data.order ?? 999;
+    if (ao !== bo) return ao - bo;
+    return b.data.date.getTime() - a.data.date.getTime();
+  });
+}
+
+// GitHub 总榜（top-* 前缀）
+const topPosts = sortPosts(all.filter((p) => !p.data.draft && p.slug.startsWith('top-')));
+
+// 各分类（category-* 前缀，按 GH_CATEGORIES 顺序）
+const categoryPosts = all.filter((p) => !p.data.draft && p.slug.startsWith('category-'));
+const categoryGroups = GH_CATEGORIES.map((c) => {
+  const items = sortPosts(categoryPosts.filter((p) => p.slug === `category-${c.slug}`));
+  return { ...c, items };
+}).filter((g) => g.items.length > 0);
 ---
 
-<SectionLayout slug="github" posts={posts} />
+<BaseLayout
+  title={section.title}
+  description={`${section.title}（${section.en}）—— ${section.description}`}
+>
+  <section class="page-head">
+    <div class="container">
+      <p class="eyebrow">{section.en}</p>
+      <h1 class="display page-title">{section.title}</h1>
+      <Typewriter text={section.description} />
+    </div>
+  </section>
+
+  <section class="container list-body">
+    <!-- GitHub 总榜 -->
+    <div class="block">
+      <div class="block-head" style={`--c: ${section.color}`}>
+        <span class="block-icon"><Icon name="github" size={15} /></span>
+        <h2 class="block-title">GitHub 总榜</h2>
+        <span class="block-count">{topPosts.length} 篇</span>
+        <span class="block-go">Top 100 <Icon name="arrow-right" size={13} /></span>
+      </div>
+      {
+        topPosts.length > 0 ? (
+          <div class="grid dock-grid">
+            {
+              topPosts.map((post) => (
+                <PostCard
+                  title={post.data.title}
+                  description={post.data.description}
+                  date={post.data.date}
+                  tags={post.data.tags}
+                  href={`/github/${post.slug}/`}
+                  gradient={section.gradient}
+                  featured={post.data.featured}
+                  section="GitHub 总榜"
+                  sectionColor={section.color}
+                  image={firstImage(post.body) ?? undefined}
+                />
+              ))
+            }
+          </div>
+        ) : (
+          <div class="block-empty">
+            <Icon name="github" size={14} />
+            <span>这个栏目还没有文章，慢慢来。</span>
+          </div>
+        )
+      }
+    </div>
+
+    <!-- 各分类长条框 -->
+    {
+      categoryGroups.map((group) => (
+        <div class="block">
+          <div class="block-head" style={`--c: ${group.color}`}>
+            <span class="block-icon"><Icon name="book" size={15} /></span>
+            <h2 class="block-title">{group.title}</h2>
+            <span class="block-count">{group.items.length} 篇</span>
+            <span class="block-go">{group.en}</span>
+          </div>
+          <div class="grid dock-grid">
+            {
+              group.items.map((post) => (
+                <PostCard
+                  title={post.data.title}
+                  description={post.data.description}
+                  date={post.data.date}
+                  tags={post.data.tags}
+                  href={`/github/${post.slug}/`}
+                  gradient={section.gradient}
+                  featured={post.data.featured}
+                  section={group.title}
+                  sectionColor={group.color}
+                  image={firstImage(post.body) ?? undefined}
+                />
+              ))
+            }
+          </div>
+        </div>
+      ))
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    position: relative;
+    padding-block: clamp(1.5rem, 3vw, 2.25rem) clamp(1rem, 2vw, 1.5rem);
+    overflow: hidden;
+  }
+  .page-head::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    left: -10%;
+    width: 60%;
+    height: 140%;
+    background: var(--gradient-soft);
+    filter: blur(90px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .page-title {
+    font-size: var(--text-2xl);
+    margin-top: 0.35rem;
+  }
+  .list-body {
+    padding-bottom: 4rem;
+    max-width: 1320px;
+  }
+
+  /* ===== 栏目长条框 ===== */
+  .block + .block {
+    margin-top: 2.25rem;
+  }
+  .block-head {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.9rem 1.25rem;
+    margin-bottom: 1.25rem;
+    border-radius: var(--radius-lg, 16px);
+    background: linear-gradient(120deg, color-mix(in srgb, var(--c) 9%, transparent), color-mix(in srgb, var(--c) 4%, transparent));
+    border: 1px solid var(--border);
+  }
+  .block-icon {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: linear-gradient(120deg, var(--c), color-mix(in srgb, var(--c) 65%, #fff));
+  }
+  .block-title {
+    font-size: var(--text-lg);
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  .block-count {
+    margin-left: 0.25rem;
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+  }
+  .block-go {
+    margin-left: auto;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--c);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .block-empty {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 1.1rem 1.5rem;
+    border-radius: var(--radius-lg, 16px);
+    border: 1px dashed var(--border);
+    color: var(--text-tertiary);
+    font-size: var(--text-sm);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+  }
+
+  @media (max-width: 1080px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 560px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .block-count {
+      display: none;
+    }
+  }
+</style>
