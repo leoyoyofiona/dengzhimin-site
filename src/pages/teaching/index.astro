@@ -74,10 +74,13 @@ const posts = sortPosts(all.filter((p) => !p.data.draft && !p.slug.startsWith('m
       SUBS.map((sub) => (
         <div class="block">
           <a class="block-head" href={sub.href} style={`--c: ${sub.color}`}>
-            <span class="block-icon"><Icon name={sub.icon} size={15} /></span>
-            <h2 class="block-title">{sub.title}</h2>
-            <span class="block-count">{sub.items.length} 篇</span>
-            <span class="block-go">进入 <Icon name="arrow-right" size={13} /></span>
+            <div class="block-head-main">
+              <span class="block-icon"><Icon name={sub.icon} size={15} /></span>
+              <h2 class="block-title">{sub.title}</h2>
+              <span class="block-count">{sub.items.length} 篇</span>
+              <span class="block-go">进入 <Icon name="arrow-right" size={13} /></span>
+            </div>
+            <Typewriter text={sub.desc} class="block-desc" />
           </a>
           {
             sub.items.length > 0 ? (
@@ -176,8 +179,8 @@ const posts = sortPosts(all.filter((p) => !p.data.draft && !p.slug.startsWith('m
   }
   .block-head {
     display: flex;
-    align-items: center;
-    gap: 0.65rem;
+    flex-direction: column;
+    gap: 0.35rem;
     padding: 0.9rem 1.25rem;
     margin-bottom: 1.25rem;
     border-radius: var(--radius-lg, 16px);
@@ -189,6 +192,17 @@ const posts = sortPosts(all.filter((p) => !p.data.draft && !p.slug.startsWith('m
   a.block-head:hover {
     border-color: color-mix(in srgb, var(--c) 45%, transparent);
     transform: translateY(-1px);
+  }
+  .block-head-main {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+  .block-desc {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: 1.5;
+    padding-left: 2.65rem;
   }
   .block-icon {
     flex-shrink: 0;
