@@ -1,5 +1,5 @@
 ---
-title: "GitHub 热门搬运 · 2026-08-21"
+title: "GitHub 热门 · 2026-08-21"
 description: "一周值得看的 GitHub 热门项目：Agent 团队聊天、开源 AI 同事、AI 水印移除等。"
 date: 2026-08-21
 tags: ["GitHub", "开源", "AI", "项目"]

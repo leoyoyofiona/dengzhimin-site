@@ -334,10 +334,9 @@ const sectionPosts = await Promise.all(
     font-weight: 600;
     line-height: 1.45;
     color: var(--text);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
     transition: color var(--speed) var(--ease);
   }
   .ucard:hover .ucard-title {
