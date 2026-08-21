@@ -78,6 +78,7 @@ export const works: Work[] = [
     tags: ['世界杯', '足球', '预测'],
     poster: 'poster-worldcup.png',
     posterHd: 'poster-worldcup.png',
+    demo: 'demo-worldcup.webp',
   },
   {
     title: '小红书',
@@ -88,6 +89,7 @@ export const works: Work[] = [
     tags: ['小红书', '内容', '工具'],
     poster: 'poster-xiaohongshu.jpg',
     posterHd: 'poster-xiaohongshu.jpg',
+    demo: 'demo-xiaohongshu.webp',
   },
   {
     title: '周星驰',
@@ -112,6 +114,7 @@ export const works: Work[] = [
     featured: true,
     poster: 'poster-translate.png',
     posterHd: 'poster-translate.png',
+    demo: 'demo-translate.webp',
   },
   {
     title: '三空格翻译',
@@ -122,6 +125,7 @@ export const works: Work[] = [
     tags: ['翻译', '排版', '工具'],
     poster: 'poster-triple.png',
     posterHd: 'poster-triple.png',
+    demo: 'demo-triple.webp',
   },
   {
     title: 'macOS快捷键',
@@ -133,6 +137,7 @@ export const works: Work[] = [
     featured: true,
     poster: 'poster-macos.png',
     posterHd: 'poster-macos.png',
+    demo: 'demo-macos.webp',
   },
   {
     title: '怎么改你都懂',
@@ -144,6 +149,7 @@ export const works: Work[] = [
     tags: ['中文', '渲染', '工具'],
     poster: 'poster-render.png',
     posterHd: 'poster-render.png',
+    demo: 'demo-render.webp',
   },
   {
     title: 'learn vlog',
@@ -154,6 +160,7 @@ export const works: Work[] = [
     tags: ['英语', '短视频', '学习'],
     poster: 'poster-vlog.png',
     posterHd: 'poster-vlog.png',
+    demo: 'demo-vlog.webp',
   },
   {
     title: 'WorkBuddy 指南',
@@ -164,5 +171,6 @@ export const works: Work[] = [
     tags: ['WorkBuddy', '教程', 'AI工作流'],
     poster: 'poster-workbuddy.jpg',
     posterHd: 'poster-workbuddy.jpg',
+    demo: 'demo-workbuddy.webp',
   },
 ];
