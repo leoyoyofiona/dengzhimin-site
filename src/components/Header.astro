@@ -61,6 +61,7 @@ const isActive = (href: string) => {
         <span class="i-moon"><Icon name="moon" size={18} /></span>
         <span class="i-auto"><Icon name="auto" size={18} /></span>
       </button>
+      <a class="disclaimer-link" href="/disclaimer/" title="本站搬运内容的免责声明">免责声明</a>
       <button class="icon-btn menu-btn" id="menu-toggle" aria-label="打开菜单" aria-expanded="false">
         <Icon name="menu" size={22} />
       </button>
@@ -287,6 +288,22 @@ const isActive = (href: string) => {
     transition: background-color var(--speed) var(--ease), color var(--speed) var(--ease);
   }
   .icon-btn:hover {
+    background: var(--bg-glass);
+  }
+  /* 免责声明链接（低调小字，位于主题切换按钮右侧） */
+  .disclaimer-link {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--text-tertiary);
+    border-radius: var(--radius-full);
+    border: 1px solid transparent;
+    white-space: nowrap;
+    transition: color var(--speed) var(--ease), border-color var(--speed) var(--ease), background-color var(--speed) var(--ease);
+  }
+  .disclaimer-link:hover {
+    color: var(--text-secondary);
+    border-color: var(--border);
     background: var(--bg-glass);
   }
   .menu-btn {

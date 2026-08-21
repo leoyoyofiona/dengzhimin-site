@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import Typewriter from '../components/Typewriter.astro';
+import { SITE } from '../lib/site';
+---
+
+<BaseLayout title="免责声明" description={`${SITE.name} 的免责声明：关于本站搬运内容的使用与版权说明。`}>
+  <section class="page-head">
+    <div class="container">
+      <p class="eyebrow">Disclaimer</p>
+      <h1 class="display page-title">免责声明</h1>
+      <Typewriter text="搬运是为了学习与分享，尊重原作者是底线。" />
+    </div>
+  </section>
+
+  <section class="container prose-body">
+    <div class="prose">
+      <p>
+        本站（{SITE.name}）是一个个人学习与分享站点。以下就本站「搬运」的内容（包括但不限于
+        <strong>GitHub 热门项目</strong>、<strong>每日文摘</strong>、<strong>文献与资料</strong>等）
+        作如下声明：
+      </p>
+
+      <h2>一、内容来源与版权</h2>
+      <p>
+        本站搬运的内容均来自公开渠道，版权归原作者或原平台所有。本站仅作个人学习、交流与记录之用，
+        不用于任何商业用途。
+      </p>
+
+      <h2>二、搬运内容的使用</h2>
+      <p>
+        搬运过程中已尽可能注明原始出处与链接。如需引用、转载本站内容，请以原出处为准；
+        如需商业使用，请直接联系原作者获取授权。
+      </p>
+
+      <h2>三、图片与数据</h2>
+      <p>
+        站点中使用的项目截图、数据与描述信息均来自公开渠道（如 GitHub 官方页面），
+        星标数等数据随时间变化，仅反映搬运当时的快照，不代表最新状态。
+      </p>
+
+      <h2>四、联系我们</h2>
+      <p>
+        若您认为本站的搬运内容侵犯了您的合法权益，请通过以下邮箱联系，我们将在核实后尽快处理：
+        <br />
+        <a class="mail-link" href="mailto:{SITE.email}">
+          <Icon name="mail" size={15} /> {SITE.email}
+        </a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    position: relative;
+    padding-block: clamp(1.5rem, 3vw, 2.25rem) clamp(1rem, 2vw, 1.5rem);
+    overflow: hidden;
+  }
+  .page-head::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    left: -10%;
+    width: 60%;
+    height: 140%;
+    background: var(--gradient-soft);
+    filter: blur(90px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .page-title {
+    font-size: var(--text-2xl);
+    margin-top: 0.35rem;
+  }
+  .prose-body {
+    padding-bottom: 4rem;
+    max-width: 820px;
+  }
+  .mail-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .mail-link:hover {
+    text-decoration: underline;
+  }
+</style>
