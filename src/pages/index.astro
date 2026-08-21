@@ -8,7 +8,12 @@ import { getCollection } from 'astro:content';
 const sectionPosts = await Promise.all(
   SECTIONS.map(async (s) => {
     const all = (await getCollection(s.slug)).filter((p) => !p.data.draft);
-    const sorted = [...all].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+    const sorted = [...all].sort((a, b) => {
+      const ao = a.data.order ?? 999;
+      const bo = b.data.order ?? 999;
+      if (ao !== bo) return ao - bo;
+      return b.data.date.getTime() - a.data.date.getTime();
+    });
     return { section: s, total: all.length, posts: sorted };
   }),
 );

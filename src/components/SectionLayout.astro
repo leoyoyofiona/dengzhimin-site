@@ -13,7 +13,13 @@ const { slug, posts } = Astro.props;
 const section = SECTIONS.find((s) => s.slug === slug)!;
 const published = posts
   .filter((p) => !p.data.draft)
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  .sort((a, b) => {
+    // 有 order 的置顶（小在前），否则按日期倒序
+    const ao = a.data.order ?? 999;
+    const bo = b.data.order ?? 999;
+    if (ao !== bo) return ao - bo;
+    return b.data.date.getTime() - a.data.date.getTime();
+  });
 ---
 
 <BaseLayout
