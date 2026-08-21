@@ -42,7 +42,7 @@ export const works: Work[] = [
     featured: true,
     poster: 'poster-lotto.png',
     posterHd: 'poster-lotto.png',
-    demo: 'demo-lotto.gif',
+    demo: 'demo-lotto.webp',
   },
   {
     title: '福彩',
@@ -54,7 +54,7 @@ export const works: Work[] = [
     tags: ['彩票', '工具'],
     poster: 'poster-welfare.png',
     posterHd: 'poster-welfare.png',
-    demo: 'demo-welfare.gif',
+    demo: 'demo-welfare.webp',
   },
   {
     title: '足彩',
@@ -66,7 +66,7 @@ export const works: Work[] = [
     tags: ['足球', '彩票', '工具'],
     poster: 'poster-football.png',
     posterHd: 'poster-football.png',
-    demo: 'demo-football.gif',
+    demo: 'demo-football.webp',
   },
   {
     title: '世界杯',
@@ -100,7 +100,7 @@ export const works: Work[] = [
     tags: ['周星驰', '电影'],
     poster: 'poster-stephen.jpg',
     posterHd: 'poster-stephen.jpg',
-    demo: 'demo-stephen.gif',
+    demo: 'demo-stephen.webp',
   },
   {
     title: '中英泰翻译',
