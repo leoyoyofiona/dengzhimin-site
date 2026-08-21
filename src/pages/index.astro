@@ -110,7 +110,10 @@ const sectionPosts = await Promise.all(
     display: flex;
     align-items: baseline;
     justify-content: space-between;
+    gap: 1rem;
     margin-bottom: 0.75rem;
+    flex-wrap: nowrap;
+    white-space: nowrap;
   }
   .srow-title {
     font-size: var(--text-md);
@@ -127,6 +130,8 @@ const sectionPosts = await Promise.all(
       color 0.3s var(--ease-out),
       background-color 0.3s var(--ease-out),
       box-shadow 0.3s var(--ease-out);
+    white-space: nowrap;
+    flex-shrink: 0;
   }
   .srow-title::before {
     content: '';
@@ -151,6 +156,7 @@ const sectionPosts = await Promise.all(
     align-items: center;
     gap: 0.9rem;
     min-width: 0;
+    flex-shrink: 1;
   }
   .srow-stats {
     display: inline-flex;
@@ -159,6 +165,7 @@ const sectionPosts = await Promise.all(
     font-size: var(--text-xs);
     color: var(--text-tertiary);
     white-space: nowrap;
+    flex-shrink: 0;
   }
   .stat {
     display: inline-flex;
@@ -176,6 +183,7 @@ const sectionPosts = await Promise.all(
     color: var(--text-tertiary);
     text-decoration: none;
     transition: color var(--speed) var(--ease);
+    flex-shrink: 0;
   }
   .srow-more:hover {
     color: var(--c);
@@ -361,6 +369,9 @@ const sectionPosts = await Promise.all(
   @media (max-width: 560px) {
     .ucard {
       width: 78vw;
+    }
+    .srow-stats {
+      display: none;
     }
   }
 </style>
