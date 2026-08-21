@@ -109,6 +109,27 @@ export function getTopic(slug: string): Topic | undefined {
   return TOPICS.find((t) => t.slug === slug);
 }
 
+/** GitHub 热门项目分类（常规分类，不过多） */
+export interface GhCategory {
+  slug: string;
+  title: string;
+  en: string;
+  color: string;
+}
+
+export const GH_CATEGORIES: GhCategory[] = [
+  { slug: 'ai', title: 'AI 与机器学习', en: 'AI & ML', color: '#8b5cf6' },
+  { slug: 'learning', title: '学习与面试', en: 'Learning', color: '#3b82f6' },
+  { slug: 'tools', title: '开发工具', en: 'Dev Tools', color: '#10b981' },
+  { slug: 'web', title: '前端 / 后端', en: 'Web Dev', color: '#f59e0b' },
+  { slug: 'awesome', title: '精选清单', en: 'Awesome Lists', color: '#ec4899' },
+  { slug: 'security', title: '安全与系统', en: 'Security', color: '#ef4444' },
+];
+
+export function getGhCategory(slug: string): GhCategory | undefined {
+  return GH_CATEGORIES.find((c) => c.slug === slug);
+}
+
 /** 从 Markdown 正文中提取第一张图片 URL（markdown 或 html 形式） */
 export function firstImage(body: string): string | null {
   const m =
