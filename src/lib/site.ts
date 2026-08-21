@@ -122,7 +122,6 @@ export const GH_CATEGORIES: GhCategory[] = [
   { slug: 'learning', title: '学习与面试', en: 'Learning', color: '#3b82f6' },
   { slug: 'tools', title: '开发工具', en: 'Dev Tools', color: '#10b981' },
   { slug: 'web', title: '前端 / 后端', en: 'Web Dev', color: '#f59e0b' },
-  { slug: 'awesome', title: '精选清单', en: 'Awesome Lists', color: '#ec4899' },
   { slug: 'security', title: '安全与系统', en: 'Security', color: '#ef4444' },
 ];
 
