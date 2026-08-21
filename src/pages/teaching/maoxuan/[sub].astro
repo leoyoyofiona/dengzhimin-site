@@ -1,0 +1,148 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostCard from '../../../components/PostCard.astro';
+import Typewriter from '../../../components/Typewriter.astro';
+import { getCollection } from 'astro:content';
+import { firstImage } from '../../../lib/site';
+
+export async function getStaticPaths() {
+  // 两个子栏目定义（与 maoxuan/index.astro 保持一致）
+  // 注意：getStaticPaths 在模块顶层执行，变量必须在此作用域内定义
+  const SUBS = [
+    { key: 'heiban', title: '黑板前的冥想', desc: '站在黑板前，把经典讲清楚、想透彻', color: '#3b82f6', gradient: 'linear-gradient(120deg, #0a84ff, #00c6ff)' },
+    { key: 'baiban', title: '白板前的冥想', desc: '站在白板前，让想法自由生长、连成一片', color: '#0ea5e9', gradient: 'linear-gradient(120deg, #0ea5e9, #22d3ee)' },
+  ] as const;
+
+  return SUBS.map((sub) => ({
+    params: { sub: sub.key },
+    props: { sub },
+  }));
+}
+
+const { sub } = Astro.props as { sub: (typeof SUBS)[number] };
+
+const all = await getCollection('teaching');
+const posts = all
+  .filter((p) => !p.data.draft && p.slug.startsWith('maoxuan/') && p.data.sub === sub.key)
+  .sort((a, b) => {
+    const ao = a.data.order ?? 999;
+    const bo = b.data.order ?? 999;
+    if (ao !== bo) return ao - bo;
+    return b.data.date.getTime() - a.data.date.getTime();
+  });
+---
+
+<BaseLayout
+  title={sub.title}
+  description={`${sub.title} —— 毛选精读子栏目`}
+  gate="maoxuan"
+>
+  <section class="page-head">
+    <div class="container">
+      <p class="eyebrow">
+        <a href="/teaching/maoxuan/">← 毛选精读</a>
+      </p>
+      <h1 class="display page-title">{sub.title}</h1>
+      <Typewriter text={sub.desc} />
+    </div>
+  </section>
+
+  <section class="container list-body">
+    {
+      posts.length > 0 ? (
+        <div class="grid dock-grid">
+          {
+            posts.map((post) => (
+              <PostCard
+                title={post.data.title}
+                description={post.data.description}
+                date={post.data.date}
+                tags={post.data.tags}
+                href={`/teaching/${post.slug}/`}
+                gradient={sub.gradient}
+                featured={post.data.featured}
+                section="毛选精读"
+                sectionColor={sub.color}
+                image={firstImage(post.body) ?? undefined}
+              />
+            ))
+          }
+        </div>
+      ) : (
+        <div class="empty card">
+          <p class="empty-title">这里还是一片空白</p>
+          <p class="secondary">这个分类还没有文章，慢慢来。</p>
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    position: relative;
+    padding-block: clamp(1.5rem, 3vw, 2.25rem) clamp(1rem, 2vw, 1.5rem);
+    overflow: hidden;
+  }
+  .page-head::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    left: -10%;
+    width: 60%;
+    height: 140%;
+    background: var(--gradient-soft);
+    filter: blur(90px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .eyebrow a {
+    color: var(--text-tertiary);
+    font-size: var(--text-sm);
+    transition: color var(--speed) var(--ease);
+  }
+  .eyebrow a:hover {
+    color: var(--accent);
+  }
+  .page-title {
+    font-size: var(--text-2xl);
+    margin-top: 0.35rem;
+  }
+  .list-body {
+    padding-bottom: 4rem;
+    max-width: 1320px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+  }
+  .empty {
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+  .empty-title {
+    font-size: var(--text-xl);
+    font-weight: 600;
+  }
+  .empty code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--bg-glass);
+    padding: 0.1rem 0.4rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+
+  @media (max-width: 1080px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 560px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

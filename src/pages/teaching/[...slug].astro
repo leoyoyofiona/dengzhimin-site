@@ -12,6 +12,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props as { post: CollectionEntry<'teaching'> };
+const isMaoxuan = post.slug.startsWith('maoxuan/');
 ---
 
-<PostPage slug="teaching" post={post} />
+<PostPage slug="teaching" post={post} gate={isMaoxuan ? 'maoxuan' : 'site'} />

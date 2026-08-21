@@ -7,13 +7,15 @@ import { SECTIONS, formatDate, type Section } from '../lib/site';
 interface Props {
   slug: Section['slug'];
   post: CollectionEntry<'teaching' | 'research' | 'work' | 'life' | 'papers' | 'github'>;
+  /** 访问口令门：site=全站门（默认），maoxuan=毛选精读独立门 */
+  gate?: 'site' | 'maoxuan';
 }
-const { slug, post } = Astro.props;
+const { slug, post, gate = 'site' } = Astro.props;
 const section = SECTIONS.find((s) => s.slug === slug)!;
 const { Content } = await post.render();
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description}>
+<BaseLayout title={post.data.title} description={post.data.description} gate={gate}>
   <article class="article">
     <div class="container">
       <header class="article-head">

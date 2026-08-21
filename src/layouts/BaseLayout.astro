@@ -9,6 +9,8 @@ interface Props {
   description?: string;
   noindex?: boolean;
   footer?: boolean;
+  /** 访问口令门：site=全站门（默认），maoxuan=毛选精读独立门 */
+  gate?: 'site' | 'maoxuan';
 }
 
 const {
@@ -16,6 +18,7 @@ const {
   description = SITE.description,
   noindex = false,
   footer = true,
+  gate = 'site',
 } = Astro.props;
 
 const pageTitle = title ? `${title} · ${SITE.name}` : SITE.name;
@@ -67,7 +70,10 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
     <script is:inline>
       (function () {
         // 访问口令（混淆存储，避免源码直接可见）
-        var KEY = 'dengzhimin-access';
+        // gate 类型：site=全站，maoxuan=毛选精读
+        var GATE = {gate === 'maoxuan' ? 'maoxuan' : 'site'};
+        var KEY = GATE === 'maoxuan' ? 'maoxuan-access' : 'dengzhimin-access';
+        var GATE_ID = GATE === 'maoxuan' ? 'maoxuan-gate' : 'site-gate';
         var PASS = String.fromCharCode(108, 101, 111, 50, 48, 50, 54);
         var gate = null;
         var input = null;
@@ -100,10 +106,10 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
         }
         // 等待 DOM 加载完成后再绑定（脚本在 head，gate 元素在 body）
         document.addEventListener('DOMContentLoaded', function () {
-          gate = document.getElementById('site-gate');
-          input = document.getElementById('gate-input');
-          btn = document.getElementById('gate-btn');
-          err = document.getElementById('gate-error');
+          gate = document.getElementById(GATE_ID);
+          input = document.getElementById(GATE_ID + '-input');
+          btn = document.getElementById(GATE_ID + '-btn');
+          err = document.getElementById(GATE_ID + '-error');
           if (btn) {
             btn.addEventListener('click', function () {
               if (input && input.value === PASS) {
@@ -126,25 +132,49 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
     </script>
   </head>
   <body>
-    <!-- 访问口令门 -->
-    <div class="gate" id="site-gate" hidden>
-      <div class="gate-card glass">
-        <h1 class="gate-title">LEODENG</h1>
-        <p class="gate-sub">这个站点暂未公开，输入口令继续访问。</p>
-        <div class="gate-form">
-          <input
-            class="gate-input"
-            id="gate-input"
-            type="password"
-            placeholder="输入访问口令"
-            autocomplete="off"
-            autofocus
-          />
-          <button class="btn btn-primary gate-btn" id="gate-btn">进入</button>
+    {
+      gate === 'maoxuan' ? (
+        <!-- 毛选精读口令门 -->
+        <div class="gate" id="maoxuan-gate" hidden>
+          <div class="gate-card glass">
+            <h1 class="gate-title">毛选精读</h1>
+            <p class="gate-sub">这个栏目暂未公开，输入口令继续访问。</p>
+            <div class="gate-form">
+              <input
+                class="gate-input"
+                id="maoxuan-gate-input"
+                type="password"
+                placeholder="输入访问口令"
+                autocomplete="off"
+                autofocus
+              />
+              <button class="btn btn-primary gate-btn" id="maoxuan-gate-btn">进入</button>
+            </div>
+            <p class="gate-error" id="maoxuan-gate-error" hidden>口令不正确，请重试。</p>
+          </div>
         </div>
-        <p class="gate-error" id="gate-error" hidden>口令不正确，请重试。</p>
-      </div>
-    </div>
+      ) : (
+        <!-- 访问口令门 -->
+        <div class="gate" id="site-gate" hidden>
+          <div class="gate-card glass">
+            <h1 class="gate-title">LEODENG</h1>
+            <p class="gate-sub">这个站点暂未公开，输入口令继续访问。</p>
+            <div class="gate-form">
+              <input
+                class="gate-input"
+                id="site-gate-input"
+                type="password"
+                placeholder="输入访问口令"
+                autocomplete="off"
+                autofocus
+              />
+              <button class="btn btn-primary gate-btn" id="site-gate-btn">进入</button>
+            </div>
+            <p class="gate-error" id="site-gate-error" hidden>口令不正确，请重试。</p>
+          </div>
+        </div>
+      )
+    }
 
     <a class="skip-link" href="#main">跳到主要内容</a>
     <Header />

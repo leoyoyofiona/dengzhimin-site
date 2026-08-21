@@ -1,27 +1,17 @@
 ---
-import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import PostCard from '../../../components/PostCard.astro';
 import Typewriter from '../../../components/Typewriter.astro';
 import Icon from '../../../components/Icon.astro';
 import { getCollection } from 'astro:content';
-import { firstImage } from '../../../lib/site';
 
 // 毛选精读子栏目：读取 src/content/teaching/maoxuan/ 下的文章
 const all = await getCollection('teaching');
-const posts = all
-  .filter((p) => !p.data.draft && p.slug.startsWith('maoxuan/'))
-  .sort((a, b) => {
-    const ao = a.data.order ?? 999;
-    const bo = b.data.order ?? 999;
-    if (ao !== bo) return ao - bo;
-    return b.data.date.getTime() - a.data.date.getTime();
-  });
+const posts = all.filter((p) => !p.data.draft && p.slug.startsWith('maoxuan/'));
 
-// 两个子分类
+// 两个子栏目
 const SUBS = [
-  { key: 'heiban', title: '黑板前的冥想', desc: '站在黑板前，把经典讲清楚、想透彻', color: '#3b82f6' },
-  { key: 'baiban', title: '白板前的冥想', desc: '站在白板前，让想法自由生长、连成一片', color: '#0ea5e9' },
+  { key: 'heiban', title: '黑板前的冥想', desc: '站在黑板前，把经典讲清楚、想透彻', color: '#3b82f6', icon: 'book' },
+  { key: 'baiban', title: '白板前的冥想', desc: '站在白板前，让想法自由生长、连成一片', color: '#0ea5e9', icon: 'doc' },
 ] as const;
 
 const grouped = SUBS.map((sub) => ({
@@ -29,12 +19,13 @@ const grouped = SUBS.map((sub) => ({
   items: posts.filter((p) => p.data.sub === sub.key),
 }));
 
-const section = { title: '黑/白板前的冥想', en: 'Teaching', color: '#3b82f6', gradient: 'linear-gradient(120deg, #0a84ff, #00c6ff)' };
+const section = { title: '黑/白板前的冥想', en: 'Teaching', color: '#3b82f6' };
 ---
 
 <BaseLayout
   title="毛选精读"
   description={`毛选精读 —— ${section.title}（${section.en}）子栏目`}
+  gate="maoxuan"
 >
   <section class="page-head">
     <div class="container">
@@ -47,52 +38,32 @@ const section = { title: '黑/白板前的冥想', en: 'Teaching', color: '#3b82
   </section>
 
   <section class="container list-body">
-    {
-      posts.length === 0 ? (
-        <div class="empty card">
-          <p class="empty-title">这里还是一片空白</p>
-          <p class="secondary">在 <code>src/content/teaching/maoxuan/</code> 目录下新增 Markdown 文件即可发表精读文章。</p>
-        </div>
-      ) : (
+    <div class="sub-grid">
+      {
         grouped.map((group) => (
-          <div class="group">
-            <div class="group-head">
-              <span class="group-dot" style={`background: ${group.color}`} />
-              <h2 class="group-title">{group.title}</h2>
-              <span class="group-count">{group.items.length} 篇</span>
-              <Typewriter text={group.desc} class="group-desc" />
+          <a class="sub-card" href={`/teaching/maoxuan/${group.key}/`} style={`--c: ${group.color}`}>
+            <div class="sub-head">
+              <span class="sub-icon"><Icon name={group.icon} size={16} /></span>
+              <h2 class="sub-title">{group.title}</h2>
+              <span class="sub-count">{group.items.length} 篇</span>
             </div>
-            {
-              group.items.length > 0 ? (
-                <div class="grid dock-grid">
-                  {
-                    group.items.map((post) => (
-                      <PostCard
-                        title={post.data.title}
-                        description={post.data.description}
-                        date={post.data.date}
-                        tags={post.data.tags}
-                        href={`/teaching/${post.slug}/`}
-                        gradient={section.gradient}
-                        featured={post.data.featured}
-                        section="毛选精读"
-                        sectionColor={section.color}
-                        image={firstImage(post.body) ?? undefined}
-                      />
-                    ))
-                  }
-                </div>
-              ) : (
-                <div class="group-empty">
-                  <Icon name="book" size={14} />
-                  <span>这个分类还没有文章，慢慢来。</span>
-                </div>
-              )
-            }
-          </div>
+            <p class="sub-desc">{group.desc}</p>
+            <div class="sub-foot">
+              {
+                group.items.length > 0 ? (
+                  <span class="sub-latest">
+                    最新：{group.items[0].data.title}
+                  </span>
+                ) : (
+                  <span class="sub-latest sub-latest--empty">还没有文章，慢慢来</span>
+                )
+              }
+              <span class="sub-go">进入 <Icon name="arrow-right" size={13} /></span>
+            </div>
+          </a>
         ))
-      )
-    }
+      }
+    </div>
   </section>
 </BaseLayout>
 
@@ -128,84 +99,93 @@ const section = { title: '黑/白板前的冥想', en: 'Teaching', color: '#3b82
   }
   .list-body {
     padding-bottom: 4rem;
-    max-width: 1320px;
+    max-width: 1000px;
   }
 
-  /* ===== 子分类分组 ===== */
-  .group + .group {
-    margin-top: 2.5rem;
+  /* ===== 子栏目入口卡片 ===== */
+  .sub-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
   }
-  .group-head {
+  .sub-card {
     display: flex;
-    align-items: baseline;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.5rem 1.6rem;
+    border-radius: var(--radius-lg, 18px);
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    transition: border-color var(--speed) var(--ease), transform var(--speed) var(--ease), box-shadow var(--speed) var(--ease);
+  }
+  .sub-card:hover {
+    border-color: color-mix(in srgb, var(--c) 45%, transparent);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--c) 10%, transparent);
+  }
+  .sub-head {
+    display: flex;
+    align-items: center;
     gap: 0.6rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
   }
-  .group-dot {
-    align-self: center;
-    width: 0.55rem;
-    height: 0.55rem;
-    border-radius: 50%;
+  .sub-icon {
     flex-shrink: 0;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: linear-gradient(120deg, var(--c), color-mix(in srgb, var(--c) 65%, #fff));
   }
-  .group-title {
+  .sub-title {
     font-size: var(--text-lg);
     font-weight: 650;
     letter-spacing: -0.01em;
   }
-  .group-count {
+  .sub-count {
+    margin-left: auto;
     font-size: var(--text-sm);
     color: var(--text-tertiary);
     font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
   }
-  .group-desc {
-    width: 100%;
-    margin-top: 0.15rem;
+  .sub-desc {
     font-size: var(--text-sm);
     color: var(--text-secondary);
-    padding-left: 1.15rem;
+    line-height: 1.6;
   }
-  .group-empty {
+  .sub-foot {
     display: flex;
     align-items: center;
-    gap: 0.45rem;
-    padding: 1.25rem 1.5rem;
-    border-radius: var(--radius-lg, 16px);
-    border: 1px dashed var(--border);
-    color: var(--text-tertiary);
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: auto;
+    padding-top: 0.4rem;
+  }
+  .sub-latest {
     font-size: var(--text-sm);
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sub-latest--empty {
+    font-style: italic;
+  }
+  .sub-go {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--c);
+    flex-shrink: 0;
   }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.75rem;
-  }
-  .empty {
-    padding: 3rem 2rem;
-    text-align: center;
-  }
-  .empty-title {
-    font-size: var(--text-xl);
-    font-weight: 600;
-  }
-  .empty code {
-    font-family: var(--font-mono);
-    font-size: 0.85em;
-    background: var(--bg-glass);
-    padding: 0.1rem 0.4rem;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-  }
-
-  @media (max-width: 1080px) {
-    .grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-  @media (max-width: 560px) {
-    .grid {
+  @media (max-width: 720px) {
+    .sub-grid {
       grid-template-columns: 1fr;
     }
   }
