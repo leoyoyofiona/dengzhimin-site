@@ -81,8 +81,8 @@ export const works: Work[] = [
       '围绕小红书收藏场景做的小工具，帮助整理、归类与检索收藏内容，把散落的收藏变成可以快速找到的资料库。',
     url: 'https://github.com/leoyoyofiona/xiaohongshu-favorites',
     tags: ['小红书', '内容', '工具'],
-    poster: 'poster-xiaohongshu.png',
-    posterHd: 'poster-xiaohongshu.png',
+    poster: 'poster-xiaohongshu.jpg',
+    posterHd: 'poster-xiaohongshu.jpg',
   },
   {
     title: '周星驰',
