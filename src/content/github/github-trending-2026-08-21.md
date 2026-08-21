@@ -1,69 +1,103 @@
 ---
 title: "GitHub 热门 · 2026-08-21"
-description: "一周值得看的 GitHub 热门项目：Agent 团队聊天、开源 AI 同事、AI 水印移除等。"
+description: "本周高星项目精选（≥1K★）：Agent 团队、AI 水印治理、编程范式、推理引擎等。"
 date: 2026-08-21
-tags: ["GitHub", "开源", "AI", "项目"]
+tags: ["GitHub", "开源", "高星项目"]
 featured: true
 ---
 
-每周从 GitHub 上挑一些值得关注的热门项目搬过来。数据来自 GitHub 近期新增的高星仓库，按关注度排序。
+本周 GitHub 高星项目精选（均为 ≥1K★ 的热门仓库），图文并茂，简单介绍清楚。
 
-## 本周精选
+## yetone/cumora — 跨平台 Agent 团队聊天
 
-### 1. yetone/cumora — 跨平台 Agent 团队聊天
+<figure>
+  <img src="/images/github/cumora.png" alt="cumora 项目海报" loading="lazy" />
+</figure>
 
-★ 2792 · 2026-08 新增
+★ 2797 · TypeScript
 
 > Where agent teams gather. Cross-platform team chat where AI agents work together.
 
-跨平台团队聊天工具，重点是让 **AI Agent 团队**在同一个聊天空间里协作。人和多个 AI Agent 可以同时参与讨论、分工执行任务。对研究团队、开发者协作场景都有参考价值。
+跨平台团队聊天工具，让人和多个 AI Agent 在同一空间协作、分工执行任务。对研究团队和开发者协作很有参考价值。
 
-### 2. CopilotKit/OpenBot — 开源 AI 同事
+→ [github.com/yetone/cumora](https://github.com/yetone/cumora)
 
-★ 1781 · 2026-08 新增
+## dmmulroy/anti-slop — 拒绝"低证据"代码的 Lint 规则
 
-> Open-source AI coworkers that each get a computer of their own.
+<figure>
+  <img src="/images/github/anti-slop.png" alt="anti-slop 项目海报" loading="lazy" />
+</figure>
 
-开源的"AI 同事"——每个 AI 拥有一台自己的虚拟电脑，可以独立操作工具、完成任务。这是"AI Agent 即同事"方向的开源实现，和近期 Agentic AI 的研究热点直接相关。
+★ 3187 · JavaScript/TypeScript
 
-### 3. s1dashu/ip-as-logo-skill — 把 IP 变成 Logo 的 Agent Skill
+> Opinionated Oxlint rules for rejecting low-evidence TypeScript and JavaScript.
 
-★ 3257 · 2026-08 新增
+一套"有态度"的 Oxlint 规则，专门**拒绝低证据的 TS/JS 代码**——防止 AI 生成代码里的空话、猜测和没有依据的实现。AI 代码审查的实用工具。
 
-> A compact Agent Skill for highly simplified, rounded, subtle logo generation.
+→ [github.com/dmmulroy/anti-slop](https://github.com/dmmulroy/anti-slop)
 
-一个简洁的 Agent Skill：输入 IP（比如域名、产品名），自动生成**高度简化、圆润、低调**的 Logo。本周星数最高的新项目，设计类 Agent 应用。
+## s1dashu/ip-as-logo-skill — 把 IP 变成 Logo 的 Agent Skill
 
-### 4. cinderline/northcinder — 买家主导的购物 Agent
+<figure>
+  <img src="/images/github/ip-logo.png" alt="ip-as-logo-skill 项目海报" loading="lazy" />
+</figure>
 
-★ 1200 · 2026-08 新增
+★ 3286 · Agent Skill
 
-> Buyer-run, ad-neutral shopping-agent MCP software with deterministic behavior.
+> A compact Agent Skill for highly simplified, rounded, subtly neo-skeuomorphic logo generation.
 
-**买家主导、无广告**的购物 Agent（MCP 软件），行为确定性强。这和电商研究里"AI 中介下的消费者决策"趋势吻合——消费者不再被动接受推荐，而是主动用 Agent 筛选。
+输入 IP（域名、产品名），自动生成**高度简化、圆润、低调**的 Logo。设计类 Agent 应用的代表，小巧实用。
 
-### 5. Leutenegger/watermarks-remover — 移除 AI 水印痕迹
+→ [github.com/s1dashu/ip-as-logo-skill](https://github.com/s1dashu/ip-as-logo-skill)
 
-★ 926 · 2026-08 新增
+## cordiverse/paper — 时空可组合的编程范式
 
-> Remove multi-vendor AI provenance traces: Unicode text sanitization.
+<figure>
+  <img src="/images/github/paper.png" alt="paper 项目海报" loading="lazy" />
+</figure>
 
-移除多家 AI 工具留下的**来源痕迹**（Unicode 文本净化）。这触及 AI 内容溯源与披露的伦理议题——一方面保护隐私，另一方面也引发"如何判定 AI 生成内容"的思考。
+★ 2544 · 研究项目
 
-### 6. Tiger3807861189/DeepSeek-V4-J-Space-Capability-Realization-Report — 模型能力报告
+> A Programming Paradigm for Spatiotemporal Composability.
 
-★ 1037 · 2026-08 新增
+一种面向**时空可组合性**的编程范式研究项目。探索如何让程序在空间与时间维度上自然组合，偏学术、前沿。
 
-> DeepSeek V4 × J-Space capability realization report — benchmark.
+→ [github.com/cordiverse/paper](https://github.com/cordiverse/paper)
 
-DeepSeek V4 能力实现报告（基准测试）。跟踪大模型能力边界的社区报告。
+## antirez/h3.c — Mac 上的 MiniMax H3 推理引擎
+
+<figure>
+  <img src="/images/github/h3c.png" alt="h3.c 项目海报" loading="lazy" />
+</figure>
+
+★ 2314 · C
+
+> MiniMax H3 inference engine for Mac computers.
+
+Redis 作者 antirez 的作品——面向 Mac 的 **MiniMax H3 推理引擎**。单文件 C 实现，在 Mac 上本地跑模型推理，性能导向。
+
+→ [github.com/antirez/h3.c](https://github.com/antirez/h3.c)
+
+## guillaumemeyer/watermarks-remover — 移除 AI 来源痕迹
+
+<figure>
+  <img src="/images/github/watermark.png" alt="watermarks-remover 项目海报" loading="lazy" />
+</figure>
+
+★ 16215 · Python
+
+> Strip multi-vendor AI provenance marks: Unicode text hygiene, statistical rewrite hooks, and C2PA/metadata from PNG/JPEG/SVG/PDF/DOCX/HTML/MD.
+
+移除多家 AI 工具留下的**来源痕迹**——Unicode 文本净化、统计改写钩子、以及从 PNG/JPEG/SVG/PDF/DOCX 等格式中剥离 C2PA 元数据。触及 AI 内容溯源与披露的伦理议题。
+
+→ [github.com/guillaumemeyer/watermarks-remover](https://github.com/guillaumemeyer/watermarks-remover)
 
 ## 观察
 
-这周的热门项目有几个共同趋势：
+这周高星项目有几个方向值得注意：
 
-1. **Agent 成为主流**——cumora、OpenBot、northcinder 都是 Agent 相关，AI 从"对话"走向"干活"
-2. **AI 内容治理**——水印移除、溯源工具出现，AI 生成内容的标识与反标识在博弈
-3. **工具化、小而美**——把 IP 变 Logo、净化文本这类"小 Agent Skill"开始流行
+1. **Agent 持续主流**——cumora 让 Agent 团队协作，ip-as-logo-skill 展示"小而美"的 Agent Skill
+2. **AI 内容治理博弈**——watermarks-remover（移除溯源）与溯源工具并存，AI 生成内容的标识争议升温
+3. **性能与极致**——antirez 的 h3.c 单文件推理引擎，回归"小而快"
 
-> 想搬运某个具体方向的项目？在留言板告诉我，我下期安排。
+> 想搬运某个方向的项目？在留言板告诉我，下期安排。
