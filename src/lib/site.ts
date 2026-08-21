@@ -123,6 +123,10 @@ export const GH_CATEGORIES: GhCategory[] = [
   { slug: 'tools', title: '开发工具', en: 'Dev Tools', color: '#10b981' },
   { slug: 'web', title: '前端 / 后端', en: 'Web Dev', color: '#f59e0b' },
   { slug: 'security', title: '安全与系统', en: 'Security', color: '#ef4444' },
+  { slug: 'ecommerce', title: '电子商务', en: 'E-commerce', color: '#0ea5e9' },
+  { slug: 'edtech', title: '教育技术', en: 'EdTech', color: '#6366f1' },
+  { slug: 'vibecoding', title: 'Vibe Coding', en: 'Vibe Coding', color: '#ec4899' },
+  { slug: 'research', title: '科研', en: 'Research', color: '#14b8a6' },
 ];
 
 export function getGhCategory(slug: string): GhCategory | undefined {
