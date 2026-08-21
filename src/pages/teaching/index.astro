@@ -1,8 +1,228 @@
 ---
-import SectionLayout from '../../components/SectionLayout.astro';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import Typewriter from '../../components/Typewriter.astro';
+import Icon from '../../components/Icon.astro';
 import { getCollection } from 'astro:content';
+import { SECTIONS, firstImage } from '../../lib/site';
 
-const posts = await getCollection('teaching');
+const section = SECTIONS.find((s) => s.slug === 'teaching')!;
+const all = await getCollection('teaching');
+
+// 毛选精读子栏目
+const maoxuan = all
+  .filter((p) => !p.data.draft && p.slug.startsWith('maoxuan/'))
+  .sort((a, b) => {
+    const ao = a.data.order ?? 999;
+    const bo = b.data.order ?? 999;
+    if (ao !== bo) return ao - bo;
+    return b.data.date.getTime() - a.data.date.getTime();
+  });
+
+// 普通文章（不含毛选精读）
+const posts = all
+  .filter((p) => !p.data.draft && !p.slug.startsWith('maoxuan/'))
+  .sort((a, b) => {
+    const ao = a.data.order ?? 999;
+    const bo = b.data.order ?? 999;
+    if (ao !== bo) return ao - bo;
+    return b.data.date.getTime() - a.data.date.getTime();
+  });
 ---
 
-<SectionLayout slug="teaching" posts={posts} />
+<BaseLayout
+  title={section.title}
+  description={`${section.title}（${section.en}）—— ${section.description}`}
+>
+  <section class="page-head">
+    <div class="container">
+      <p class="eyebrow">{section.en}</p>
+      <h1 class="display page-title">{section.title}</h1>
+      <Typewriter text={section.description} />
+    </div>
+  </section>
+
+  <section class="container list-body">
+    <!-- 毛选精读子栏目 -->
+    <a class="sub-card" href="/teaching/maoxuan/">
+      <div class="sub-info">
+        <span class="sub-icon"><Icon name="book" size={16} /></span>
+        <div>
+          <h2 class="sub-title">毛选精读</h2>
+          <p class="sub-desc">一段一段读经典，把道理和自己的教学、研究对照起来。</p>
+        </div>
+      </div>
+      <div class="sub-meta">
+        <span class="sub-count">{maoxuan.length} 篇</span>
+        <span class="sub-go">进入 <Icon name="arrow-right" size={13} /></span>
+      </div>
+    </a>
+
+    {
+      posts.length > 0 ? (
+        <div class="grid dock-grid">
+          {
+            posts.map((post) => (
+              <PostCard
+                title={post.data.title}
+                description={post.data.description}
+                date={post.data.date}
+                tags={post.data.tags}
+                href={`/teaching/${post.slug}/`}
+                gradient={section.gradient}
+                featured={post.data.featured}
+                section={section.title}
+                sectionColor={section.color}
+                image={firstImage(post.body) ?? undefined}
+              />
+            ))
+          }
+        </div>
+      ) : (
+        <div class="empty card">
+          <p class="empty-title">这里还是一片空白</p>
+          <p class="secondary">在 <code>src/content/teaching/</code> 目录下新增 Markdown 文件即可发表文章。</p>
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    position: relative;
+    padding-block: clamp(1.5rem, 3vw, 2.25rem) clamp(1rem, 2vw, 1.5rem);
+    overflow: hidden;
+  }
+  .page-head::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    left: -10%;
+    width: 60%;
+    height: 140%;
+    background: var(--gradient-soft);
+    filter: blur(90px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .page-title {
+    font-size: var(--text-2xl);
+    margin-top: 0.35rem;
+  }
+  .list-body {
+    padding-bottom: 4rem;
+    max-width: 1320px;
+  }
+
+  /* ===== 毛选精读子栏目卡片 ===== */
+  .sub-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.75rem;
+    border-radius: var(--radius-lg, 18px);
+    background: linear-gradient(120deg, rgba(10, 132, 255, 0.08), rgba(0, 198, 255, 0.05));
+    border: 1px solid var(--border);
+    transition: border-color var(--speed) var(--ease), transform var(--speed) var(--ease), box-shadow var(--speed) var(--ease);
+  }
+  .sub-card:hover {
+    border-color: rgba(10, 132, 255, 0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(10, 132, 255, 0.08);
+  }
+  .sub-info {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    min-width: 0;
+  }
+  .sub-icon {
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: linear-gradient(120deg, #0a84ff, #00c6ff);
+  }
+  .sub-title {
+    font-size: var(--text-xl);
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  .sub-desc {
+    margin-top: 0.2rem;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sub-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+  }
+  .sub-count {
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+  }
+  .sub-go {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+  }
+  .empty {
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+  .empty-title {
+    font-size: var(--text-xl);
+    font-weight: 600;
+  }
+  .empty code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--bg-glass);
+    padding: 0.1rem 0.4rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+
+  @media (max-width: 1080px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 720px) {
+    .sub-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .sub-desc {
+      white-space: normal;
+    }
+  }
+  @media (max-width: 560px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
