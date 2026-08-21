@@ -1,14 +1,29 @@
 ---
+import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostCard from '../../../components/PostCard.astro';
 import Typewriter from '../../../components/Typewriter.astro';
 import Icon from '../../../components/Icon.astro';
 import { getCollection } from 'astro:content';
+import { firstImage } from '../../../lib/site';
 
 // 毛选精读子栏目：读取 src/content/teaching/maoxuan/ 下的文章
 const all = await getCollection('teaching');
 const posts = all.filter((p) => !p.data.draft && p.slug.startsWith('maoxuan/'));
 
-// 两个子栏目
+function sortPosts(list: CollectionEntry<'teaching'>[]) {
+  return [...list].sort((a, b) => {
+    const ao = a.data.order ?? 999;
+    const bo = b.data.order ?? 999;
+    if (ao !== bo) return ao - bo;
+    return b.data.date.getTime() - a.data.date.getTime();
+  });
+}
+
+// 毛选精读直接文章（未细分到黑板前/白板前，如《实践论》）
+const direct = sortPosts(posts.filter((p) => !p.data.sub));
+
+// 两个子分类
 const SUBS = [
   { key: 'heiban', title: '黑板前的冥想', desc: '站在黑板前，把经典讲清楚、想透彻', color: '#3b82f6', icon: 'book' },
   { key: 'baiban', title: '白板前的冥想', desc: '站在白板前，让想法自由生长、连成一片', color: '#0ea5e9', icon: 'doc' },
@@ -16,7 +31,7 @@ const SUBS = [
 
 const grouped = SUBS.map((sub) => ({
   ...sub,
-  items: posts.filter((p) => p.data.sub === sub.key),
+  items: sortPosts(posts.filter((p) => p.data.sub === sub.key)),
 }));
 
 const section = { title: '黑/白板前的冥想', en: 'Teaching', color: '#3b82f6' };
@@ -38,6 +53,31 @@ const section = { title: '黑/白板前的冥想', en: 'Teaching', color: '#3b82
   </section>
 
   <section class="container list-body">
+    <!-- 毛选精读直接文章 -->
+    {
+      direct.length > 0 && (
+        <div class="grid dock-grid">
+          {
+            direct.map((post) => (
+              <PostCard
+                title={post.data.title}
+                description={post.data.description}
+                date={post.data.date}
+                tags={post.data.tags}
+                href={`/teaching/${post.slug}/`}
+                gradient={section.gradient}
+                featured={post.data.featured}
+                section="毛选精读"
+                sectionColor={section.color}
+                image={firstImage(post.body) ?? undefined}
+              />
+            ))
+          }
+        </div>
+      )
+    }
+
+    <!-- 子分类入口 -->
     <div class="sub-grid">
       {
         grouped.map((group) => (
@@ -99,10 +139,17 @@ const section = { title: '黑/白板前的冥想', en: 'Teaching', color: '#3b82
   }
   .list-body {
     padding-bottom: 4rem;
-    max-width: 1000px;
+    max-width: 1320px;
   }
 
-  /* ===== 子栏目入口卡片 ===== */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+    margin-bottom: 2.25rem;
+  }
+
+  /* ===== 子分类入口卡片 ===== */
   .sub-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -184,8 +231,18 @@ const section = { title: '黑/白板前的冥想', en: 'Teaching', color: '#3b82
     flex-shrink: 0;
   }
 
+  @media (max-width: 1080px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
   @media (max-width: 720px) {
     .sub-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .grid {
       grid-template-columns: 1fr;
     }
   }

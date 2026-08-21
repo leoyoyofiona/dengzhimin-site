@@ -10,25 +10,50 @@ import { SECTIONS, firstImage } from '../../lib/site';
 const section = SECTIONS.find((s) => s.slug === 'teaching')!;
 const all = await getCollection('teaching');
 
-// 毛选精读子栏目
-const maoxuan = all
-  .filter((p) => !p.data.draft && p.slug.startsWith('maoxuan/'))
-  .sort((a, b) => {
+// 排序工具：有 order 的置顶（小在前），否则按日期倒序
+function sortPosts(list: CollectionEntry<'teaching'>[]) {
+  return [...list].sort((a, b) => {
     const ao = a.data.order ?? 999;
     const bo = b.data.order ?? 999;
     if (ao !== bo) return ao - bo;
     return b.data.date.getTime() - a.data.date.getTime();
   });
+}
+
+const maoxuanAll = all.filter((p) => !p.data.draft && p.slug.startsWith('maoxuan/'));
+// 三个子栏目：毛选精读（未细分）、黑板前、白板前
+const SUBS = [
+  {
+    key: 'maoxuan',
+    title: '毛选精读',
+    desc: '一段一段读经典，把道理和自己的教学、研究对照起来。',
+    href: '/teaching/maoxuan/',
+    color: '#3b82f6',
+    icon: 'book',
+    items: sortPosts(maoxuanAll.filter((p) => !p.data.sub)),
+  },
+  {
+    key: 'heiban',
+    title: '黑板前的冥想',
+    desc: '站在黑板前，把经典讲清楚、想透彻',
+    href: '/teaching/maoxuan/heiban/',
+    color: '#0ea5e9',
+    icon: 'doc',
+    items: sortPosts(maoxuanAll.filter((p) => p.data.sub === 'heiban')),
+  },
+  {
+    key: 'baiban',
+    title: '白板前的冥想',
+    desc: '站在白板前，让想法自由生长、连成一片',
+    href: '/teaching/maoxuan/baiban/',
+    color: '#22c55e',
+    icon: 'edit',
+    items: sortPosts(maoxuanAll.filter((p) => p.data.sub === 'baiban')),
+  },
+];
 
 // 普通文章（不含毛选精读）
-const posts = all
-  .filter((p) => !p.data.draft && !p.slug.startsWith('maoxuan/'))
-  .sort((a, b) => {
-    const ao = a.data.order ?? 999;
-    const bo = b.data.order ?? 999;
-    if (ao !== bo) return ao - bo;
-    return b.data.date.getTime() - a.data.date.getTime();
-  });
+const posts = sortPosts(all.filter((p) => !p.data.draft && !p.slug.startsWith('maoxuan/')));
 ---
 
 <BaseLayout
@@ -44,45 +69,74 @@ const posts = all
   </section>
 
   <section class="container list-body">
-    <!-- 毛选精读子栏目 -->
-    <a class="sub-card" href="/teaching/maoxuan/">
-      <div class="sub-info">
-        <span class="sub-icon"><Icon name="book" size={16} /></span>
-        <div>
-          <h2 class="sub-title">毛选精读</h2>
-          <Typewriter text="一段一段读经典，把道理和自己的教学、研究对照起来。" class="sub-desc" />
-        </div>
-      </div>
-      <div class="sub-meta">
-        <span class="sub-count">{maoxuan.length} 篇</span>
-        <span class="sub-go">进入 <Icon name="arrow-right" size={13} /></span>
-      </div>
-    </a>
-
+    <!-- 三个子栏目长条框 -->
     {
-      posts.length > 0 ? (
-        <div class="grid dock-grid">
+      SUBS.map((sub) => (
+        <div class="block">
+          <a class="block-head" href={sub.href} style={`--c: ${sub.color}`}>
+            <span class="block-icon"><Icon name={sub.icon} size={15} /></span>
+            <h2 class="block-title">{sub.title}</h2>
+            <span class="block-count">{sub.items.length} 篇</span>
+            <span class="block-go">进入 <Icon name="arrow-right" size={13} /></span>
+          </a>
           {
-            posts.map((post) => (
-              <PostCard
-                title={post.data.title}
-                description={post.data.description}
-                date={post.data.date}
-                tags={post.data.tags}
-                href={`/teaching/${post.slug}/`}
-                gradient={section.gradient}
-                featured={post.data.featured}
-                section={section.title}
-                sectionColor={section.color}
-                image={firstImage(post.body) ?? undefined}
-              />
-            ))
+            sub.items.length > 0 ? (
+              <div class="grid dock-grid">
+                {
+                  sub.items.map((post) => (
+                    <PostCard
+                      title={post.data.title}
+                      description={post.data.description}
+                      date={post.data.date}
+                      tags={post.data.tags}
+                      href={`/teaching/${post.slug}/`}
+                      gradient={section.gradient}
+                      featured={post.data.featured}
+                      section={sub.title}
+                      sectionColor={sub.color}
+                      image={firstImage(post.body) ?? undefined}
+                    />
+                  ))
+                }
+              </div>
+            ) : (
+              <div class="block-empty">
+                <Icon name={sub.icon} size={14} />
+                <span>这个栏目还没有文章，慢慢来。</span>
+              </div>
+            )
           }
         </div>
-      ) : (
-        <div class="empty card">
-          <p class="empty-title">这里还是一片空白</p>
-          <p class="secondary">在 <code>src/content/teaching/</code> 目录下新增 Markdown 文件即可发表文章。</p>
+      ))
+    }
+
+    <!-- 其他教学文章 -->
+    {
+      posts.length > 0 && (
+        <div class="block">
+          <div class="block-head" style={`--c: ${section.color}`}>
+            <span class="block-icon"><Icon name="book" size={15} /></span>
+            <h2 class="block-title">其他笔记</h2>
+            <span class="block-count">{posts.length} 篇</span>
+          </div>
+          <div class="grid dock-grid">
+            {
+              posts.map((post) => (
+                <PostCard
+                  title={post.data.title}
+                  description={post.data.description}
+                  date={post.data.date}
+                  tags={post.data.tags}
+                  href={`/teaching/${post.slug}/`}
+                  gradient={section.gradient}
+                  featured={post.data.featured}
+                  section={section.title}
+                  sectionColor={section.color}
+                  image={firstImage(post.body) ?? undefined}
+                />
+              ))
+            }
+          </div>
         </div>
       )
     }
@@ -116,72 +170,67 @@ const posts = all
     max-width: 1320px;
   }
 
-  /* ===== 毛选精读子栏目卡片 ===== */
-  .sub-card {
+  /* ===== 子栏目长条框 ===== */
+  .block + .block {
+    margin-top: 2.25rem;
+  }
+  .block-head {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1.25rem 1.5rem;
-    margin-bottom: 1.75rem;
-    border-radius: var(--radius-lg, 18px);
-    background: linear-gradient(120deg, rgba(10, 132, 255, 0.08), rgba(0, 198, 255, 0.05));
+    gap: 0.65rem;
+    padding: 0.9rem 1.25rem;
+    margin-bottom: 1.25rem;
+    border-radius: var(--radius-lg, 16px);
+    background: linear-gradient(120deg, color-mix(in srgb, var(--c) 9%, transparent), color-mix(in srgb, var(--c) 4%, transparent));
     border: 1px solid var(--border);
-    transition: border-color var(--speed) var(--ease), transform var(--speed) var(--ease), box-shadow var(--speed) var(--ease);
+    text-decoration: none;
+    transition: border-color var(--speed) var(--ease), transform var(--speed) var(--ease);
   }
-  .sub-card:hover {
-    border-color: rgba(10, 132, 255, 0.45);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(10, 132, 255, 0.08);
+  a.block-head:hover {
+    border-color: color-mix(in srgb, var(--c) 45%, transparent);
+    transform: translateY(-1px);
   }
-  .sub-info {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    min-width: 0;
-  }
-  .sub-icon {
+  .block-icon {
     flex-shrink: 0;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 12px;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 10px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     color: #fff;
-    background: linear-gradient(120deg, #0a84ff, #00c6ff);
+    background: linear-gradient(120deg, var(--c), color-mix(in srgb, var(--c) 65%, #fff));
   }
-  .sub-title {
-    font-size: var(--text-xl);
+  .block-title {
+    font-size: var(--text-lg);
     font-weight: 650;
     letter-spacing: -0.01em;
+    color: var(--text);
   }
-  .sub-desc {
-    margin-top: 0.2rem;
-    font-size: var(--text-sm);
-    color: var(--text-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .sub-meta {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-shrink: 0;
-  }
-  .sub-count {
+  .block-count {
+    margin-left: 0.25rem;
     font-size: var(--text-sm);
     color: var(--text-tertiary);
     font-variant-numeric: tabular-nums;
   }
-  .sub-go {
+  .block-go {
+    margin-left: auto;
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
     font-size: var(--text-sm);
     font-weight: 500;
-    color: var(--accent);
+    color: var(--c);
+  }
+  .block-empty {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 1.1rem 1.5rem;
+    border-radius: var(--radius-lg, 16px);
+    border: 1px dashed var(--border);
+    color: var(--text-tertiary);
+    font-size: var(--text-sm);
   }
 
   .grid {
@@ -211,18 +260,12 @@ const posts = all
       grid-template-columns: repeat(2, 1fr);
     }
   }
-  @media (max-width: 720px) {
-    .sub-card {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .sub-desc {
-      white-space: normal;
-    }
-  }
   @media (max-width: 560px) {
     .grid {
       grid-template-columns: 1fr;
+    }
+    .block-count {
+      display: none;
     }
   }
 </style>
