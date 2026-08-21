@@ -92,15 +92,21 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
           if (input) input.focus();
         }
         function unlock() {
-          try {
-            sessionStorage.setItem(KEY, 'ok');
-          } catch (e) {}
+          // 毛选精读门不做记忆：每次进入都要重新输入
+          if (GATE !== 'maoxuan') {
+            try {
+              sessionStorage.setItem(KEY, 'ok');
+            } catch (e) {}
+          }
           if (gate) gate.hidden = true;
           if (input) input.value = '';
           if (err) err.hidden = true;
         }
         function check() {
-          if (!entered()) {
+          if (GATE === 'maoxuan') {
+            // 毛选精读：无条件弹门，每次进入都要口令
+            showGate();
+          } else if (!entered()) {
             showGate();
           }
         }
