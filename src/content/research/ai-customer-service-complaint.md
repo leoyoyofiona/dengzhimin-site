@@ -13,6 +13,7 @@ featured: true
 
 **原文出处：**《人民日报》2026年08月20日 第19版（金台锐评），作者：倪弋  
 **原标题：**《莫让AI客服给消费者"添堵"》  
+**原文链接：** → [paper.people.com.cn《莫让AI客服给消费者"添堵"（金台锐评）》](https://paper.people.com.cn/rmrb/pc/content/202608/20/content_30176052.html)  
 **整理：**LEODENG
 
 ---
@@ -59,4 +60,4 @@ featured: true
 
 **可核验来源：**
 
-- 《人民日报》2026年08月20日 第19版，倪弋《莫让AI客服给消费者"添堵"（金台锐评）》
+- [人民日报在线版：莫让AI客服给消费者"添堵"（金台锐评）](https://paper.people.com.cn/rmrb/pc/content/202608/20/content_30176052.html)
