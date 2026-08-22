@@ -400,6 +400,9 @@ h4 {
   color: var(--text);
   max-width: 46rem;
   margin-inline: auto;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 .prose > * + * {
   margin-top: 1.35em;

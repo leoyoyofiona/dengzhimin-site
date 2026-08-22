@@ -194,16 +194,22 @@ const sectionPosts = await Promise.all(
     color: var(--c);
   }
   .srow-body {
-    overflow: hidden;
-    -webkit-mask-image: linear-gradient(to right, #000 0%, #000 96%, transparent 100%);
-    mask-image: linear-gradient(to right, #000 0%, #000 96%, transparent 100%);
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-snap-type: x proximity;
+    padding-bottom: 0.25rem;
+  }
+  .srow-body::-webkit-scrollbar {
+    display: none;
   }
   .updates-grid {
     display: flex;
     gap: 1.25rem;
     width: max-content;
-    transition: transform 1s var(--ease-out);
-    will-change: transform;
+    scroll-snap-align: start;
   }
   .ucard {
     position: relative;
@@ -381,24 +387,48 @@ const sectionPosts = await Promise.all(
 </style>
 
 <script>
-  // ===== 主题行滑动：超过 4 篇时，hover 向左平滑露出更多 =====
-  document.querySelectorAll('.srow').forEach(function (row) {
-    const body = row.querySelector('.srow-body');
-    const grid = row.querySelector('.updates-grid');
-    if (!body || !grid) return;
+  // ===== 主题行卡片：原生横向滚动（桌面鼠标拖拽 / 手机触摸滑动）=====
+  // 桌面端：按住左键拖拽滚动；移动端：浏览器原生触摸滚动
+  document.querySelectorAll('.srow-body').forEach(function (body) {
+    let isDown = false;
+    let startX = 0;
+    let startScroll = 0;
+    let moved = false;
 
-    row.addEventListener('mouseenter', function () {
-      const overflow = grid.scrollWidth - body.clientWidth;
-      if (overflow > 8) {
-        grid.style.transform = 'translateX(-' + overflow + 'px)';
+    body.addEventListener('mousedown', function (e) {
+      // 只响应左键，且目标不是链接内部可交互元素
+      if (e.button !== 0) return;
+      isDown = true;
+      moved = false;
+      startX = e.clientX;
+      startScroll = body.scrollLeft;
+      body.style.cursor = 'grabbing';
+      body.style.scrollSnapType = 'none';
+    });
+
+    window.addEventListener('mousemove', function (e) {
+      if (!isDown) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 4) moved = true;
+      body.scrollLeft = startScroll - dx;
+    });
+
+    window.addEventListener('mouseup', function () {
+      if (!isDown) return;
+      isDown = false;
+      body.style.cursor = '';
+      body.style.scrollSnapType = '';
+      // 如果发生了拖拽，抑制本次点击（避免误触）
+      if (moved) {
+        body.addEventListener(
+          'click',
+          function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          },
+          { once: true, capture: true },
+        );
       }
-    });
-    row.addEventListener('mouseleave', function () {
-      grid.style.transform = 'translateX(0)';
-    });
-    // 窗口尺寸变化时重置
-    window.addEventListener('resize', function () {
-      grid.style.transform = 'translateX(0)';
     });
   });
 
