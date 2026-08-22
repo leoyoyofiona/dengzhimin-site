@@ -432,6 +432,7 @@ const isActive = (href: string) => {
     padding: 0.5rem;
     border-radius: var(--radius-md, 12px);
     text-decoration: none;
+    will-change: transform;
     transition: background-color var(--speed) var(--ease);
   }
   .today-card:hover {
@@ -713,4 +714,59 @@ const isActive = (href: string) => {
     else menu?.setAttribute('hidden', '');
     menuBtn?.setAttribute('aria-expanded', String(open));
   });
+
+  // ===== 今日更新面板：鼠标在面板内滑动时，卡片波浪浮动 =====
+  (function () {
+    const panel = document.getElementById('today-panel');
+    if (!panel) return;
+    const cards = Array.from(panel.querySelectorAll('.today-card'));
+    if (cards.length === 0) return;
+
+    let target = 0; // 鼠标相对面板中心的纵向位置（-1 ~ 1）
+    let current = 0;
+    let rafId = null;
+    let inPanel = false;
+
+    function loop() {
+      current += (target - current) * 0.16;
+      const amp = 7; // 最大浮动像素
+      const tilt = 1.6; // 最大倾斜角度
+      cards.forEach((card, i) => {
+        // 每张卡片按索引错开相位，形成波浪
+        const phase = current * Math.PI * 2 + i * 1.05;
+        const y = Math.sin(phase) * amp;
+        const deg = Math.cos(phase) * tilt;
+        card.style.transform = 'translateY(' + y.toFixed(2) + 'px) rotate(' + deg.toFixed(2) + 'deg)';
+      });
+      if (Math.abs(target - current) > 0.002) {
+        rafId = requestAnimationFrame(loop);
+      } else {
+        rafId = null;
+        if (!inPanel) {
+          // 鼠标离开后归位
+          cards.forEach((card) => {
+            card.style.transform = '';
+          });
+        }
+      }
+    }
+
+    function start() {
+      if (rafId === null) rafId = requestAnimationFrame(loop);
+    }
+
+    panel.addEventListener('mousemove', function (e) {
+      inPanel = true;
+      const rect = panel.getBoundingClientRect();
+      // 归一化到 -1 ~ 1（面板中心为 0）
+      target = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+      start();
+    });
+
+    panel.addEventListener('mouseleave', function () {
+      inPanel = false;
+      target = 0;
+      start();
+    });
+  })();
 </script>
