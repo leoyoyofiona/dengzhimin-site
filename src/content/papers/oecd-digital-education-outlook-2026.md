@@ -3,6 +3,7 @@ title: "OECD 数字教育展望 2026：探索生成式 AI 在教育中的有效�
 description: "文献精读：OECD 旗舰报告，综合证据与专家洞见，回答生成式 AI 在哪些场景真正改善学习、如何引导其负责任采用。"
 date: 2026-08-20
 tags: ["文献", "AI教育", "政策报告", "生成式AI"]
+category: ai-edu
 featured: true
 ---
 

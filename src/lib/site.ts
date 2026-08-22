@@ -133,6 +133,30 @@ export function getGhCategory(slug: string): GhCategory | undefined {
   return GH_CATEGORIES.find((c) => c.slug === slug);
 }
 
+/** 文献精选分类 */
+export interface PaperCategory {
+  slug: string;
+  title: string;
+  en: string;
+  color: string;
+}
+
+export const PAPERS_CATEGORIES: PaperCategory[] = [
+  { slug: 'ai-edu', title: 'AI教育', en: 'AI Education', color: '#3b82f6' },
+  { slug: 'ai-literacy', title: 'AI素养', en: 'AI Literacy', color: '#8b5cf6' },
+  { slug: 'teacher-dev', title: '教师发展', en: 'Teacher Dev', color: '#0ea5e9' },
+  { slug: 'edu-psych', title: '教育心理与研究方法', en: 'Edu Psych & Methods', color: '#ec4899' },
+  { slug: 'innovation', title: '创新创业', en: 'Innovation', color: '#f59e0b' },
+  { slug: 'management', title: '管理学与商业', en: 'Mgmt & Business', color: '#14b8a6' },
+  { slug: 'ecommerce', title: '电子商务', en: 'E-commerce', color: '#0e7490' },
+  { slug: 'health', title: '医学健康', en: 'Health', color: '#ef4444' },
+  { slug: 'ai-tech', title: 'AI技术与计算机', en: 'AI & CS', color: '#374151' },
+];
+
+export function getPaperCategory(slug: string): PaperCategory | undefined {
+  return PAPERS_CATEGORIES.find((c) => c.slug === slug);
+}
+
 /** 从 Markdown 正文中提取第一张图片 URL（markdown 或 html 形式） */
 export function firstImage(body: string): string | null {
   const m =

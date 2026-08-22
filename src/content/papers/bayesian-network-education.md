@@ -3,6 +3,7 @@ title: "贝叶斯网络方法能为教育研究带来什么？"
 description: "论文精读：顾昕等（2022）提出用贝叶斯网络应对教育数据的复杂、不确定与动态特征。"
 date: 2026-08-18
 tags: ["文献", "研究方法", "贝叶斯网络"]
+category: edu-psych
 featured: true
 ---
 

@@ -3,6 +3,7 @@ title: "fsQCA 视角下中国跨境电商的高质量发展路径"
 description: "论文精读：Li 等（2025）用模糊集定性比较分析 95 家中国上市跨境电商公司，识别高绩效的三条驱动路径与低质量发展的归因。"
 date: 2026-08-22
 tags: ["文献", "电子商务", "跨境电商", "fsQCA", "定性比较分析"]
+category: ecommerce
 featured: true
 ---
 
