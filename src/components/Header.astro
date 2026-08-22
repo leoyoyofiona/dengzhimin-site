@@ -182,14 +182,8 @@ const isActive = (href: string) => {
     list-style: none;
     padding: 0;
     margin: 0;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     white-space: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .nav ul::-webkit-scrollbar {
-    display: none;
   }
   .nav-item {
     position: relative;
@@ -383,6 +377,17 @@ const isActive = (href: string) => {
   const onScroll = () => header?.classList.toggle('scrolled', window.scrollY > 8);
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
+
+  // ===== Header 高度自适应：main padding-top 跟随 header 实际高度 =====
+  function syncMainPadding() {
+    const main = document.getElementById('main');
+    if (!main || !header) return;
+    main.style.paddingTop = header.offsetHeight + 'px';
+  }
+  syncMainPadding();
+  window.addEventListener('resize', syncMainPadding);
+  // header 布局变化（导航换行等）后重新测量
+  new ResizeObserver(syncMainPadding).observe(header);
 
   // ===== Header 打字机效果 =====
   const headerTw = document.getElementById('header-typewriter');
