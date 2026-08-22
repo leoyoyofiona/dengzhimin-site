@@ -1,7 +1,7 @@
 ---
 title: "莫让 AI 客服给消费者「添堵」"
 description: "转人工层层设卡、AI 承诺事后不认账、生成内容误导消费——人民日报评论 AI 客服乱象。"
-date: 2026-08-21
+date: 2026-08-22
 tags: ["每日文摘", "消费者权益", "AI客服", "监管", "电商"]
 topics: ['consumer-ecom', 'ai-industry']
 featured: true
