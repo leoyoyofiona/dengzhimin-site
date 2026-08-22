@@ -126,7 +126,15 @@ const isActive = (href: string) => {
         <span class="i-moon"><Icon name="moon" size={18} /></span>
         <span class="i-auto"><Icon name="auto" size={18} /></span>
       </button>
-      <a class="disclaimer-link" href="/disclaimer/" title="本站搬运内容的免责声明">免责声明</a>
+      <div class="disclaimer-wrap">
+        <a class="disclaimer-link" href="/disclaimer/" title="本站搬运内容的免责声明">免责声明</a>
+        <div class="disclaimer-panel" id="disclaimer-panel">
+          <div class="disclaimer-panel-title">免责声明</div>
+          <p class="disclaimer-panel-text">本站搬运的内容（GitHub 热门、每日文摘、文献与资料等）均来自公开渠道，版权归原作者或原平台所有，仅作个人学习、交流与记录之用，不用于任何商业用途。</p>
+          <p class="disclaimer-panel-text">搬运时已尽可能注明原始出处与链接；如需引用、转载，请以原出处为准，商业使用请联系原作者。</p>
+          <a class="disclaimer-panel-link" href="/disclaimer/">查看完整声明 <Icon name="arrow-right" size={12} /></a>
+        </div>
+      </div>
       <button class="icon-btn menu-btn" id="menu-toggle" aria-label="打开菜单" aria-expanded="false">
         <Icon name="menu" size={22} />
       </button>
@@ -554,8 +562,12 @@ const isActive = (href: string) => {
   .icon-btn:hover {
     background: var(--bg-glass);
   }
-  /* 免责声明链接（低调小字，位于主题切换按钮右侧） */
+  /* 免责声明：悬停弹出面板 */
+  .disclaimer-wrap {
+    position: relative;
+  }
   .disclaimer-link {
+    display: inline-flex;
     padding: 0.3rem 0.45rem;
     font-size: 0.68rem;
     font-weight: 400;
@@ -569,6 +581,71 @@ const isActive = (href: string) => {
     color: var(--text-secondary);
     border-color: var(--border);
     background: var(--bg-glass);
+  }
+  .disclaimer-panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: min(320px, calc(100vw - 2rem));
+    padding: 1rem 1.1rem;
+    border-radius: var(--radius-lg, 16px);
+    background: var(--bg-glass-strong);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(8px);
+    transition:
+      opacity 0.28s var(--ease-out),
+      transform 0.28s var(--ease-out),
+      visibility 0.28s;
+    z-index: 120;
+  }
+  .disclaimer-panel::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: 22px;
+    transform: rotate(45deg);
+    width: 10px;
+    height: 10px;
+    background: var(--bg-glass-strong);
+    border-left: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+  }
+  .disclaimer-wrap:hover .disclaimer-panel,
+  .disclaimer-wrap:focus-within .disclaimer-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .disclaimer-panel-title {
+    font-size: var(--text-sm);
+    font-weight: 650;
+    margin-bottom: 0.5rem;
+  }
+  .disclaimer-panel-text {
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 0.45rem;
+  }
+  .disclaimer-panel-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.35rem;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .disclaimer-panel-link:hover {
+    text-decoration: underline;
   }
   .menu-btn {
     display: none;
