@@ -570,17 +570,18 @@ const isActive = (href: string) => {
     display: inline-flex;
     padding: 0.3rem 0.45rem;
     font-size: 0.68rem;
-    font-weight: 400;
-    color: var(--text-tertiary);
+    font-weight: 600;
+    color: var(--accent);
     border-radius: var(--radius-full);
-    border: 1px solid transparent;
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
     white-space: nowrap;
     transition: color var(--speed) var(--ease), border-color var(--speed) var(--ease), background-color var(--speed) var(--ease);
   }
   .disclaimer-link:hover {
-    color: var(--text-secondary);
-    border-color: var(--border);
-    background: var(--bg-glass);
+    color: var(--text);
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
   }
   .disclaimer-panel {
     position: absolute;
