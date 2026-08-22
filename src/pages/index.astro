@@ -84,6 +84,10 @@ const sectionPosts = await Promise.all(
                 }
               </div>
             </div>
+            <p class="srow-hint" data-hint hidden>
+              <Icon name="arrow-right" size={12} />
+              上下滑动查看更多
+            </p>
           </div>
         ))
       }
@@ -208,6 +212,33 @@ const sectionPosts = await Promise.all(
     display: flex;
     gap: 1.25rem;
     width: max-content;
+  }
+  /* 卡片行下方的小字提示：可滚动时才显示 */
+  .srow-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    margin-top: 0.7rem;
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+    opacity: 0.75;
+    animation: hint-fade 3s var(--ease-out) infinite;
+  }
+  .srow-hint[hidden] {
+    display: none;
+  }
+  .srow-hint svg {
+    transform: rotate(90deg);
+  }
+  @keyframes hint-fade {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 0.85;
+    }
   }
   .ucard {
     position: relative;
@@ -389,6 +420,16 @@ const sectionPosts = await Promise.all(
   // 手机端：浏览器原生触摸滚动（overflow-x: auto）
   // 桌面端：滚轮横向滚动 + 指针拖拽（pointer events，兼容卡片链接）
   document.querySelectorAll('.srow-body').forEach(function (body) {
+    // 可横向滚动时显示「上下滑动查看更多」提示
+    const hint = body.parentElement.querySelector('[data-hint]');
+    function updateHint() {
+      if (hint) {
+        hint.hidden = !(body.scrollWidth > body.clientWidth + 8);
+      }
+    }
+    updateHint();
+    window.addEventListener('resize', updateHint);
+
     // 滚轮 → 横向滚动（仅当行可横向滚动时拦截）
     body.addEventListener('wheel', function (e) {
       if (body.scrollWidth > body.clientWidth) {
