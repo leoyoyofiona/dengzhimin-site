@@ -14,10 +14,10 @@ const VOLUMES = [
   { n: 1, title: '第一卷', desc: '第一次国内革命战争时期 · 第二次国内革命战争时期', color: '#b91c1c' },
   { n: 2, title: '第二卷', desc: '抗日战争时期（上）', color: '#b45309' },
   { n: 3, title: '第三卷', desc: '抗日战争时期（下）', color: '#a16207' },
-  { n: 4, title: '第四卷', desc: '解放战争时期', color: '#166534' },
-  { n: 5, title: '第五卷', desc: '社会主义革命和建设时期', color: '#1e40af' },
-  { n: 6, title: '第六卷', desc: '社会主义建设探索时期', color: '#6d28d9' },
-  { n: 7, title: '第七卷', desc: '晚年文稿与谈话', color: '#9f1239' },
+  { n: 4, title: '第四卷', desc: '第三次国内革命战争时期', color: '#166534' },
+  { n: 5, title: '第五卷', desc: '社会主义革命和社会主义建设时期（一）', color: '#1e40af' },
+  { n: 6, title: '第六卷', desc: '社会主义革命和社会主义建设时期（二）', color: '#6d28d9' },
+  { n: 7, title: '第七卷', desc: '文化大革命时期', color: '#9f1239' },
 ];
 
 // 每卷已有文章数
@@ -52,7 +52,7 @@ const section = { title: '黑/白板前的冥想', en: 'Teaching', color: '#3b82
     <div class="vol-grid">
       {
         volCounts.map((v) => (
-          <a class="vol-card" href={v.count > 0 ? `/teaching/maoxuan/juan${v.n}/` : undefined} style={`--c: ${v.color}`}>
+          <a class="vol-card" href={v.count > 0 ? `/teaching/maoxuan/juan/${v.n}/` : undefined} style={`--c: ${v.color}`}>
             <span class="vol-num">{v.n}</span>
             <div class="vol-info">
               <h2 class="vol-title">{v.title}</h2>
