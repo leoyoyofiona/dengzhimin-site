@@ -8,8 +8,10 @@ const post = defineCollection({
     description: z.string(),
     date: z.coerce.date(),
     tags: z.array(z.string()).default([]),
-    /** 毛选精读子分类：heiban=黑板前的冥想，baiban=白板前的冥想，仅 maoxuan 文章使用 */
-    sub: z.enum(['heiban', 'baiban']).optional(),
+    /** 毛选学习：卷号（1-7），仅 maoxuan 文章使用 */
+    juan: z.number().optional(),
+    /** 毛选学习：历史时期（如 第一次国内革命战争时期），仅 maoxuan 文章使用 */
+    period: z.string().optional(),
     /** 每日文摘细分主题（对应 TOPICS slug），仅 research 栏目使用 */
     topics: z.array(z.string()).default([]),
     /** 文献精选分类（对应 PAPERS_CATEGORIES slug），仅 papers 文章使用 */

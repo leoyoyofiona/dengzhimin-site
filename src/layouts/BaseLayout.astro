@@ -9,7 +9,7 @@ interface Props {
   description?: string;
   noindex?: boolean;
   footer?: boolean;
-  /** 访问口令门：site=全站门（默认），maoxuan=毛选精读独立门 */
+  /** 访问口令门：site=全站门（默认），maoxuan=毛选学习独立门 */
   gate?: 'site' | 'maoxuan';
 }
 
@@ -70,7 +70,7 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
     <script is:inline>
       (function () {
         // 访问口令（混淆存储，避免源码直接可见）
-        // gate 类型：site=全站，maoxuan=毛选精读（从 html data-gate 读取）
+        // gate 类型：site=全站，maoxuan=毛选学习（从 html data-gate 读取）
         var GATE = document.documentElement.getAttribute('data-gate') === 'maoxuan' ? 'maoxuan' : 'site';
         var KEY = GATE === 'maoxuan' ? 'maoxuan-access' : 'dengzhimin-access';
         var GATE_ID = GATE === 'maoxuan' ? 'maoxuan-gate' : 'site-gate';
@@ -92,7 +92,7 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
           if (input) input.focus();
         }
         function unlock() {
-          // 毛选精读门不做记忆：每次进入都要重新输入
+          // 毛选学习门不做记忆：每次进入都要重新输入
           if (GATE !== 'maoxuan') {
             try {
               sessionStorage.setItem(KEY, 'ok');
@@ -104,7 +104,7 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
         }
         function check() {
           if (GATE === 'maoxuan') {
-            // 毛选精读：无条件弹门，每次进入都要口令
+            // 毛选学习：无条件弹门，每次进入都要口令
             showGate();
           } else if (!entered()) {
             showGate();
@@ -140,10 +140,10 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
   <body>
     {
       gate === 'maoxuan' ? (
-        <!-- 毛选精读口令门 -->
+        <!-- 毛选学习口令门 -->
         <div class="gate" id="maoxuan-gate" hidden>
           <div class="gate-card glass">
-            <h1 class="gate-title">毛选精读</h1>
+            <h1 class="gate-title">毛选学习</h1>
             <p class="gate-sub">这个栏目暂未公开，输入口令继续访问。</p>
             <div class="gate-form">
               <input

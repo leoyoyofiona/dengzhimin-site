@@ -7,7 +7,7 @@ import { SECTIONS, formatDate, type Section } from '../lib/site';
 interface Props {
   slug: Section['slug'];
   post: CollectionEntry<'teaching' | 'research' | 'work' | 'life' | 'papers' | 'github'>;
-  /** 访问口令门：site=全站门（默认），maoxuan=毛选精读独立门 */
+  /** 访问口令门：site=全站门（默认），maoxuan=毛选学习独立门 */
   gate?: 'site' | 'maoxuan';
 }
 const { slug, post, gate = 'site' } = Astro.props;

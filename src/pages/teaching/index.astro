@@ -21,38 +21,20 @@ function sortPosts(list: CollectionEntry<'teaching'>[]) {
 }
 
 const maoxuanAll = all.filter((p) => !p.data.draft && p.slug.startsWith('maoxuan/'));
-// 三个子栏目：毛选精读（未细分）、黑板前、白板前
+// 毛选学习：按卷原文阅读入口
 const SUBS = [
   {
     key: 'maoxuan',
-    title: '毛选精读',
-    desc: '一段一段读经典，把道理和自己的教学、研究对照起来。',
+    title: '毛选学习',
+    desc: '通读《毛泽东选集》原文，逐卷学习，不作解读。',
     href: '/teaching/maoxuan/',
-    color: '#3b82f6',
+    color: '#b91c1c',
     icon: 'book',
-    items: sortPosts(maoxuanAll.filter((p) => !p.data.sub)),
-  },
-  {
-    key: 'heiban',
-    title: '黑板前的冥想',
-    desc: '站在黑板前，把经典讲清楚、想透彻',
-    href: '/teaching/maoxuan/heiban/',
-    color: '#0ea5e9',
-    icon: 'doc',
-    items: sortPosts(maoxuanAll.filter((p) => p.data.sub === 'heiban')),
-  },
-  {
-    key: 'baiban',
-    title: '白板前的冥想',
-    desc: '站在白板前，让想法自由生长、连成一片',
-    href: '/teaching/maoxuan/baiban/',
-    color: '#22c55e',
-    icon: 'edit',
-    items: sortPosts(maoxuanAll.filter((p) => p.data.sub === 'baiban')),
+    items: sortPosts(maoxuanAll),
   },
 ];
 
-// 普通文章（不含毛选精读）
+// 普通文章（不含毛选学习）
 const posts = sortPosts(all.filter((p) => !p.data.draft && !p.slug.startsWith('maoxuan/')));
 ---
 
