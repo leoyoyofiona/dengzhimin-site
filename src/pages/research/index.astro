@@ -89,7 +89,8 @@ for (const p of published) {
       cards.forEach((card) => {
         const cardTopics = (card.dataset.topics ?? '').split(' ').filter(Boolean);
         const show = topic === 'all' || cardTopics.includes(topic);
-        card.classList.toggle('hidden', !show);
+        // 直接用 style 控制显示（绕开 Astro scoped CSS 对子组件元素的限制）
+        card.style.display = show ? '' : 'none';
       });
     });
   });
@@ -180,9 +181,6 @@ for (const p of published) {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.75rem;
-  }
-  .grid > .hidden {
-    display: none;
   }
 
   @media (max-width: 1080px) {
