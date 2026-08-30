@@ -22,10 +22,12 @@ function sortPosts(list: CollectionEntry<'github'>[]) {
 // GitHub 总榜（top-* 前缀）
 const topPosts = sortPosts(all.filter((p) => !p.data.draft && p.slug.startsWith('top-')));
 
-// 各分类（category-* 前缀，按 GH_CATEGORIES 顺序）
+// 各分类（category-* 前缀，按 GH_CATEGORIES 顺序；含近一年最热）
 const categoryPosts = all.filter((p) => !p.data.draft && p.slug.startsWith('category-'));
 const categoryGroups = GH_CATEGORIES.map((c) => {
-  const items = sortPosts(categoryPosts.filter((p) => p.slug === `category-${c.slug}`));
+  const items = sortPosts(
+    categoryPosts.filter((p) => p.slug === `category-${c.slug}` || p.slug === `category-${c.slug}-hot`),
+  );
   return { ...c, items };
 }).filter((g) => g.items.length > 0);
 ---
