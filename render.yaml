@@ -1,6 +1,6 @@
-# Render Blueprint —— 一键部署 dengzhimin.cn（Astro 静态站）
+# Render Blueprint —— 一键部署 dengzhimin.cn（Astro 静态站 + 留言板 API）
 # 用法：把本仓库推到 GitHub 后，在 Render 上 Import 这个仓库
-# 会自动按此配置创建 Static Site，构建产物为 ./dist
+# 会自动按此配置创建服务，构建产物为 ./dist
 services:
   - type: web
     name: dengzhimin-site
@@ -15,3 +15,20 @@ services:
       - path: /*
         name: X-Frame-Options
         value: SAMEORIGIN
+
+  # 留言板 API（匿名留言，全站共享）
+  - type: web
+    name: dengzhimin-guestbook-api
+    runtime: node
+    rootDir: server
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    disk:
+      name: guestbook-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1
+    envVars:
+      - key: DATA_FILE
+        value: /opt/render/project/src/data/guestbook.json
