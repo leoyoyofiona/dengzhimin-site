@@ -6,7 +6,7 @@ services:
     name: dengzhimin-site
     runtime: static
     rootDir: .
-    buildCommand: npm ci && npm run build
+    buildCommand: rm -rf dist .astro && npm ci && npm run build
     staticPublishPath: ./dist
     headers:
       - path: /*
