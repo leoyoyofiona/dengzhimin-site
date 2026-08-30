@@ -38,11 +38,33 @@ const categoryGroups = PAPERS_CATEGORIES.map((c) => {
     </div>
   </section>
 
+  <section class="container topic-bar">
+    <div class="topic-scroll">
+      <button class="topic-chip active" data-topic="all">
+        全部
+        <span class="topic-count">{all.filter((p) => !p.data.draft).length}</span>
+      </button>
+      {
+        categoryGroups.map((g) => (
+          <button
+            class="topic-chip"
+            data-topic={g.slug}
+            style={`--tc: ${g.color}`}
+          >
+            <span class="topic-dot"></span>
+            {g.title}
+            <span class="topic-count">{g.items.length}</span>
+          </button>
+        ))
+      }
+    </div>
+  </section>
+
   <section class="container list-body">
     <!-- 各分类长条框 -->
     {
       categoryGroups.map((group) => (
-        <div class="block">
+        <div class="block" data-category={group.slug}>
           <div class="block-head" style={`--c: ${group.color}`}>
             <span class="block-icon"><Icon name="flask" size={15} /></span>
             <h2 class="block-title">{group.title}</h2>
@@ -73,6 +95,24 @@ const categoryGroups = PAPERS_CATEGORIES.map((c) => {
   </section>
 </BaseLayout>
 
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('.topic-chip');
+  const blocks = document.querySelectorAll<HTMLElement>('[data-category]');
+
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const topic = chip.dataset.topic ?? 'all';
+      chips.forEach((c) => c.classList.toggle('active', c === chip));
+      blocks.forEach((block) => {
+        const cat = block.dataset.category ?? '';
+        const show = topic === 'all' || cat === topic;
+        // 直接用 style 控制显示（绕开 Astro scoped CSS 对子组件元素的限制）
+        block.style.display = show ? '' : 'none';
+      });
+    });
+  });
+</script>
+
 <style>
   .page-head {
     position: relative;
@@ -95,6 +135,55 @@ const categoryGroups = PAPERS_CATEGORIES.map((c) => {
     font-size: var(--text-2xl);
     margin-top: 0.35rem;
   }
+
+  /* ===== 标签筛选行 ===== */
+  .topic-bar {
+    margin-bottom: 1.75rem;
+  }
+  .topic-scroll {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .topic-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.42rem 0.9rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    transition:
+      color var(--speed) var(--ease),
+      border-color var(--speed) var(--ease),
+      background var(--speed) var(--ease);
+  }
+  .topic-chip:hover {
+    color: var(--text);
+    border-color: color-mix(in srgb, var(--tc, var(--accent)) 45%, var(--border));
+  }
+  .topic-chip.active {
+    color: var(--tc, var(--accent));
+    border-color: color-mix(in srgb, var(--tc, var(--accent)) 50%, transparent);
+    background: color-mix(in srgb, var(--tc, var(--accent)) 8%, transparent);
+    font-weight: 600;
+  }
+  .topic-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--tc);
+    flex-shrink: 0;
+  }
+  .topic-count {
+    font-size: 0.75em;
+    opacity: 0.65;
+  }
+
   .list-body {
     padding-bottom: 4rem;
     max-width: 1320px;
