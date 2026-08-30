@@ -7,6 +7,10 @@ topics: ['ai-edu', 'univ-ai', 'genai-research', 'ai-industry', 'crossborder']
 featured: true
 ---
 
+<figure>
+  <img src="/images/digest/digest-26.png" alt="每日文摘 26 日速览" loading="lazy" />
+</figure>
+
 ## 今日速览
 
 今天最值得优先阅读的是第 **1、2、3、4、5** 条：
@@ -18,6 +22,10 @@ featured: true
 5. MetaRAG 用内部信念校准代理式检索。
 
 ---
+<figure>
+  <img src="/images/digest/digest-26.png" alt="每日文摘 26 日速览" loading="lazy" />
+</figure>
+
 ## 今日五条
 
 ### 1. Intel 在 AI Infrastructure Summit 展示开放式基础设施路线

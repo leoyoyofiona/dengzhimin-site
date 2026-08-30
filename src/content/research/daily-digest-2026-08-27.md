@@ -7,6 +7,10 @@ topics: ['ai-edu', 'univ-ai', 'genai-research', 'ai-industry', 'crossborder']
 featured: true
 ---
 
+<figure>
+  <img src="/images/digest/digest-27.png" alt="每日文摘 27 日速览" loading="lazy" />
+</figure>
+
 ## 今日速览
 
 今天最值得优先阅读的是第 **1、2、3、4、5** 条：
@@ -18,6 +22,10 @@ featured: true
 5. 教育部原则要求把公平与数据保护纳入教育技术采购。
 
 ---
+<figure>
+  <img src="/images/digest/digest-27.png" alt="每日文摘 27 日速览" loading="lazy" />
+</figure>
+
 ## 今日五条
 
 ### 1. Bocconi 随机实验：ChatGPT 与批判性思维训练效果互补

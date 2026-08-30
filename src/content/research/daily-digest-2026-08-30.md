@@ -7,6 +7,10 @@ topics: ['ai-edu', 'univ-ai', 'genai-research', 'ai-industry', 'crossborder']
 featured: true
 ---
 
+<figure>
+  <img src="/images/digest/digest-30.png" alt="每日文摘 30 日速览" loading="lazy" />
+</figure>
+
 ## 今日速览
 
 今天最值得优先阅读的是第 **1、2、3、4、5** 条：
@@ -18,6 +22,10 @@ featured: true
 5. 本周共同趋势：AI 采购从模型能力转向组织准备度。
 
 ---
+<figure>
+  <img src="/images/digest/digest-30.png" alt="每日文摘 30 日速览" loading="lazy" />
+</figure>
+
 ## 今日五条
 
 ### 1. Claude for Teachers 把教师方案与数据授权放在同一产品叙事中

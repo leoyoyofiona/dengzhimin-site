@@ -7,6 +7,10 @@ topics: ['ai-edu', 'univ-ai', 'genai-research', 'ai-industry', 'crossborder']
 featured: true
 ---
 
+<figure>
+  <img src="/images/digest/digest-25.png" alt="每日文摘 25 日速览" loading="lazy" />
+</figure>
+
 ## 今日速览
 
 今天最值得优先阅读的是第 **1、2、3、4、5** 条：
@@ -18,6 +22,10 @@ featured: true
 5. FSU 的 AI 招聘研究进入资助阶段。
 
 ---
+<figure>
+  <img src="/images/digest/digest-25.png" alt="每日文摘 25 日速览" loading="lazy" />
+</figure>
+
 ## 今日五条
 
 ### 1. Harvard Kempner 试建“AI 心智经济”实验市场

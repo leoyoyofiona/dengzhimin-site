@@ -7,6 +7,10 @@ topics: ['ai-edu', 'univ-ai', 'genai-research', 'ai-industry', 'crossborder']
 featured: true
 ---
 
+<figure>
+  <img src="/images/digest/digest-24.png" alt="每日文摘 24 日速览" loading="lazy" />
+</figure>
+
 ## 今日速览
 
 今天最值得优先阅读的是第 **1、2、3、4、5** 条：
@@ -18,6 +22,10 @@ featured: true
 5. Apple Messages 连接器让代理风险进入日常沟通。
 
 ---
+<figure>
+  <img src="/images/digest/digest-24.png" alt="每日文摘 24 日速览" loading="lazy" />
+</figure>
+
 ## 今日五条
 
 ### 1. FSU 研究团队获资助研究 AI 对招聘的影响

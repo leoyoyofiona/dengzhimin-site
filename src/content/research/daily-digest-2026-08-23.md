@@ -7,6 +7,10 @@ topics: ['ai-edu', 'univ-ai', 'genai-research', 'ai-industry', 'crossborder']
 featured: true
 ---
 
+<figure>
+  <img src="/images/digest/digest-23.png" alt="每日文摘 23 日速览" loading="lazy" />
+</figure>
+
 ## 今日速览
 
 今天最值得优先阅读的是第 **1、2、3、4、5** 条：
@@ -18,6 +22,10 @@ featured: true
 5. METR：目前最强的 AI 加速信号出现在网络安全漏洞披露。
 
 ---
+<figure>
+  <img src="/images/digest/digest-23.png" alt="每日文摘 23 日速览" loading="lazy" />
+</figure>
+
 ## 今日五条
 
 ### 1. 美国教育部发布教育技术负责任使用原则
