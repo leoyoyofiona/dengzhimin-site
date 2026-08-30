@@ -1,7 +1,7 @@
 ---
 title: "越来越多 SSCI 论文同时使用 PLS-SEM、fsQCA 和 ANN：从「解释关系」到「预测结果」再到「揭示复杂路径」"
 description: "方法整理：三种统计方法不是互相替代，而是各司其职——PLS-SEM 验证理论、ANN 识别关键变量、fsQCA 寻找多路径，构成三阶段混合分析框架。"
-date: 2026-08-22
+date: 2026-08-30
 tags: ["每日文摘", "研究方法", "PLS-SEM", "fsQCA", "ANN"]
 topics: ['genai-research', 'hss-methods']
 featured: true

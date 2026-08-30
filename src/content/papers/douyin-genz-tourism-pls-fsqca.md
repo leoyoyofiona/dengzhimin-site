@@ -1,7 +1,7 @@
 ---
 title: "抖音 Z 世代用户参观小众旅游目的地的意向：PLS-SEM、MGA 与 fsQCA 混合方法"
 description: "论文精读：Hong & Liang（2026）用 687 名中国 Z 世代样本，揭示性别差异如何塑造短视频平台上的旅游决策——男性重有用与娱乐，女性重创造与个性。"
-date: 2026-08-22
+date: 2026-08-30
 tags: ["文献", "消费者行为", "Z世代", "抖音", "旅游", "混合方法"]
 category: management
 featured: true

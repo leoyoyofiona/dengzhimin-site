@@ -1,7 +1,7 @@
 ---
 title: "从叙事到真相：科学传播中的叙事完整性"
 description: "论文精读：van Laer & Chaxel（2026）提出「叙事完整性」概念——科普可以在句子层面完全正确，却在叙事层面失真。"
-date: 2026-08-22
+date: 2026-08-30
 tags: ["文献", "科学传播", "叙事", "科普写作", "研究方法"]
 category: edu-psych
 featured: true

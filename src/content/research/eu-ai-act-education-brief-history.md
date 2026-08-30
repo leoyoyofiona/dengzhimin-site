@@ -1,7 +1,7 @@
 ---
 title: "欧盟人工智能法简史：它对 AI 教育态度如何？"
 description: "政策分析整理：欧盟《人工智能法》允许 AI 帮助人学习，但不允许不透明的 AI 轻易替教育机构决定一个人的教育命运——「AI 素养首先是一种组织能力」。"
-date: 2026-08-22
+date: 2026-08-30
 tags: ["每日文摘", "AI教育", "欧盟", "人工智能法", "政策"]
 topics: ['ai-edu', 'univ-ai', 'edu-policy']
 featured: true

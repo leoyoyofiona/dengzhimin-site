@@ -1,7 +1,7 @@
 ---
 title: "「伦理奇点」下的位移：当机器越界，人类认知、责任、价值与存在感的重构"
 description: "深度研究整理：秘塔 AI 生成的关于人机协同时代的报告——当 AI 承担本不该分配给它的工作时，四重「位移」正在发生。"
-date: 2026-08-22
+date: 2026-08-30
 tags: ["每日文摘", "AI", "人机协同", "伦理", "深度研究"]
 topics: ['ai-industry', 'univ-ai', 'genai-research']
 featured: true

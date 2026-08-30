@@ -1,7 +1,7 @@
 ---
 title: "移动化持续使用意向：移动期望确认模型（MECM）的 SEM-ANN-NCA 方法"
 description: "论文精读：Loh, Lee & Leong（2022）提出 MECM 模型，用 377 名移动支付用户数据，以 PLS-SEM、ANN、NCA 三层次方法确认移动互补性（mobile complementarity）是持续使用意向的基础前因。"
-date: 2026-08-22
+date: 2026-08-30
 tags: ["文献", "消费者行为", "移动支付", "MECM", "持续使用", "混合方法"]
 category: management
 featured: true
