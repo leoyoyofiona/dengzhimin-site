@@ -21,18 +21,17 @@ function sortPosts(list: CollectionEntry<'teaching'>[]) {
 }
 
 const maoxuanAll = all.filter((p) => !p.data.draft && p.slug.startsWith('maoxuan/'));
-// 毛选学习：按卷原文阅读入口
-const SUBS = [
-  {
-    key: 'maoxuan',
-    title: '毛选学习',
-    desc: '通读《毛泽东选集》原文，逐卷学习，不作解读。',
-    href: '/teaching/maoxuan/',
-    color: '#b91c1c',
-    icon: 'book',
-    items: sortPosts(maoxuanAll),
-  },
-];
+
+// 毛选学习：按卷分组（7 卷）
+const VOL_CN = ['一', '二', '三', '四', '五', '六', '七'];
+const VOL_COLORS = ['#b91c1c', '#b45309', '#a16207', '#166534', '#1e40af', '#6d28d9', '#9f1239'];
+const maoxuanByVol = Array.from({ length: 7 }, (_, i) => ({
+  vol: i + 1,
+  title: `第${VOL_CN[i]}卷`,
+  color: VOL_COLORS[i],
+  items: sortPosts(maoxuanAll.filter((p) => p.data.juan === i + 1)),
+}));
+const maoxuanTotal = maoxuanAll.length;
 
 // 普通文章（不含毛选学习）
 const posts = sortPosts(all.filter((p) => !p.data.draft && !p.slug.startsWith('maoxuan/')));
@@ -50,55 +49,86 @@ const posts = sortPosts(all.filter((p) => !p.data.draft && !p.slug.startsWith('m
     </div>
   </section>
 
+  <section class="container topic-bar">
+    <div class="topic-scroll">
+      <button class="topic-chip active" data-topic="all">
+        全部
+        <span class="topic-count">{maoxuanTotal + posts.length}</span>
+      </button>
+      <button class="topic-chip" data-topic="maoxuan" style="--tc: #b91c1c">
+        <span class="topic-dot"></span>
+        毛选学习
+        <span class="topic-count">{maoxuanTotal}</span>
+      </button>
+      <button class="topic-chip" data-topic="notes" style="--tc: #3b82f6">
+        <span class="topic-dot"></span>
+        其他笔记
+        <span class="topic-count">{posts.length}</span>
+      </button>
+    </div>
+    <!-- 毛选学习卷号小标签 -->
+    <div class="topic-scroll topic-scroll--sub" id="vol-sub" hidden>
+      <button class="topic-chip topic-chip--sub active" data-vol="all" style="--tc: #b91c1c">全部卷</button>
+      {
+        maoxuanByVol.map((v) => (
+          <button class="topic-chip topic-chip--sub" data-vol={v.vol} style={`--tc: ${v.color}`}>
+            <span class="topic-dot"></span>
+            {v.title}
+            <span class="topic-count">{v.items.length}</span>
+          </button>
+        ))
+      }
+    </div>
+  </section>
+
   <section class="container list-body">
-    <!-- 三个子栏目长条框 -->
-    {
-      SUBS.map((sub) => (
-        <div class="block">
-          <a class="block-head" href={sub.href} style={`--c: ${sub.color}`}>
-            <div class="block-head-main">
-              <span class="block-icon"><Icon name={sub.icon} size={15} /></span>
-              <h2 class="block-title">{sub.title}</h2>
-              <span class="block-count">{sub.items.length} 篇</span>
-              <span class="block-go">进入 <Icon name="arrow-right" size={13} /></span>
-            </div>
-            <Typewriter text={sub.desc} class="block-desc" />
-          </a>
-          {
-            sub.items.length > 0 ? (
-              <div class="grid dock-grid">
-                {
-                  sub.items.map((post) => (
-                    <PostCard
-                      title={post.data.title}
-                      description={post.data.description}
-                      date={post.data.date}
-                      tags={post.data.tags}
-                      href={`/teaching/${post.slug}/`}
-                      gradient={section.gradient}
-                      featured={post.data.featured}
-                      section={sub.title}
-                      sectionColor={sub.color}
-                      image={firstImage(post.body) ?? undefined}
-                    />
-                  ))
-                }
-              </div>
-            ) : (
-              <div class="block-empty">
-                <Icon name={sub.icon} size={14} />
-                <span>这个栏目还没有文章，慢慢来。</span>
-              </div>
-            )
-          }
+    <!-- 毛选学习（按卷分组） -->
+    <div class="block" data-cat="maoxuan">
+      <a class="block-head" href="/teaching/maoxuan/" style="--c: #b91c1c">
+        <div class="block-head-main">
+          <span class="block-icon"><Icon name="book" size={15} /></span>
+          <h2 class="block-title">毛选学习</h2>
+          <span class="block-count">{maoxuanTotal} 篇</span>
+          <span class="block-go">进入 <Icon name="arrow-right" size={13} /></span>
         </div>
-      ))
-    }
+        <Typewriter text="通读《毛泽东选集》原文，逐卷学习，不作解读。" class="block-desc" />
+      </a>
+      {
+        maoxuanByVol.map((v) => (
+          <div class="vol-group" data-vol-group={v.vol}>
+            <div class="vol-head" style={`--c: ${v.color}`}>
+              <span class="vol-dot"></span>
+              <h3 class="vol-title">{v.title}</h3>
+              <span class="vol-count">{v.items.length} 篇</span>
+              <a class="vol-link" href={`/teaching/maoxuan/juan/${v.vol}/`}>查看全部</a>
+            </div>
+            <div class="grid dock-grid">
+              {
+                v.items.slice(0, 6).map((post) => (
+                  <PostCard
+                    title={post.data.title}
+                    description={post.data.description}
+                    date={post.data.date}
+                    tags={post.data.tags}
+                    href={`/teaching/${post.slug}/`}
+                    gradient={section.gradient}
+                    featured={post.data.featured}
+                    section="毛选学习"
+                    sectionColor={v.color}
+                    image={firstImage(post.body) ?? undefined}
+                  />
+                ))
+              }
+            </div>
+          </div>
+        ))
+      }
+    </div>
 
     <!-- 其他教学文章 -->
     {
       posts.length > 0 && (
-        <div class="block">
+        <div class="block" data-cat="notes">
           <div class="block-head" style={`--c: ${section.color}`}>
             <span class="block-icon"><Icon name="book" size={15} /></span>
             <h2 class="block-title">其他笔记</h2>
@@ -128,6 +158,56 @@ const posts = sortPosts(all.filter((p) => !p.data.draft && !p.slug.startsWith('m
   </section>
 </BaseLayout>
 
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('.topic-chip[data-topic]');
+  const volChips = document.querySelectorAll<HTMLButtonElement>('.topic-chip--sub');
+  const blocks = document.querySelectorAll<HTMLElement>('[data-cat]');
+  const volSub = document.getElementById('vol-sub');
+  const volGroups = document.querySelectorAll<HTMLElement>('[data-vol-group]');
+
+  let currentCat = 'all';
+  let currentVol = 'all';
+
+  function applyFilter() {
+    // 大标签筛选
+    blocks.forEach((block) => {
+      const cat = block.dataset.cat ?? '';
+      const showCat = currentCat === 'all' || cat === currentCat;
+      block.style.display = showCat ? '' : 'none';
+    });
+    // 毛选学习卷号筛选
+    volSub.hidden = currentCat !== 'all' && currentCat !== 'maoxuan';
+    volGroups.forEach((g) => {
+      const vol = g.dataset.volGroup ?? '';
+      const showVol = currentVol === 'all' || vol === currentVol;
+      g.style.display = showVol ? '' : 'none';
+    });
+  }
+
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      currentCat = chip.dataset.topic ?? 'all';
+      chips.forEach((c) => c.classList.toggle('active', c === chip));
+      // 切到毛选学习/全部时重置卷号为全部
+      if (currentCat === 'all' || currentCat === 'maoxuan') {
+        currentVol = 'all';
+        volChips.forEach((c) => c.classList.toggle('active', c.dataset.vol === 'all'));
+      }
+      applyFilter();
+    });
+  });
+
+  volChips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      currentVol = chip.dataset.vol ?? 'all';
+      volChips.forEach((c) => c.classList.toggle('active', c === chip));
+      applyFilter();
+    });
+  });
+
+  applyFilter();
+</script>
+
 <style>
   .page-head {
     position: relative;
@@ -153,6 +233,100 @@ const posts = sortPosts(all.filter((p) => !p.data.draft && !p.slug.startsWith('m
   .list-body {
     padding-bottom: 4rem;
     max-width: 1320px;
+  }
+
+  /* ===== 标签筛选行 ===== */
+  .topic-bar {
+    margin-bottom: 1.75rem;
+  }
+  .topic-scroll {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .topic-scroll--sub {
+    margin-top: 0.6rem;
+    padding-top: 0.6rem;
+    border-top: 1px dashed var(--border);
+  }
+  .topic-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.42rem 0.9rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    transition:
+      color var(--speed) var(--ease),
+      border-color var(--speed) var(--ease),
+      background var(--speed) var(--ease);
+  }
+  .topic-chip:hover {
+    color: var(--text);
+    border-color: color-mix(in srgb, var(--tc, var(--accent)) 45%, var(--border));
+  }
+  .topic-chip.active {
+    color: var(--tc, var(--accent));
+    border-color: color-mix(in srgb, var(--tc, var(--accent)) 50%, transparent);
+    background: color-mix(in srgb, var(--tc, var(--accent)) 8%, transparent);
+    font-weight: 600;
+  }
+  .topic-chip--sub {
+    padding: 0.3rem 0.7rem;
+    font-size: var(--text-xs);
+  }
+  .topic-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--tc);
+    flex-shrink: 0;
+  }
+  .topic-count {
+    font-size: 0.75em;
+    opacity: 0.65;
+  }
+
+  /* ===== 毛选学习卷分组 ===== */
+  .vol-group + .vol-group {
+    margin-top: 1.75rem;
+  }
+  .vol-head {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: 0.9rem;
+  }
+  .vol-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--c);
+    flex-shrink: 0;
+  }
+  .vol-title {
+    font-size: var(--text-md);
+    font-weight: 650;
+  }
+  .vol-count {
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+  }
+  .vol-link {
+    margin-left: auto;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--c);
+    text-decoration: none;
+  }
+  .vol-link:hover {
+    text-decoration: underline;
   }
 
   /* ===== 子栏目长条框 ===== */
