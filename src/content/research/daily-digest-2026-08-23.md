@@ -7,10 +7,6 @@ topics: ['ai-edu', 'univ-ai', 'genai-research', 'ai-industry', 'crossborder']
 featured: true
 ---
 
-<figure>
-  <img src="/images/digest/digest-23.png" alt="每日文摘 23 日速览" loading="lazy" />
-</figure>
-
 ## 今日速览
 
 今天最值得优先阅读的是第 **1、2、3、4、5** 条：
@@ -22,13 +18,13 @@ featured: true
 5. METR：目前最强的 AI 加速信号出现在网络安全漏洞披露。
 
 ---
-<figure>
-  <img src="/images/digest/digest-23.png" alt="每日文摘 23 日速览" loading="lazy" />
-</figure>
-
 ## 今日五条
 
 ### 1. 美国教育部发布教育技术负责任使用原则
+
+<figure>
+  <img src="/images/digest/src-23-1.png" alt="第1条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-20｜来源：美国教育部｜证据状态：官方政策指引**
 
@@ -40,6 +36,10 @@ featured: true
 
 ### 2. ChatGPT 桌面端新增 Apple Messages 连接器
 
+<figure>
+  <img src="/images/digest/src-23-2.png" alt="第2条配图" loading="lazy" />
+</figure>
+
 **发布日期：2026-08-20｜来源：OpenAI 帮助中心｜证据状态：产品更新说明**
 
 在 Apple silicon Mac 上，用户可让 ChatGPT 搜索、准备并发送 iMessage、SMS 与 RCS；默认仍需用户确认消息和收件人。它把“对话式 AI”推进到个人通信执行层。
@@ -49,6 +49,10 @@ featured: true
 [更新说明](https://help.openai.com/en/articles/6825453)
 
 ### 3. Anthropic 报告 Claude 用于蛋白质设计
+
+<figure>
+  <img src="/images/digest/src-23-3.png" alt="第3条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-18｜来源：Anthropic｜证据状态：公司研究报告，尚待独立复现**
 
@@ -60,6 +64,10 @@ Anthropic 称 Claude 在 15 个靶点中为 14 个设计出可测试的蛋白结
 
 ### 4. OpenAI 成立 Strategic Futures 团队讨论 AI 的长期社会影响
 
+<figure>
+  <img src="/images/digest/src-23-4.png" alt="第4条配图" loading="lazy" />
+</figure>
+
 **发布日期：2026-08-20｜来源：OpenAI｜证据状态：公司观点文章**
 
 新团队以情景推演方式讨论 AI 对工作、教育、社会制度和研究组织的潜在影响，并明确文章不代表完整的公司政策。它适合作为研究议程素材，不宜当作预测结果。
@@ -69,6 +77,10 @@ Anthropic 称 Claude 在 15 个靶点中为 14 个设计出可测试的蛋白结
 [文章](https://openai.com/index/introducing-ai-futures/)
 
 ### 5. METR：目前最强的 AI 加速信号出现在网络安全漏洞披露
+
+<figure>
+  <img src="/images/digest/src-23-5.png" alt="第5条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-14｜来源：METR｜证据状态：研究机构预印本式分析，因果关系未确定**
 

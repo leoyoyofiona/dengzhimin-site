@@ -7,10 +7,6 @@ topics: ['ai-edu', 'univ-ai', 'genai-research', 'ai-industry', 'crossborder']
 featured: true
 ---
 
-<figure>
-  <img src="/images/digest/digest-24.png" alt="每日文摘 24 日速览" loading="lazy" />
-</figure>
-
 ## 今日速览
 
 今天最值得优先阅读的是第 **1、2、3、4、5** 条：
@@ -22,13 +18,13 @@ featured: true
 5. Apple Messages 连接器让代理风险进入日常沟通。
 
 ---
-<figure>
-  <img src="/images/digest/digest-24.png" alt="每日文摘 24 日速览" loading="lazy" />
-</figure>
-
 ## 今日五条
 
 ### 1. FSU 研究团队获资助研究 AI 对招聘的影响
+
+<figure>
+  <img src="/images/digest/src-24-1.png" alt="第1条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-24｜来源：Florida State University｜证据状态：研究项目公告，尚无结果**
 
@@ -40,6 +36,10 @@ featured: true
 
 ### 2. METR 警告“发现加速”需要更严格的时间序列检验
 
+<figure>
+  <img src="/images/digest/src-24-2.png" alt="第2条配图" loading="lazy" />
+</figure>
+
 **发布日期：2026-08-14｜来源：METR｜证据状态：探索性分析**
 
 网络安全漏洞披露的上升是目前最明显的信号，但它可能同时受到扫描工具、披露政策和研究者行为影响。数学与优化序列并未显示同样清晰的变化。
@@ -49,6 +49,10 @@ featured: true
 [METR 原文](https://metr.org/notes/2026-08-14-llm-contribution-to-discoveries/)
 
 ### 3. Amazon Prime Air 计划扩展至近 500 个美国城镇
+
+<figure>
+  <img src="/images/digest/src-24-3.png" alt="第3条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-19｜来源：Amazon｜证据状态：公司运营公告**
 
@@ -60,6 +64,10 @@ Amazon 表示计划在 2026 年底前把无人机配送扩展到近 500 个美�
 
 ### 4. 教育 AI 的政策焦点从“能不能用”转向“谁负责”
 
+<figure>
+  <img src="/images/digest/src-24-4.png" alt="第4条配图" loading="lazy" />
+</figure>
+
 **发布日期：2026-08-20｜来源：美国教育部｜证据状态：官方政策指引**
 
 教育部原则要求教育者保持主导，并同时考虑透明、公平、可及性和学生数据保护。这为高校 AI 采购、课程设计和学生申诉机制提供了共同语言。
@@ -69,6 +77,10 @@ Amazon 表示计划在 2026 年底前把无人机配送扩展到近 500 个美�
 [官方原则](https://www.ed.gov/about/news/press-release/us-department-of-education-releases-guidance-responsible-use-of-education-technology-classroom)
 
 ### 5. Apple Messages 连接器让代理风险进入日常沟通
+
+<figure>
+  <img src="/images/digest/src-24-5.png" alt="第5条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-20｜来源：OpenAI 帮助中心｜证据状态：产品更新说明**
 

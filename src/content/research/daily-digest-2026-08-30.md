@@ -7,10 +7,6 @@ topics: ['ai-edu', 'univ-ai', 'genai-research', 'ai-industry', 'crossborder']
 featured: true
 ---
 
-<figure>
-  <img src="/images/digest/digest-30.png" alt="每日文摘 30 日速览" loading="lazy" />
-</figure>
-
 ## 今日速览
 
 今天最值得优先阅读的是第 **1、2、3、4、5** 条：
@@ -22,13 +18,13 @@ featured: true
 5. 本周共同趋势：AI 采购从模型能力转向组织准备度。
 
 ---
-<figure>
-  <img src="/images/digest/digest-30.png" alt="每日文摘 30 日速览" loading="lazy" />
-</figure>
-
 ## 今日五条
 
 ### 1. Claude for Teachers 把教师方案与数据授权放在同一产品叙事中
+
+<figure>
+  <img src="/images/digest/src-30-1.png" alt="第1条配图" loading="lazy" />
+</figure>
 
 **更新日期：2026-08-28｜来源：Anthropic｜证据状态：产品公告，试点评估未完成**
 
@@ -38,6 +34,10 @@ featured: true
 
 ### 2. SRI 的媒体素养游戏说明“AI 素养”可以被设计成可观察行为
 
+<figure>
+  <img src="/images/digest/src-30-2.png" alt="第2条配图" loading="lazy" />
+</figure>
+
 **发布日期：2026-08-29｜来源：SRI Education｜证据状态：评估项目介绍**
 
 Agents of Influence 让学生在叙事情境中练习检索、分析和沟通，提供了比自陈“我会不会用 AI”更接近行为表现的评价方向。正式效果仍需等待公开报告。
@@ -45,6 +45,10 @@ Agents of Influence 让学生在叙事情境中练习检索、分析和沟通，
 [项目说明](https://www.sri.com/uncategorized/developing-and-evaluating-a-game-based-approach-to-media-literacy/)
 
 ### 3. 泰国 AI 加速器提供本地化教育技术的可跟踪样本
+
+<figure>
+  <img src="/images/digest/src-30-3.png" alt="第3条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-28｜来源：OpenAI 与泰国 MHESI｜证据状态：合作公告**
 
@@ -54,6 +58,10 @@ Agents of Influence 让学生在叙事情境中练习检索、分析和沟通，
 
 ### 4. Bocconi 实验提示“AI 使用”与“批判性思维训练”不是二选一
 
+<figure>
+  <img src="/images/digest/src-30-4.png" alt="第4条配图" loading="lazy" />
+</figure>
+
 **发布日期：2026-08-27｜来源：OpenAI Economic Research 与 Bocconi｜证据状态：随机实验摘要，需核对论文全文**
 
 超过 1,000 名学生的四组设计把工具使用和思维训练分开，摘要称两者在营销创意任务上呈互补关系。高校课程可据此测试“先推理、后调用 AI、再反驳输出”的顺序，而不是只比较允许与禁止。
@@ -61,6 +69,10 @@ Agents of Influence 让学生在叙事情境中练习检索、分析和沟通，
 [研究摘要](https://openai.com/index/what-students-gain-from-chatgpt-critical-thinking-training/)
 
 ### 5. 本周共同趋势：AI 采购从模型能力转向组织准备度
+
+<figure>
+  <img src="/images/digest/src-30-5.png" alt="第5条配图" loading="lazy" />
+</figure>
 
 **证据状态：编辑综合判断，不是单一研究结果**
 

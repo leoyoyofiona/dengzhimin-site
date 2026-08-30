@@ -7,10 +7,6 @@ topics: ['ai-edu', 'univ-ai', 'genai-research', 'ai-industry', 'crossborder']
 featured: true
 ---
 
-<figure>
-  <img src="/images/digest/digest-26.png" alt="每日文摘 26 日速览" loading="lazy" />
-</figure>
-
 ## 今日速览
 
 今天最值得优先阅读的是第 **1、2、3、4、5** 条：
@@ -22,13 +18,13 @@ featured: true
 5. MetaRAG 用内部信念校准代理式检索。
 
 ---
-<figure>
-  <img src="/images/digest/digest-26.png" alt="每日文摘 26 日速览" loading="lazy" />
-</figure>
-
 ## 今日五条
 
 ### 1. Intel 在 AI Infrastructure Summit 展示开放式基础设施路线
+
+<figure>
+  <img src="/images/digest/src-26-1.png" alt="第1条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-26｜来源：Intel｜证据状态：公司活动公告**
 
@@ -40,6 +36,10 @@ Intel 强调从边缘、企业云到物理 AI 的硅、系统和软件协同，�
 
 ### 2. ChatGPT for Teachers 向更多美国学区开放
 
+<figure>
+  <img src="/images/digest/src-26-2.png" alt="第2条配图" loading="lazy" />
+</figure>
+
 **发布日期：2026-08-26｜来源：OpenAI｜证据状态：公司产品公告**
 
 OpenAI 宣布把教师版 ChatGPT 扩展到更多美国学区，定位包括备课、差异化教学和行政工作。公告不等于学习成效评估，学校仍需独立检验教师工作量、学生参与和隐私影响。
@@ -47,6 +47,10 @@ OpenAI 宣布把教师版 ChatGPT 扩展到更多美国学区，定位包括备�
 [官方公告](https://openai.com/index/bringing-chatgpt-for-teachers-to-more-us-school-districts/)
 
 ### 3. “Learning never stops”强调教师持续学习而非一次性培训
+
+<figure>
+  <img src="/images/digest/src-26-3.png" alt="第3条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-26｜来源：OpenAI｜证据状态：公司教育倡议**
 
@@ -58,6 +62,10 @@ OpenAI 宣布把教师版 ChatGPT 扩展到更多美国学区，定位包括备�
 
 ### 4. USF 论文质疑“人类在环”作为充分伦理保障
 
+<figure>
+  <img src="/images/digest/src-26-4.png" alt="第4条配图" loading="lazy" />
+</figure>
+
 **出版信息：2026-08-26｜Lorien Jordan，《Qualitative Inquiry》｜DOI：10.1177/10778004261468239｜证据状态：同行评审理论/质性论述**
 
 文章指出，AI 可能在最终决策前就通过选项、排序和建议塑造人的判断，因此“最后由人点击确认”并不自动等于人类控制。
@@ -67,6 +75,10 @@ OpenAI 宣布把教师版 ChatGPT 扩展到更多美国学区，定位包括备�
 [论文 DOI](https://doi.org/10.1177/10778004261468239)
 
 ### 5. MetaRAG 用内部信念校准代理式检索
+
+<figure>
+  <img src="/images/digest/src-26-5.png" alt="第5条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-25｜来源：arXiv，2608.24214｜证据状态：预印本，尚未经同行评审**
 

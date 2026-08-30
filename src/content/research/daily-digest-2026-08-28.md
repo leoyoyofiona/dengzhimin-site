@@ -7,10 +7,6 @@ topics: ['ai-edu', 'univ-ai', 'genai-research', 'ai-industry', 'crossborder']
 featured: true
 ---
 
-<figure>
-  <img src="/images/digest/digest-28.png" alt="每日文摘 28 日速览" loading="lazy" />
-</figure>
-
 ## 今日速览
 
 今天最值得优先阅读的是第 **1、2、3、4、5** 条：
@@ -22,13 +18,13 @@ featured: true
 5. Claude for Teachers 更新为面向美国 K–12 教师的专门方案。
 
 ---
-<figure>
-  <img src="/images/digest/digest-28.png" alt="每日文摘 28 日速览" loading="lazy" />
-</figure>
-
 ## 今日五条
 
 ### 1. OpenAI 与泰国教育、卫生部门启动 8 周 AI 创业加速器
+
+<figure>
+  <img src="/images/digest/src-28-1.png" alt="第1条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-28｜来源：OpenAI、泰国高等教育科学研究与创新部｜证据状态：合作公告**
 
@@ -40,6 +36,10 @@ featured: true
 
 ### 2. Anthropic 发布 TASTE：评价 AI 安全研究提案的基准
 
+<figure>
+  <img src="/images/digest/src-28-2.png" alt="第2条配图" loading="lazy" />
+</figure>
+
 **发布日期：2026-08-28｜来源：Anthropic Alignment Science｜证据状态：公司研究基准，尚待独立复现**
 
 TASTE 比较模型对安全研究提案的判断，包含 92 对提案；研究者报告人类一致率约 77%，Fable 5 约 60%。基准关注的是提案评价，不是模型是否真的解决安全问题。
@@ -49,6 +49,10 @@ TASTE 比较模型对安全研究提案的判断，包含 92 对提案；研究�
 [基准说明](https://alignment.anthropic.com/2026/taste/)
 
 ### 3. OpenAI 将结束向被 SpaceX 收购后的 Cursor 提供模型服务
+
+<figure>
+  <img src="/images/digest/src-28-3.png" alt="第3条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-28｜来源：OpenAI｜证据状态：公司合同与合规公告**
 
@@ -60,6 +64,10 @@ OpenAI 表示将依据服务条款和控制权变化条款，在 2026 年 11 月
 
 ### 4. Stripe：AI 改变 SDK 的构建流程，而不只是生成代码
 
+<figure>
+  <img src="/images/digest/src-28-4.png" alt="第4条配图" loading="lazy" />
+</figure>
+
 **发布日期：2026-08-28｜来源：Stripe Engineering｜证据状态：工程团队经验文章**
 
 Stripe 描述 AI 如何参与 SDK 开发、测试和审查流程，同时保留工程师对接口兼容性和质量的控制。它是实践案例，不是生产率的因果评估。
@@ -69,6 +77,10 @@ Stripe 描述 AI 如何参与 SDK 开发、测试和审查流程，同时保留�
 [工程文章](https://stripe.dev/blog/topic/ai)
 
 ### 5. Claude for Teachers 更新为面向美国 K–12 教师的专门方案
+
+<figure>
+  <img src="/images/digest/src-28-5.png" alt="第5条配图" loading="lazy" />
+</figure>
 
 **更新日期：2026-08-28｜来源：Anthropic｜证据状态：产品公告；试点评估仍在进行**
 

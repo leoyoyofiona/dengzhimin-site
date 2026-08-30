@@ -7,10 +7,6 @@ topics: ['ai-edu', 'univ-ai', 'genai-research', 'ai-industry', 'crossborder']
 featured: true
 ---
 
-<figure>
-  <img src="/images/digest/digest-29.png" alt="每日文摘 29 日速览" loading="lazy" />
-</figure>
-
 ## 今日速览
 
 今天最值得优先阅读的是第 **1、2、3、4、5** 条：
@@ -22,13 +18,13 @@ featured: true
 5. Amazon Prime Air 的消费者研究议程：速度之外的信任。
 
 ---
-<figure>
-  <img src="/images/digest/digest-29.png" alt="每日文摘 29 日速览" loading="lazy" />
-</figure>
-
 ## 今日五条
 
 ### 1. SRI 介绍“Agents of Influence”媒体素养游戏评估
+
+<figure>
+  <img src="/images/digest/src-29-1.png" alt="第1条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-29｜来源：SRI Education｜证据状态：项目与评估介绍**
 
@@ -40,6 +36,10 @@ SRI 与 Alterea 合作开发面向中学生和高中生的叙事游戏，让学�
 
 ### 2. Cursor 事件提醒开发者评估“模型供应商锁定”
 
+<figure>
+  <img src="/images/digest/src-29-2.png" alt="第2条配图" loading="lazy" />
+</figure>
+
 **发布日期：2026-08-28｜来源：OpenAI｜证据状态：公司合同公告**
 
 拟议的服务终止让“模型可替换性”从架构问题变成商业连续性问题。团队应保留抽象层、评测集和迁移预算，避免把全部工作流绑定在单一供应商。
@@ -47,6 +47,10 @@ SRI 与 Alterea 合作开发面向中学生和高中生的叙事游戏，让学�
 [官方说明](https://openai.com/index/our-decision-on-cursor-following-its-acquisition-by-spacex/)
 
 ### 3. TASTE 基准把“研究品味”变成可比较的评价任务
+
+<figure>
+  <img src="/images/digest/src-29-3.png" alt="第3条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-28｜来源：Anthropic Alignment Science｜证据状态：公司基准研究**
 
@@ -56,6 +60,10 @@ TASTE 以成对安全研究提案让模型做选择，并与人工判断比较�
 
 ### 4. Stripe 案例显示代理式编程的瓶颈可能转向审查
 
+<figure>
+  <img src="/images/digest/src-29-4.png" alt="第4条配图" loading="lazy" />
+</figure>
+
 **发布日期：2026-08-28｜来源：Stripe Engineering｜证据状态：工程经验**
 
 当生成代码变快，接口兼容、测试覆盖、权限和回滚就成为新的瓶颈。对高校软件工程教学而言，应把代码审查、证据链和变更说明纳入 AI 编程作业。
@@ -63,6 +71,10 @@ TASTE 以成对安全研究提案让模型做选择，并与人工判断比较�
 [工程文章](https://stripe.dev/blog/topic/ai)
 
 ### 5. Amazon Prime Air 的消费者研究议程：速度之外的信任
+
+<figure>
+  <img src="/images/digest/src-29-5.png" alt="第5条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-19｜来源：Amazon｜证据状态：公司运营公告**
 
