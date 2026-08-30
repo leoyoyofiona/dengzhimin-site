@@ -44,17 +44,21 @@ const sectionPosts = await Promise.all(
                 {
                   posts.map((post) => {
                     const img = firstImage(post.body);
+                    // 毛选学习文章（slug 以 maoxuan/ 开头）打专属标签
+                    const isMaoxuan = post.slug.startsWith('maoxuan/');
+                    const tagText = isMaoxuan ? '毛选学习' : s.title;
+                    const tagColor = isMaoxuan ? '#b91c1c' : s.color;
                     return (
                       <a
                         class="ucard"
                         href={`/${s.slug}/${post.slug}/`}
-                        style={`--c: ${s.color}`}
+                        style={`--c: ${tagColor}`}
                       >
                         {img && (
                           <div class="ucard-cover">
                             <img src={img} alt="" loading="lazy" />
                             <span class="ucard-tag" style={`color: var(--c)`}>
-                              {s.title}
+                              {tagText}
                             </span>
                             <div class="ucard-preview">
                               <p>{post.data.description}</p>
@@ -64,7 +68,7 @@ const sectionPosts = await Promise.all(
                         <div class="ucard-body">
                           {!img && (
                             <span class="ucard-tag ucard-tag--inline" style={`color: var(--c)`}>
-                              {s.title}
+                              {tagText}
                             </span>
                           )}
                           <h3 class="ucard-title">{post.data.title}</h3>
