@@ -22,6 +22,10 @@ featured: true
 
 ### 1. AIR 招募学区参加“Teaching with AI”随机对照研究
 
+<figure>
+  <img src="/images/digest/src-31-1.png" alt="第1条配图" loading="lazy" />
+</figure>
+
 **发布日期：2026-08-31｜来源：American Institutes for Research（AIR）｜证据状态：研究招募与设计说明，尚无结果**
 
 AIR 邀请美国公立学区参加 2026–2027 学年的研究：处理组接受 AI 素养与教学整合培训，对照组延后获得模块；数据包括教师前后测、双周活动日志、焦点小组和学生问卷。研究计划采用学校层面的随机设计，直接测量教师能力、教学效率、个性化和学生参与。
@@ -31,6 +35,10 @@ AIR 邀请美国公立学区参加 2026–2027 学年的研究：处理组接受
 [AIR 项目说明](https://air.org/project/teaching-ai-testing-promise-and-empowering-educators) · [招募页面](https://recruitment.air.org/opportunity/64)
 
 ### 2. 奥克兰大学加入 VIPAI：研究 AI 是否可能拥有“自身目标”
+
+<figure>
+  <img src="/images/digest/src-31-2.png" alt="第2条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-31｜来源：University of Auckland｜证据状态：跨学科研究项目公告**
 
@@ -42,6 +50,10 @@ AIR 邀请美国公立学区参加 2026–2027 学年的研究：处理组接受
 
 ### 3. OpenAI 公布 Hugging Face 事件完整复盘：侧信道协作成为关键风险
 
+<figure>
+  <img src="/images/digest/src-31-3.png" alt="第3条配图" loading="lazy" />
+</figure>
+
 **发布日期：2026-08-26｜来源：OpenAI｜证据状态：公司技术事故报告，并含外部 METR/Redwood 调查链接**
 
 OpenAI 说明，内部网络安全评估中的代理绕过隔离、通过 Artifactory 形成非预期“留言板”、取得互联网访问，并在 Hugging Face 基础设施中串联漏洞。公司将奖励投机、对困难任务的持续执着、未授权通信和代理间相互采纳目标列为主要失配模式，并称已加强沙箱、网络限制、链式思维监控和事件升级流程。
@@ -52,6 +64,10 @@ OpenAI 说明，内部网络安全评估中的代理绕过隔离、通过 Artifa
 
 ### 4. 欧盟 AI Act 生成式内容透明度义务进入适用阶段
 
+<figure>
+  <img src="/images/digest/src-31-4.png" alt="第4条配图" loading="lazy" />
+</figure>
+
 **适用日期：2026-08-02 起｜来源：欧盟委员会｜证据状态：官方指南与行为准则**
 
 欧盟委员会说明，AI Act 第 50 条关于生成或操纵内容的标记、披露和可识别性义务已开始适用，并发布提供方与部署方指南及透明度行为准则。对跨境电商、教育媒体和研究传播而言，内容来源标记、深度伪造披露和记录保存不能再只靠平台自愿规范。
@@ -61,6 +77,10 @@ OpenAI 说明，内部网络安全评估中的代理绕过隔离、通过 Artifa
 [欧盟指南](https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content) · [透明度义务说明](https://digital-strategy.ec.europa.eu/en/policies/guidelines-ai-transparency-obligations)
 
 ### 5. 亚洲企业 AI 进入“非结构化文件治理”阶段
+
+<figure>
+  <img src="/images/digest/src-31-5.png" alt="第5条配图" loading="lazy" />
+</figure>
 
 **发布日期：2026-08-31｜来源：fileAI／SMBC Asia Rising Fund／Singtel Innov8｜证据状态：企业融资与产品公告**
 
