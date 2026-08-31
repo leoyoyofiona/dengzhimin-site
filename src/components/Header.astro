@@ -152,10 +152,33 @@ const isActive = (href: string) => {
           搜索
         </a>
       </li>
+      <li class="mobile-today-wrap">
+        <button class="mobile-link mobile-today-toggle" type="button" aria-expanded="false">
+          <span class="mobile-link-icon mobile-today-dot" aria-hidden="true"></span>
+          今日更新
+          {todayPosts.length > 0 && <span class="mobile-today-count">{todayPosts.length}</span>}
+        </button>
+        {todayPosts.length > 0 && (
+          <div class="mobile-today-list" hidden>
+            {todayPosts.map((p) => (
+              <a class="mobile-today-item" href={p.href}>
+                <span class="mobile-today-sec" style={`color: ${p.color}`}>{p.section}</span>
+                <span class="mobile-today-title">{p.title}</span>
+              </a>
+            ))}
+          </div>
+        )}
+      </li>
       <li>
         <a href="/favorites/" class="mobile-link">
           <span class="mobile-link-icon"><Icon name="heart" size={16} /></span>
           收藏与足迹
+        </a>
+      </li>
+      <li>
+        <a href="/disclaimer/" class="mobile-link">
+          <span class="mobile-link-icon"><Icon name="doc" size={16} /></span>
+          免责声明
         </a>
       </li>
       {
@@ -418,6 +441,13 @@ const isActive = (href: string) => {
     transform: translate(-50%, 0);
     pointer-events: auto;
   }
+  /* 触屏：点击"今日更新"展开面板（JS 加 .open 类） */
+  .today-item.is-open .today-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+  }
   .today-panel-head {
     display: flex;
     align-items: center;
@@ -637,6 +667,13 @@ const isActive = (href: string) => {
     transform: translateY(0);
     pointer-events: auto;
   }
+  /* 触屏：点击免责声明展开面板（JS 加 .open 类） */
+  .disclaimer-wrap.is-open .disclaimer-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
   .disclaimer-panel-title {
     font-size: var(--text-sm);
     font-weight: 650;
@@ -714,6 +751,65 @@ const isActive = (href: string) => {
     display: inline-flex;
     color: var(--text-tertiary);
   }
+  /* 移动菜单：今日更新入口 */
+  .mobile-today-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--gradient);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+  .mobile-today-count {
+    margin-left: auto;
+    min-width: 1.4rem;
+    padding: 0.05rem 0.45rem;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent);
+    font-size: var(--text-xs);
+    font-weight: 650;
+    text-align: center;
+  }
+  /* 移动菜单：今日更新展开列表 */
+  .mobile-today-toggle {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+  }
+  .mobile-today-list {
+    display: flex;
+    flex-direction: column;
+    margin: 0.1rem 0 0.5rem 1.9rem;
+    padding-left: 0.75rem;
+    border-left: 2px solid var(--border);
+    gap: 0.15rem;
+  }
+  .mobile-today-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.45rem 0.4rem;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    transition: color var(--speed) var(--ease), background-color var(--speed) var(--ease);
+  }
+  .mobile-today-item:hover {
+    color: var(--text);
+    background: var(--bg-glass);
+  }
+  .mobile-today-sec {
+    flex-shrink: 0;
+    font-size: var(--text-xs);
+    font-weight: 600;
+  }
+  .mobile-today-title {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .mobile-link:hover,
   .mobile-link.active {
     color: var(--text);
@@ -729,6 +825,41 @@ const isActive = (href: string) => {
     }
     .mobile-menu:not([hidden]) {
       display: block;
+    }
+    /* 触屏/窄屏：压缩品牌区与操作区，避免 actions 溢出视口 */
+    .brand,
+    .brand-tag {
+      min-width: 0;
+      width: auto;
+      max-width: none;
+    }
+    .brand-top {
+      gap: 0.5rem;
+    }
+    .header-avatar {
+      width: 26px;
+      height: 26px;
+    }
+    /* 窄屏隐藏免责声明文字入口（移动菜单里有完整入口） */
+    .disclaimer-link {
+      display: none;
+    }
+    .disclaimer-panel {
+      display: none;
+    }
+  }
+
+  /* 超窄屏（<420px）：进一步压缩，保证 5 个操作图标不溢出 */
+  @media (max-width: 420px) {
+    .header-tag {
+      display: none;
+    }
+    .actions {
+      gap: 0.05rem;
+    }
+    .icon-btn {
+      width: 30px;
+      height: 30px;
     }
   }
 </style>
@@ -850,6 +981,55 @@ const isActive = (href: string) => {
     else menu?.setAttribute('hidden', '');
     menuBtn?.setAttribute('aria-expanded', String(open));
   });
+
+  // 移动菜单：今日更新展开/收起
+  const mobileTodayToggle = document.querySelector('.mobile-today-toggle');
+  const mobileTodayList = document.querySelector('.mobile-today-list');
+  mobileTodayToggle?.addEventListener('click', () => {
+    const open = mobileTodayList?.hasAttribute('hidden');
+    if (open) mobileTodayList?.removeAttribute('hidden');
+    else mobileTodayList?.setAttribute('hidden', '');
+    mobileTodayToggle?.setAttribute('aria-expanded', String(!open));
+  });
+
+  // ===== 触屏设备：点击展开今日更新 / 免责声明面板（hover 在触屏上不可用） =====
+  (function () {
+    const coarse = window.matchMedia('(pointer: coarse)').matches;
+    if (!coarse) return; // 仅触屏设备
+    const todayItem = document.querySelector('.today-item');
+    const disclaimerWrap = document.querySelector('.disclaimer-wrap');
+    // 关闭其他已展开的面板
+    function closeAll(except) {
+      [todayItem, disclaimerWrap].forEach((el) => {
+        if (el && el !== except) el.classList.remove('is-open');
+      });
+    }
+    if (todayItem) {
+      const link = todayItem.querySelector('.today-link');
+      link?.addEventListener('click', (e) => {
+        e.preventDefault(); // 触屏：先展开面板，不跳转
+        const willOpen = !todayItem.classList.contains('is-open');
+        closeAll(todayItem);
+        if (willOpen) todayItem.classList.add('is-open');
+      });
+    }
+    if (disclaimerWrap) {
+      const link = disclaimerWrap.querySelector('.disclaimer-link');
+      link?.addEventListener('click', (e) => {
+        e.preventDefault(); // 触屏：先展开面板，不跳转
+        const willOpen = !disclaimerWrap.classList.contains('is-open');
+        closeAll(disclaimerWrap);
+        if (willOpen) disclaimerWrap.classList.add('is-open');
+        else disclaimerWrap.classList.remove('is-open');
+      });
+    }
+    // 点击页面其他区域关闭（监听捕获阶段，避免被面板内事件吞掉）
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.today-item') && !e.target.closest('.disclaimer-wrap')) {
+        closeAll(null);
+      }
+    });
+  })();
 
   // ===== 今日更新面板：鼠标滑动 → 波浪浮动 + 选中高亮 =====
   (function () {
