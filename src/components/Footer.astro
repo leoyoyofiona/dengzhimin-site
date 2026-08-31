@@ -61,6 +61,10 @@ const year = new Date().getFullYear();
 
   <div class="container footer-bottom">
     <p>© {year} {SITE.name} · {SITE.domain}</p>
+    <p class="visits" id="visits-counter" title="访问统计">
+      <Icon name="eye" size={13} />
+      <span>访问中…</span>
+    </p>
     <p class="credit">由 <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> 构建</p>
   </div>
 </footer>
@@ -148,6 +152,17 @@ const year = new Date().getFullYear();
     color: var(--text);
   }
 
+  /* ===== 访问统计 ===== */
+  .visits {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--text-tertiary);
+  }
+  .visits .hidden {
+    visibility: hidden;
+  }
+
   @media (max-width: 720px) {
     .footer-inner {
       flex-direction: column;
@@ -158,3 +173,54 @@ const year = new Date().getFullYear();
     }
   }
 </style>
+
+<script>
+  // ===== 访问统计：上报 + 显示（访客数 / 浏览次数） =====
+  // 依赖自建留言板 API（dengzhimin-guestbook-api）；API 不可用时静默隐藏
+  (function () {
+    const API = 'https://dengzhimin-guestbook-api.onrender.com/api/visits';
+    const counter = document.getElementById('visits-counter');
+    if (!counter) return;
+
+    const uidKey = 'leodeng:visitor-uid';
+    function getUid() {
+      try {
+        let uid = localStorage.getItem(uidKey);
+        if (!uid) {
+          uid =
+            (crypto.randomUUID && crypto.randomUUID()) ||
+            'v-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+          localStorage.setItem(uidKey, uid);
+        }
+        return uid;
+      } catch (_) {
+        return '';
+      }
+    }
+
+    function fmt(n) {
+      if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+      if (n >= 10000) return (n / 10000).toFixed(1) + 'w';
+      return String(n);
+    }
+
+    async function report() {
+      try {
+        // 上报本次访问
+        const res = await fetch(API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uid: getUid() }),
+        });
+        if (!res.ok) throw new Error('bad status');
+        const data = await res.json();
+        counter.querySelector('span').textContent =
+          '访问 ' + fmt(data.visitors || 0) + ' 人 · 浏览 ' + fmt(data.views || 0) + ' 次';
+      } catch (_) {
+        // API 不可用：隐藏计数器
+        counter.style.display = 'none';
+      }
+    }
+    report();
+  })();
+</script>
