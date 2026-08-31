@@ -61,37 +61,92 @@ const postColor = isMaoxuanPost ? '#b91c1c' : section.color;
 </BaseLayout>
 
 <script>
-  // 毛选学习：把正文中的 〔n〕 角标转为可点击上标，点击滚动到文末注释
+  // ===== 毛选学习：正文 〔n〕 角标 → 可点击上标，点击滚动到文末对应注释条目 =====
   const prose = document.querySelector('.prose-maoxuan');
   if (prose) {
-    // 找到注释标题行（含"注释"字样）
-    const texts = prose.querySelectorAll('p');
-    // 先把正文段落里的 〔n〕 转成上标（跳过注释段落）
-    let inNotes = false;
-    texts.forEach((p) => {
-      const t = p.textContent || '';
-      if (/注释/.test(t) && t.length < 40) {
-        inNotes = true;
+    const paras = Array.from(prose.querySelectorAll('p'));
+
+    // 注释区起点：第一个含"注　　释"标记的段落（该标记常与正文同行或紧跟 〔1〕）
+    const NOTE_RE = /注[\s\u3000]*释[\s\u3000]*(\*|〔\d+〕)/;
+    let noteStart = paras.findIndex((p) => NOTE_RE.test(p.textContent || ''));
+
+    // 正文角标 → 上标
+    const toSup = (t) => t.replace(/〔(\d+)〕/g, '<sup class="fn-ref" data-fn="$1">〔$1〕</sup>');
+    // 注释条目角标 → 锚点（可被正文角标滚动定位）
+    const toAnchor = (t) => t.replace(/〔(\d+)〕/g, '<span class="note-anchor" data-fn="$1">〔$1〕</span>');
+    // 注释标题行加样式（"注　　释*"）
+    const titleHtml = (t) =>
+      t
+        .replace(/^注[\s\u3000]*释[\s\u3000]*\*?/, '<span class="notes-title">$&</span>')
+        .replace(/〔(\d+)〕/g, '<span class="note-anchor" data-fn="$1">〔$1〕</span>');
+
+    if (noteStart >= 0) {
+      // 起点段：标记之前是正文（若同一段），标记之后进入注释区
+      const first = paras[noteStart];
+      const ft = first.textContent || '';
+      const m = ft.match(NOTE_RE);
+      if (m && m.index > 0) {
+        const head = ft.slice(0, m.index);
+        const tail = ft.slice(m.index);
+        let html = head.replace(/〔(\d+)〕/g, '<sup class="fn-ref" data-fn="$1">〔$1〕</sup>');
+        if (/〔\d+〕/.test(tail)) html += titleHtml(tail);
+        else html += tail.replace(/^注[\s\u3000]*释[\s\u3000]*\*?/, '<span class="notes-title">$&</span>');
+        first.innerHTML = html;
+      } else {
+        // 标记在段首：整段为注释区（标题 + 可能的首条注释）
+        first.innerHTML = titleHtml(ft);
       }
-      if (!inNotes && /〔\d+〕/.test(t)) {
-        p.innerHTML = t.replace(/〔(\d+)〕/g, '<sup class="fn-ref" data-fn="$1">〔$1〕</sup>');
+      // 起点段之后的段落：全部按注释区处理
+      for (let i = noteStart + 1; i < paras.length; i++) {
+        const t = paras[i].textContent || '';
+        if (/〔\d+〕/.test(t)) paras[i].innerHTML = toAnchor(t);
       }
-    });
-    // 点击角标滚动到注释
+      // 正文段落（注释区之前）
+      for (let i = 0; i < noteStart; i++) {
+        const t = paras[i].textContent || '';
+        if (/〔\d+〕/.test(t)) paras[i].innerHTML = toSup(t);
+      }
+    } else {
+      // 没有"注　　释"标记：全文都当正文处理
+      paras.forEach((p) => {
+        const t = p.textContent || '';
+        if (/〔\d+〕/.test(t)) p.innerHTML = toSup(t);
+      });
+    }
+
+    // 点击正文角标 → 滚动到对应注释锚点并高亮
     prose.addEventListener('click', (e) => {
       const el = e.target.closest('.fn-ref');
       if (!el) return;
       e.preventDefault();
       const fn = el.dataset.fn;
-      const noteEl = prose.querySelector(`p:not(.fn-handled)`);
-      // 找到包含 "〔n〕" 的注释段落
-      const allP = [...prose.querySelectorAll('p')];
-      const target = allP.find((p) => p.textContent.includes(`〔${fn}〕`) && /见|参见|原文是|参见/.test(p.textContent));
+      const target = prose.querySelector(`.note-anchor[data-fn="${fn}"]`);
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        target.style.transition = 'background-color 0.6s';
-        target.style.backgroundColor = 'rgba(185, 28, 28, 0.08)';
-        setTimeout(() => { target.style.backgroundColor = ''; }, 1500);
+        target.classList.add('note-highlight');
+        setTimeout(() => target.classList.remove('note-highlight'), 2000);
+      } else {
+        // 本篇注释缺失（部分文章注释在原始资料中即不完整）
+        el.classList.add('fn-missing');
+        setTimeout(() => el.classList.remove('fn-missing'), 1600);
+      }
+    });
+
+    // 注释条目锚点也可点击：跳到同号其他锚点（用于注释内"见注〔n〕"交叉引用）
+    prose.addEventListener('click', (e) => {
+      const anchor = e.target.closest('.note-anchor');
+      if (!anchor) return;
+      const fn = anchor.dataset.fn;
+      const siblings = [...prose.querySelectorAll(`.note-anchor[data-fn="${fn}"]`)];
+      if (siblings.length > 1) {
+        // 点击的是引用（非第一条定义处）→ 跳转到第一条
+        const target = siblings[0];
+        if (target !== anchor) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          target.classList.add('note-highlight');
+          setTimeout(() => target.classList.remove('note-highlight'), 2000);
+        }
       }
     });
   }
@@ -306,5 +361,54 @@ const postColor = isMaoxuanPost ? '#b91c1c' : section.color;
   .prose-maoxuan .fn-ref:hover {
     color: #ef4444;
     text-decoration: underline;
+  }
+  /* 注释区标题（"注　　释*"） */
+  .prose-maoxuan .notes-title {
+    display: block;
+    margin-block: 1.6em 0.8em;
+    font-weight: 700;
+    font-size: 1.05em;
+    letter-spacing: 0.1em;
+    color: var(--text);
+    text-indent: 0;
+  }
+  /* 注释条目锚点：保持原文角标样式，与正文上标区分 */
+  .prose-maoxuan .note-anchor {
+    font-size: 0.75em;
+    vertical-align: super;
+    line-height: 0;
+    color: #b91c1c;
+    font-weight: 600;
+    margin: 0 0.05em;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    padding: 0.1em 0.05em;
+  }
+  .prose-maoxuan .note-anchor:hover {
+    color: #ef4444;
+  }
+  /* 跳转后的高亮 */
+  .prose-maoxuan .note-anchor.note-highlight {
+    background: rgba(185, 28, 28, 0.14);
+    box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.18);
+    color: #b91c1c;
+  }
+  /* 注释缺失（部分文章注释在原始资料中不完整） */
+  .prose-maoxuan .fn-ref.fn-missing {
+    animation: fn-shake 0.45s ease-in-out;
+    color: #ef4444;
+  }
+  @keyframes fn-shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-2px);
+    }
+    75% {
+      transform: translateX(2px);
+    }
   }
 </style>
