@@ -39,9 +39,6 @@ const {
   {image && (
     <div class="pc-cover">
       <img src={image} alt="" loading="lazy" />
-      {featured && (
-        <span class="badge badge-accent pc-featured"><Icon name="sparkles" size={12} />精选</span>
-      )}
     </div>
   )}
   <div class="post-top">
@@ -98,13 +95,6 @@ const {
   }
   .post-card:hover .pc-cover img {
     transform: scale(1.06);
-  }
-  .pc-featured {
-    position: absolute;
-    top: 0.7rem;
-    left: 0.7rem;
-    z-index: 3; /* 确保不被封面图或标题遮挡 */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
   .post-top {
     display: flex;
