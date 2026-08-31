@@ -14,9 +14,9 @@ featured: true
 **论证思路**：研究以工作需求—资源模型（Job Demands-Resources Model, JD-R）为理论基础，构建了一个**链式中介模型**——技术压力既直接抑制教学创新，又分别通过工作倦怠（负面路径）和 AI 自我效能感（资源路径）间接起作用，两条路径还可以串联：技术压力 → 工作倦怠 → AI 自我效能感 → 教学创新。研究采用分层随机抽样收集了 819 名高校教师的有效问卷，用基于协方差的结构方程模型（CB-SEM）做模型检验与路径效应分析。
 
 <figure>
-  <img src="/images/papers/techno-stress-model.png" alt="链式中介模型" loading="lazy" />
+  <img src="/images/papers/techno-stress-fig1-hypothesis.png" alt="原文图1：假设模型" loading="lazy" />
+  <figcaption>图1（原文 Figure 1）假设模型</figcaption>
 </figure>
-
 
 ## 一、理论基础：为什么用 JD-R 模型
 
@@ -31,19 +31,87 @@ featured: true
 - **分析**：CB-SEM 模型检验 + 路径效应分解（直接效应、间接效应、链式中介效应）
 - **分组比较**：性别、年龄等群体间的教学创新水平差异检验
 
+样本的人口学分布如下（原文 Table 1）：
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>变量</th><th>类别</th><th>人数</th><th>占比（%）</th></tr>
+</thead>
+<tbody>
+<tr><td rowspan="2">性别</td><td>男</td><td>441</td><td>53.85</td></tr>
+<tr><td>女</td><td>378</td><td>46.15</td></tr>
+<tr><td rowspan="4">年龄</td><td>30 岁以下</td><td>134</td><td>16.36</td></tr>
+<tr><td>31–40 岁</td><td>268</td><td>32.72</td></tr>
+<tr><td>41–50 岁</td><td>230</td><td>28.09</td></tr>
+<tr><td>51 岁及以上</td><td>187</td><td>22.83</td></tr>
+<tr><td rowspan="3">学历</td><td>本科</td><td>144</td><td>17.58</td></tr>
+<tr><td>硕士</td><td>253</td><td>30.89</td></tr>
+<tr><td>博士</td><td>422</td><td>51.53</td></tr>
+<tr><td rowspan="4">教龄</td><td>0–3 年</td><td>169</td><td>20.63</td></tr>
+<tr><td>4–7 年</td><td>231</td><td>28.21</td></tr>
+<tr><td>8–15 年</td><td>251</td><td>30.65</td></tr>
+<tr><td>16 年及以上</td><td>168</td><td>20.51</td></tr>
+<tr><td rowspan="3">职称</td><td>讲师</td><td>279</td><td>34.07</td></tr>
+<tr><td>副教授</td><td>317</td><td>38.70</td></tr>
+<tr><td>教授</td><td>223</td><td>27.23</td></tr>
+</tbody>
+</table>
+</div>
+
 ## 三、核心发现
 
-**1. 技术压力显著负向预测教学创新。** 技术压力越大，教师越少开展教学创新——直接效应为负且显著，说明压力本身就会挤占创新空间。
+**1. 技术压力显著负向预测教学创新。** 技术压力越大，教师越少开展教学创新——直接效应为负且显著（B = −0.280，p = 0.004），说明压力本身就会挤占创新空间。
 
-**2. 两条独立中介路径，方向相反。**
+**2. 全部六条路径假设均获支持。** 原文结构模型的路径检验结果（原文 Table 9）：
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>假设路径</th><th>B</th><th>β</th><th>SE</th><th>T</th><th>p</th><th>结果</th></tr>
+</thead>
+<tbody>
+<tr><td>技术压力 → 教学创新</td><td>−0.280</td><td>−0.121</td><td>0.096</td><td>−2.913</td><td>0.004</td><td>支持</td></tr>
+<tr><td>技术压力 → 工作倦怠</td><td>0.601</td><td>0.596</td><td>0.044</td><td>13.762</td><td>&lt;0.001</td><td>支持</td></tr>
+<tr><td>技术压力 → AI 自我效能感</td><td>−0.356</td><td>−0.330</td><td>0.048</td><td>−7.383</td><td>&lt;0.001</td><td>支持</td></tr>
+<tr><td>工作倦怠 → AI 自我效能感</td><td>−0.423</td><td>−0.396</td><td>0.050</td><td>−8.534</td><td>&lt;0.001</td><td>支持</td></tr>
+<tr><td>工作倦怠 → 教学创新</td><td>−0.482</td><td>−0.211</td><td>0.100</td><td>−4.824</td><td>&lt;0.001</td><td>支持</td></tr>
+<tr><td>AI 自我效能感 → 教学创新</td><td>0.484</td><td>0.226</td><td>0.100</td><td>4.847</td><td>&lt;0.001</td><td>支持</td></tr>
+</tbody>
+</table>
+</div>
+
+<figure>
+  <img src="/images/papers/techno-stress-fig2-structural.png" alt="原文图2：结构模型" loading="lazy" />
+  <figcaption>图2（原文 Figure 2）结构模型路径系数</figcaption>
+</figure>
+
+**3. 效应分解：三条中介路径（原文 Table 10）。**
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>效应</th><th>路径</th><th>B</th><th>β</th><th>占比</th><th>95% CI (LLCI–ULCI)</th></tr>
+</thead>
+<tbody>
+<tr><td>总效应</td><td>技术压力 → 教学创新</td><td>−0.864</td><td>−0.375</td><td>100%</td><td>−0.456 ~ −0.302</td></tr>
+<tr><td>直接效应</td><td>技术压力 → 教学创新</td><td>−0.280</td><td>−0.121</td><td>32.27%</td><td>−0.213 ~ −0.030</td></tr>
+<tr><td rowspan="3">间接效应</td><td>技术压力 → 工作倦怠 → 教学创新</td><td>−0.290</td><td>−0.126</td><td>33.60%</td><td>−0.187 ~ −0.069</td></tr>
+<tr><td>技术压力 → AI 自我效能感 → 教学创新</td><td>−0.172</td><td>−0.075</td><td>20.00%</td><td>−0.120 ~ −0.041</td></tr>
+<tr><td>技术压力 → 工作倦怠 → AI 自我效能感 → 教学创新</td><td>−0.123</td><td>−0.053</td><td>14.13%</td><td>−0.087 ~ −0.029</td></tr>
+</tbody>
+</table>
+</div>
+
+具体来看三条中介路径的方向与含义：
+
 - **工作倦怠的中介效应占总效应的 33.60%**：技术压力 → 情绪耗竭 → 创新意愿下降。压力先"烧干"心力，再传导为创新行为减少。
-- **AI 自我效能感的中介效应占总效应的 20.00%**：技术压力与 AI 自我效能感的关系相对复杂，但它作为个人资源，为教学创新保留了"第二条通道"——教师对 AI 工具越有信心，越愿意在教学中尝试新做法。
-
-**3. 链式中介效应占总效应的 14.13%。** 技术压力通过"工作倦怠 → AI 自我效能感"的串联路径影响教学创新——倦怠会进一步侵蚀教师对使用 AI 的信心，形成"压力 → 耗竭 → 自我怀疑 → 创新停滞"的完整链条。
+- **AI 自我效能感的中介效应占总效应的 20.00%**：技术压力削弱教师对 AI 工具的自信（B = −0.356），而自我效能感反过来显著促进教学创新（B = 0.484）——这是压力之外的第二条通道。
+- **链式中介效应占总效应的 14.13%**：技术压力通过"工作倦怠 → AI 自我效能感"的串联路径影响教学创新——倦怠会进一步侵蚀教师对使用 AI 的信心（B = −0.423），形成"压力 → 耗竭 → 自我怀疑 → 创新停滞"的完整链条。
 
 **4. 群体差异。** 不同性别、不同年龄的教师群体，教学创新水平存在显著差异。
 
-> 三条中介路径合计解释了技术压力与教学创新总效应的大半——压力对创新的影响，绝大部分不是"直接打过去"的，而是通过倦怠与自我效能这两层心理机制传导的。
+> 三条中介路径合计解释了技术压力与教学创新总效应的 67.73%——压力对创新的影响，绝大部分不是"直接打过去"的（直接效应仅占 32.27%），而是通过倦怠与自我效能这两层心理机制传导的。
 
 ## 四、对高校教学实践的启示
 
@@ -77,3 +145,4 @@ featured: true
 - DOI：[10.3389/fpsyg.2026.1861301](https://doi.org/10.3389/fpsyg.2026.1861301)
 - 期刊：Frontiers in Psychology, 2026, Vol. 17
 - 原文链接：[Frontiers 全文](https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2026.1861301/full)
+- 图表来源：原文 Figure 1、Figure 2、Table 1、Table 9、Table 10（开放获取，CC BY 许可）
