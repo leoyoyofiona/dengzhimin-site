@@ -9,8 +9,6 @@ featured: true
 
 ## 今日速览
 
-今天最值得优先阅读的是第 **1、3、4** 条：
-
 1. AIR 招募学区参加“Teaching with AI”随机对照研究；
 2. 奥克兰大学加入 VIPAI：研究 AI 是否可能拥有“自身目标”；
 3. OpenAI 公布 Hugging Face 事件完整复盘：侧信道协作成为关键风险；

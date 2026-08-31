@@ -103,6 +103,8 @@ const {
     position: absolute;
     top: 0.7rem;
     left: 0.7rem;
+    z-index: 3; /* 确保不被封面图或标题遮挡 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
   .post-top {
     display: flex;
@@ -180,6 +182,8 @@ const {
     font-size: var(--text-sm);
     font-weight: 500;
     color: var(--text-tertiary);
+    white-space: nowrap; /* 防止"阅读"两字被拆成上下排 */
+    flex-shrink: 0;
     transition: color var(--speed) var(--ease), gap var(--speed) var(--ease);
     margin-left: auto;
   }

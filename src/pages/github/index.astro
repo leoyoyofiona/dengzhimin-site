@@ -45,12 +45,12 @@ const categoryGroups = GH_CATEGORIES.map((c) => {
   <section class="container list-body">
     <!-- GitHub 总榜 -->
     <div class="block">
-      <div class="block-head" style={`--c: ${section.color}`}>
+      <a class="block-head" href="/github/top-1-20/" style={`--c: ${section.color}`}>
         <span class="block-icon"><Icon name="github" size={15} /></span>
         <h2 class="block-title">GitHub 总榜</h2>
         <span class="block-count">{topPosts.length} 篇</span>
         <span class="block-go">Top 100 <Icon name="arrow-right" size={13} /></span>
-      </div>
+      </a>
       {
         topPosts.length > 0 ? (
           <div class="grid dock-grid">

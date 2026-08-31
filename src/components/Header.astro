@@ -118,6 +118,9 @@ const isActive = (href: string) => {
     </nav>
 
     <div class="actions">
+      <a class:list={['icon-btn', { 'is-active': path === '/favorites' }]} href="/favorites/" aria-label="收藏与浏览历史" title="收藏与足迹">
+        <Icon name="heart" size={18} />
+      </a>
       <a class="icon-btn search-btn" href="/search/" aria-label="搜索">
         <Icon name="search" size={18} />
       </a>
@@ -147,6 +150,12 @@ const isActive = (href: string) => {
         <a href="/search/" class="mobile-link">
           <span class="mobile-link-icon"><Icon name="search" size={16} /></span>
           搜索
+        </a>
+      </li>
+      <li>
+        <a href="/favorites/" class="mobile-link">
+          <span class="mobile-link-icon"><Icon name="heart" size={16} /></span>
+          收藏与足迹
         </a>
       </li>
       {
@@ -561,6 +570,10 @@ const isActive = (href: string) => {
   }
   .icon-btn:hover {
     background: var(--bg-glass);
+  }
+  .icon-btn.is-active {
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
   }
   /* 免责声明：悬停弹出面板 */
   .disclaimer-wrap {

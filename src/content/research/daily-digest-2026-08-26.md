@@ -9,8 +9,6 @@ featured: true
 
 ## 今日速览
 
-今天最值得优先阅读的是第 **1、2、3、4、5** 条：
-
 1. Intel 在 AI Infrastructure Summit 展示开放式基础设施路线；
 2. ChatGPT for Teachers 向更多美国学区开放；
 3. “Learning never stops”强调教师持续学习而非一次性培训；

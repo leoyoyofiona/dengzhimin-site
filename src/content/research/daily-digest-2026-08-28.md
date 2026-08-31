@@ -9,8 +9,6 @@ featured: true
 
 ## 今日速览
 
-今天最值得优先阅读的是第 **1、2、3、4、5** 条：
-
 1. OpenAI 与泰国教育、卫生部门启动 8 周 AI 创业加速器；
 2. Anthropic 发布 TASTE：评价 AI 安全研究提案的基准；
 3. OpenAI 将结束向被 SpaceX 收购后的 Cursor 提供模型服务；

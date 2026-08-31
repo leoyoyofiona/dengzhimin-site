@@ -9,8 +9,6 @@ featured: true
 
 ## 今日速览
 
-今天最值得优先阅读的是第 **1、2、3、4、5** 条：
-
 1. 美国教育部发布教育技术负责任使用原则；
 2. ChatGPT 桌面端新增 Apple Messages 连接器；
 3. Anthropic 报告 Claude 用于蛋白质设计；

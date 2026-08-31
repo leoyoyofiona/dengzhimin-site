@@ -9,8 +9,6 @@ featured: true
 
 ## 今日速览
 
-今天最值得优先阅读的是第 **1、2、3、4、5** 条：
-
 1. Harvard Kempner 试建“AI 心智经济”实验市场；
 2. OpenAI 展示全栈 AI 基础设施与 Jalapeño 推理芯片首轮结果；
 3. Anthropic 为 AI 对福祉影响评估提供经费；

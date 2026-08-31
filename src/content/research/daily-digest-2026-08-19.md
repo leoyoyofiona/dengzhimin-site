@@ -7,8 +7,6 @@ topics: ['ai-edu', 'genai-research', 'univ-ai', 'ai-industry', 'crossborder', 'c
 featured: true
 ---
 
-今天的 5 条里，**最值得优先阅读的是第 1、3、4 条**：
-
 1. ChatGPT 推出青少年版，AI 教育产品从通用工具转向年龄分层；
 2. OpenAI 因 Agent 安全风险暂停部分工作，Agentic AI 风险进入现实测试阶段；
 3. 中国的 AI 竞争优势可能不仅来自模型，也来自“数据资产化”与产业部署，数据正成为 AI 竞争的新基础设施；

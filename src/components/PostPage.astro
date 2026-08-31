@@ -13,6 +13,11 @@ interface Props {
 const { slug, post, gate = 'site' } = Astro.props;
 const section = SECTIONS.find((s) => s.slug === slug)!;
 const { Content } = await post.render();
+const postUrl = `/${slug}/${post.slug}/`;
+// 毛选文章归属"毛选学习"栏目（而非教学笔记）
+const isMaoxuanPost = post.slug.startsWith('maoxuan/');
+const postSection = isMaoxuanPost ? '毛选学习' : section.title;
+const postColor = isMaoxuanPost ? '#b91c1c' : section.color;
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description} gate={gate}>
@@ -30,15 +35,148 @@ const { Content } = await post.render();
           {post.data.tags.map((t) => (
             <span class="badge">{t}</span>
           ))}
+          <button
+            class="fav-btn"
+            id="fav-btn"
+            type="button"
+            data-url={postUrl}
+            data-title={post.data.title}
+            data-section={postSection}
+            data-color={postColor}
+            data-date={post.data.date.toISOString().slice(0, 10)}
+            aria-pressed="false"
+            title="收藏这篇文章"
+          >
+            <Icon name="heart" size={15} />
+            <span class="fav-label">收藏</span>
+          </button>
         </div>
       </header>
 
-      <div class="prose">
+      <div class:list={['prose', { 'prose-maoxuan': post.slug.startsWith('maoxuan/') }]}>
         <Content />
       </div>
     </div>
   </article>
 </BaseLayout>
+
+<script>
+  // 毛选学习：把正文中的 〔n〕 角标转为可点击上标，点击滚动到文末注释
+  const prose = document.querySelector('.prose-maoxuan');
+  if (prose) {
+    // 找到注释标题行（含"注释"字样）
+    const texts = prose.querySelectorAll('p');
+    // 先把正文段落里的 〔n〕 转成上标（跳过注释段落）
+    let inNotes = false;
+    texts.forEach((p) => {
+      const t = p.textContent || '';
+      if (/注释/.test(t) && t.length < 40) {
+        inNotes = true;
+      }
+      if (!inNotes && /〔\d+〕/.test(t)) {
+        p.innerHTML = t.replace(/〔(\d+)〕/g, '<sup class="fn-ref" data-fn="$1">〔$1〕</sup>');
+      }
+    });
+    // 点击角标滚动到注释
+    prose.addEventListener('click', (e) => {
+      const el = e.target.closest('.fn-ref');
+      if (!el) return;
+      e.preventDefault();
+      const fn = el.dataset.fn;
+      const noteEl = prose.querySelector(`p:not(.fn-handled)`);
+      // 找到包含 "〔n〕" 的注释段落
+      const allP = [...prose.querySelectorAll('p')];
+      const target = allP.find((p) => p.textContent.includes(`〔${fn}〕`) && /见|参见|原文是|参见/.test(p.textContent));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        target.style.transition = 'background-color 0.6s';
+        target.style.backgroundColor = 'rgba(185, 28, 28, 0.08)';
+        setTimeout(() => { target.style.backgroundColor = ''; }, 1500);
+      }
+    });
+  }
+
+  // ===== 收藏 + 浏览历史（localStorage） =====
+  const FAV_KEY = 'leodeng:favs';
+  const HIST_KEY = 'leodeng:history';
+  const read = (k) => {
+    try {
+      return JSON.parse(localStorage.getItem(k)) || [];
+    } catch (_) {
+      return [];
+    }
+  };
+  const write = (k, v) => {
+    try {
+      localStorage.setItem(k, JSON.stringify(v));
+    } catch (_) {
+      /* 隐私模式等场景忽略 */
+    }
+  };
+
+  const favBtn = document.getElementById('fav-btn');
+  if (favBtn) {
+    const url = favBtn.dataset.url;
+    const rec = {
+      url,
+      title: favBtn.dataset.title,
+      section: favBtn.dataset.section,
+      color: favBtn.dataset.color,
+      date: favBtn.dataset.date,
+      time: Date.now(),
+    };
+
+    // 刷新收藏状态
+    const favs = read(FAV_KEY);
+    if (favs.some((f) => f.url === url)) {
+      favBtn.classList.add('is-faved');
+      favBtn.setAttribute('aria-pressed', 'true');
+      favBtn.title = '取消收藏';
+    }
+    favBtn.addEventListener('click', () => {
+      let list = read(FAV_KEY);
+      const i = list.findIndex((f) => f.url === url);
+      if (i >= 0) {
+        list.splice(i, 1);
+        favBtn.classList.remove('is-faved');
+        favBtn.setAttribute('aria-pressed', 'false');
+        favBtn.title = '收藏这篇文章';
+        const label = favBtn.querySelector('.fav-label');
+        if (label) label.textContent = '收藏';
+      } else {
+        list.unshift({ ...rec });
+        favBtn.classList.add('is-faved');
+        favBtn.setAttribute('aria-pressed', 'true');
+        favBtn.title = '取消收藏';
+        const label = favBtn.querySelector('.fav-label');
+        if (label) label.textContent = '已收藏';
+      }
+      write(FAV_KEY, list);
+    });
+  }
+
+  // 浏览历史：去重，最多保留 60 条
+  const histUrl = window.location.pathname;
+  if (histUrl && !histUrl.endsWith('/favorites/')) {
+    const title = document.querySelector('.article-title')?.textContent || '';
+    const favBtnEl = document.getElementById('fav-btn');
+    const sectionName = favBtnEl?.dataset.section || document.querySelector('.back')?.textContent?.trim()?.replace(/^返回/, '') || '';
+    const sectionColor = favBtnEl?.dataset.color || '';
+    const dateStr = favBtnEl?.dataset.date || '';
+    let history = read(HIST_KEY);
+    history = history.filter((h) => h.url !== histUrl);
+    history.unshift({
+      url: histUrl,
+      title,
+      section: sectionName,
+      color: sectionColor,
+      date: dateStr,
+      time: Date.now(),
+    });
+    history = history.slice(0, 60);
+    write(HIST_KEY, history);
+  }
+</script>
 
 <style>
   .article {
@@ -47,6 +185,7 @@ const { Content } = await post.render();
   .article .container {
     max-width: 820px;
   }
+
   .article-head {
     margin-bottom: 2.5rem;
   }
@@ -90,5 +229,82 @@ const { Content } = await post.render();
     font-size: var(--text-sm);
     color: var(--text-tertiary);
     margin-right: 0.25rem;
+  }
+  /* ===== 收藏按钮 ===== */
+  .fav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: auto;
+    padding: 0.35rem 0.75rem;
+    font-size: var(--text-sm);
+    font-weight: 550;
+    color: var(--text-secondary);
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: color var(--speed) var(--ease), border-color var(--speed) var(--ease),
+      background-color var(--speed) var(--ease), transform var(--speed) var(--ease);
+  }
+  .fav-btn:hover {
+    color: #e11d48;
+    border-color: color-mix(in srgb, #e11d48 45%, transparent);
+    background: color-mix(in srgb, #e11d48 6%, transparent);
+  }
+  .fav-btn:active {
+    transform: scale(0.94);
+  }
+  .fav-btn.is-faved {
+    color: #e11d48;
+    border-color: color-mix(in srgb, #e11d48 55%, transparent);
+    background: color-mix(in srgb, #e11d48 10%, transparent);
+  }
+  .fav-btn.is-faved svg {
+    fill: currentColor;
+  }
+  .fav-btn svg {
+    transition: transform var(--speed) var(--ease);
+  }
+  .fav-btn.is-faved svg {
+    animation: fav-pop 0.35s var(--ease-out);
+  }
+  @keyframes fav-pop {
+    0% {
+      transform: scale(0.6);
+    }
+    60% {
+      transform: scale(1.25);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  @media (max-width: 560px) {
+    .fav-label {
+      display: none;
+    }
+  }
+</style>
+
+<style is:global>
+  /* ===== 毛选学习专属排版（全局：正文由 <Content /> 渲染，Astro scoped 样式无法命中） ===== */
+  .prose-maoxuan p {
+    text-indent: 2em; /* 首行缩进两字 */
+    margin-top: 0.85em;
+  }
+  .prose-maoxuan .fn-ref {
+    font-size: 0.7em; /* 更小 */
+    vertical-align: super; /* 上标 */
+    line-height: 0;
+    color: #b91c1c; /* 颜色 */
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0 0.1em;
+    user-select: none;
+  }
+  .prose-maoxuan .fn-ref:hover {
+    color: #ef4444;
+    text-decoration: underline;
   }
 </style>

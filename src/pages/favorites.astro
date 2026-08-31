@@ -1,0 +1,351 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Typewriter from '../components/Typewriter.astro';
+import Icon from '../components/Icon.astro';
+import { SECTIONS } from '../lib/site';
+
+// 栏目颜色映射，供前端渲染收藏/历史条目使用
+const sectionColors = Object.fromEntries(SECTIONS.map((s) => [s.title, s.color]));
+---
+
+<BaseLayout title="收藏与足迹" description="收藏的文章和最近浏览记录，保存在本机浏览器中。">
+  <section class="page-head">
+    <div class="container">
+      <p class="eyebrow">Favorites · History</p>
+      <h1 class="display page-title">收藏与足迹</h1>
+      <Typewriter text="收藏的文章与最近浏览，只保存在你的浏览器里。" />
+    </div>
+  </section>
+
+  <section class="container fav-body">
+    <div class="fav-tabs" role="tablist">
+      <button class="fav-tab is-active" id="tab-favs" type="button" role="tab" aria-selected="true">
+        <Icon name="heart" size={15} /> 我的收藏 <span class="fav-count" id="fav-count">0</span>
+      </button>
+      <button class="fav-tab" id="tab-history" type="button" role="tab" aria-selected="false">
+        <Icon name="clock" size={15} /> 浏览历史 <span class="fav-count" id="hist-count">0</span>
+      </button>
+    </div>
+
+    <div class="fav-pane" id="pane-favs" role="tabpanel">
+      <p class="fav-empty" id="fav-empty" hidden>
+        还没有收藏。读到喜欢的文章时，点文章标题旁的 <span class="fav-heart-demo"><Icon name="heart" size={13} /></span> 收藏按钮，就会出现在这里。
+      </p>
+      <ul class="fav-list" id="fav-list"></ul>
+    </div>
+
+    <div class="fav-pane" id="pane-history" role="tabpanel" hidden>
+      <p class="fav-empty" id="hist-empty" hidden>还没有浏览记录。</p>
+      <ul class="fav-list" id="hist-list"></ul>
+      <button class="hist-clear" id="hist-clear" type="button" hidden>清空浏览历史</button>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline define:vars={{ sectionColors }}>
+  const SECTION_COLORS = sectionColors;
+
+  const FAV_KEY = 'leodeng:favs';
+  const HIST_KEY = 'leodeng:history';
+  const read = (k) => {
+    try {
+      return JSON.parse(localStorage.getItem(k)) || [];
+    } catch (_) {
+      return [];
+    }
+  };
+  const write = (k, v) => {
+    try {
+      localStorage.setItem(k, JSON.stringify(v));
+    } catch (_) {
+      /* ignore */
+    }
+  };
+
+  const favList = document.getElementById('fav-list');
+  const histList = document.getElementById('hist-list');
+  const favEmpty = document.getElementById('fav-empty');
+  const histEmpty = document.getElementById('hist-empty');
+  const favCount = document.getElementById('fav-count');
+  const histCount = document.getElementById('hist-count');
+  const histClear = document.getElementById('hist-clear');
+
+  function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function fmtTime(ts) {
+    if (!ts) return '';
+    const d = new Date(ts);
+    const now = new Date();
+    const diff = now - d;
+    if (diff < 60e3) return '刚刚';
+    if (diff < 3600e3) return Math.floor(diff / 60e3) + ' 分钟前';
+    if (diff < 86400e3) return Math.floor(diff / 3600e3) + ' 小时前';
+    const p = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+  }
+
+  const HEART_SVG =
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+
+  function itemHtml(rec, canRemove) {
+    const color = SECTION_COLORS[rec.section] || rec.color || '#888';
+    const removeBtn = canRemove
+      ? `<button class="fav-remove" type="button" data-url="${esc(rec.url)}" aria-label="取消收藏" title="取消收藏">${HEART_SVG}</button>`
+      : '';
+    return `<li class="fav-item" data-url="${esc(rec.url)}">
+      <a class="fav-link" href="${esc(rec.url)}">
+        <span class="fav-dot" style="background:${esc(color)}"></span>
+        <span class="fav-body">
+          <span class="fav-title">${esc(rec.title)}</span>
+          <span class="fav-sub">
+            <span class="fav-section" style="color:${esc(color)}">${esc(rec.section)}</span>
+            <span class="fav-date">${rec.date ? esc(rec.date) : ''}${rec.time ? ' · ' + fmtTime(rec.time) : ''}</span>
+          </span>
+        </span>
+      </a>
+      ${removeBtn}
+    </li>`;
+  }
+
+  function renderFavs() {
+    const favs = read(FAV_KEY);
+    favCount.textContent = favs.length;
+    favEmpty.hidden = favs.length > 0;
+    favList.innerHTML = favs.map((r) => itemHtml(r, true)).join('');
+  }
+
+  function renderHist() {
+    const history = read(HIST_KEY);
+    histCount.textContent = history.length;
+    histEmpty.hidden = history.length > 0;
+    histClear.hidden = history.length === 0;
+    histList.innerHTML = history.map((r) => itemHtml(r, false)).join('');
+  }
+
+  // Tab 切换
+  const tabFavs = document.getElementById('tab-favs');
+  const tabHistory = document.getElementById('tab-history');
+  const paneFavs = document.getElementById('pane-favs');
+  const paneHistory = document.getElementById('pane-history');
+
+  function switchTab(which) {
+    const fav = which === 'favs';
+    tabFavs.classList.toggle('is-active', fav);
+    tabHistory.classList.toggle('is-active', !fav);
+    tabFavs.setAttribute('aria-selected', String(fav));
+    tabHistory.setAttribute('aria-selected', String(!fav));
+    paneFavs.hidden = !fav;
+    paneHistory.hidden = fav;
+  }
+  tabFavs.addEventListener('click', () => switchTab('favs'));
+  tabHistory.addEventListener('click', () => switchTab('history'));
+
+  // 取消收藏
+  favList.addEventListener('click', (e) => {
+    const btn = e.target.closest('.fav-remove');
+    if (!btn) return;
+    const url = btn.dataset.url;
+    let favs = read(FAV_KEY);
+    favs = favs.filter((f) => f.url !== url);
+    write(FAV_KEY, favs);
+    renderFavs();
+  });
+
+  // 清空历史
+  histClear.addEventListener('click', () => {
+    write(HIST_KEY, []);
+    renderHist();
+  });
+
+  renderFavs();
+  renderHist();
+</script>
+
+<style>
+  .page-head {
+    position: relative;
+    padding-block: clamp(1.5rem, 3vw, 2.25rem) clamp(1rem, 2vw, 1.5rem);
+    overflow: hidden;
+  }
+  .page-head::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    left: -10%;
+    width: 60%;
+    height: 140%;
+    background: var(--gradient-soft);
+    filter: blur(90px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .page-title {
+    font-size: var(--text-2xl);
+    margin-top: 0.35rem;
+  }
+  .eyebrow {
+    color: var(--text-tertiary);
+    font-size: var(--text-sm);
+  }
+
+  .fav-body {
+    padding-bottom: 4rem;
+    max-width: 760px;
+  }
+  .fav-tabs {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+  }
+  .fav-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    font-size: var(--text-sm);
+    font-weight: 550;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: color var(--speed) var(--ease), border-color var(--speed) var(--ease),
+      background-color var(--speed) var(--ease);
+  }
+  .fav-tab:hover {
+    color: var(--text);
+  }
+  .fav-tab.is-active {
+    color: var(--text);
+    background: var(--bg-glass);
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  .fav-count {
+    min-width: 1.2rem;
+    padding: 0.05rem 0.35rem;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 650;
+    text-align: center;
+  }
+  .fav-tab.is-active .fav-count {
+    background: var(--gradient);
+    color: #fff;
+  }
+
+  .fav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .fav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-md, 12px);
+    border: 1px solid var(--border);
+    background: var(--bg-glass);
+    transition: border-color var(--speed) var(--ease), background-color var(--speed) var(--ease);
+  }
+  .fav-item:hover {
+    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+    background: color-mix(in srgb, var(--accent) 4%, transparent);
+  }
+  .fav-link {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    text-decoration: none;
+  }
+  .fav-dot {
+    flex-shrink: 0;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+  }
+  .fav-body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .fav-title {
+    font-size: var(--text-base);
+    font-weight: 550;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .fav-sub {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: var(--text-xs);
+  }
+  .fav-section {
+    font-weight: 600;
+  }
+  .fav-date {
+    color: var(--text-tertiary);
+  }
+  .fav-remove {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: color var(--speed) var(--ease), background-color var(--speed) var(--ease);
+  }
+  .fav-remove:hover {
+    color: #e11d48;
+    background: color-mix(in srgb, #e11d48 10%, transparent);
+  }
+
+  .fav-empty {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-md, 12px);
+  }
+  .fav-heart-demo {
+    display: inline-flex;
+    vertical-align: -2px;
+    color: #e11d48;
+  }
+
+  .hist-clear {
+    display: block;
+    margin: 1.25rem auto 0;
+    padding: 0.45rem 1.1rem;
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: color var(--speed) var(--ease), border-color var(--speed) var(--ease);
+  }
+  .hist-clear:hover {
+    color: #e11d48;
+    border-color: color-mix(in srgb, #e11d48 45%, transparent);
+  }
+</style>
