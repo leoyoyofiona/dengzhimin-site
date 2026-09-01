@@ -1,0 +1,95 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  /** 显示变体：home=首页顶部独立胶囊，footer=页脚行内 */
+  variant?: 'home' | 'footer';
+}
+const { variant = 'footer' } = Astro.props;
+---
+
+<span class:list={['visitor-counter', `vc-${variant}`]} id="visitor-counter" title="访问统计">
+  <Icon name="eye" size={variant === 'home' ? 14 : 13} />
+  <span class="vc-text">访问中…</span>
+</span>
+
+<style>
+  .visitor-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--text-tertiary);
+  }
+  .vc-text {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* 首页顶部：独立胶囊，居中显示 */
+  .vc-home {
+    margin-inline: auto;
+    padding: 0.5rem 1.15rem;
+    border-radius: var(--radius-full);
+    background: var(--bg-glass-strong);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    backdrop-filter: saturate(180%) blur(16px);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .vc-home svg {
+    color: var(--accent);
+  }
+</style>
+
+<script>
+  // ===== 访问统计：上报 + 显示（访客数 / 浏览次数） =====
+  // 依赖自建留言板 API；API 不可用时静默隐藏
+  (function () {
+    // 防重复绑定（组件在页面中可能出现多次）
+    const counter = document.getElementById('visitor-counter');
+    if (!counter || counter.dataset.bound) return;
+    counter.dataset.bound = '1';
+
+    const API = 'https://dengzhimin-guestbook-api.onrender.com/api/visits';
+    const uidKey = 'leodeng:visitor-uid';
+    function getUid() {
+      try {
+        let uid = localStorage.getItem(uidKey);
+        if (!uid) {
+          uid =
+            (crypto.randomUUID && crypto.randomUUID()) ||
+            'v-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+          localStorage.setItem(uidKey, uid);
+        }
+        return uid;
+      } catch (_) {
+        return '';
+      }
+    }
+
+    function fmt(n) {
+      if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+      if (n >= 10000) return (n / 10000).toFixed(1) + 'w';
+      return String(n);
+    }
+
+    async function report() {
+      try {
+        const res = await fetch(API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uid: getUid() }),
+        });
+        if (!res.ok) throw new Error('bad status');
+        const data = await res.json();
+        const text = counter.querySelector('.vc-text');
+        if (text) text.textContent = '访问 ' + fmt(data.visitors || 0) + ' 人 · 浏览 ' + fmt(data.views || 0) + ' 次';
+      } catch (_) {
+        counter.style.display = 'none';
+      }
+    }
+    report();
+  })();
+</script>
