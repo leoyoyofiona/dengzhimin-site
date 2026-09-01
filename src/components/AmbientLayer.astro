@@ -126,9 +126,9 @@ const defaultCity = '你所在的城市';
   .am-panel {
     position: absolute;
     right: 0;
-    bottom: calc(100% + 10px);
+    bottom: 100%;
     width: 240px;
-    padding: 0.85rem 1rem;
+    padding: 0.85rem 1rem 0.9rem;
     border-radius: var(--radius-lg);
     background: var(--bg-glass-strong);
     -webkit-backdrop-filter: saturate(180%) blur(20px);
@@ -136,6 +136,15 @@ const defaultCity = '你所在的城市';
     border: 1px solid var(--border);
     box-shadow: var(--shadow-lg);
     z-index: 310;
+  }
+  /* 面板与按钮之间的透明桥接区：鼠标平滑过渡，避免误触隐藏 */
+  .am-panel::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -12px;
+    height: 12px;
   }
   .am-panel[hidden] {
     display: none;
@@ -790,10 +799,23 @@ const defaultCity = '你所在的城市';
 
     // 面板：hover 显示 / 移出隐藏（触屏点按切换）
     if (musicWrap && amPanel) {
+      // 鼠标是否还在音乐区域（按钮或面板）内
+      function insideMusic(el) {
+        return el && musicWrap.contains(el);
+      }
       musicWrap.addEventListener('mouseenter', function () {
         amPanel.hidden = false;
       });
-      musicWrap.addEventListener('mouseleave', function () {
+      musicWrap.addEventListener('mouseleave', function (e) {
+        // 若鼠标移入了面板（子元素），不隐藏
+        if (insideMusic(e.relatedTarget)) return;
+        amPanel.hidden = true;
+      });
+      amPanel.addEventListener('mouseenter', function () {
+        amPanel.hidden = false;
+      });
+      amPanel.addEventListener('mouseleave', function (e) {
+        if (insideMusic(e.relatedTarget)) return;
         amPanel.hidden = true;
       });
       amToggle.addEventListener('click', function (e) {
