@@ -27,15 +27,16 @@ const { variant = 'footer' } = Astro.props;
   /* 首页顶部：独立胶囊，居中显示 */
   .vc-home {
     margin-inline: auto;
-    padding: 0.5rem 1.15rem;
+    padding: 0.6rem 1.4rem;
     border-radius: var(--radius-full);
     background: var(--bg-glass-strong);
     -webkit-backdrop-filter: saturate(180%) blur(16px);
     backdrop-filter: saturate(180%) blur(16px);
-    border: 1px solid var(--border);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
     box-shadow: var(--shadow-sm);
-    font-size: var(--text-sm);
-    color: var(--text-secondary);
+    font-size: var(--text-base);
+    font-weight: 550;
+    color: var(--text);
     white-space: nowrap;
   }
   .vc-home svg {
@@ -102,15 +103,15 @@ const { variant = 'footer' } = Astro.props;
         const data = await res.json();
         if (text) text.textContent = '访问 ' + fmt(data.visitors || 0) + ' 人 · 浏览 ' + fmt(data.views || 0) + ' 次';
       } catch (_) {
-        // API 不可用：显示本机累计访问（不隐藏，保证用户能看到数字）
+        // API 不可用：显示本机累计（本机视为 1 位访客，浏览为本地累计次数）
         if (text) {
-          text.textContent = localVisits > 0 ? '本机访问 ' + fmt(localVisits) + ' 次' : '访问统计加载中…';
+          text.textContent = localVisits > 0 ? '访问 1 人 · 浏览 ' + fmt(localVisits) + ' 次' : '访问 1 人 · 浏览 1 次';
         }
         counter.title = '全站统计暂不可用，当前为本机累计';
       }
     }
-    // 立即显示本地计数（保证秒开），再异步拉取全站统计覆盖
-    if (text) text.textContent = localVisits > 0 ? '本机访问 ' + fmt(localVisits) + ' 次' : '访问统计加载中…';
+    // 立即显示本机计数（保证秒开），再异步拉取全站统计覆盖
+    if (text) text.textContent = localVisits > 0 ? '访问 1 人 · 浏览 ' + fmt(localVisits) + ' 次' : '访问 1 人 · 浏览 1 次';
     report();
   })();
 </script>
