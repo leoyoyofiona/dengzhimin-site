@@ -188,6 +188,13 @@ button {
   .btn-ghost:hover {
     transform: none;
   }
+  /* 触屏：禁用卡片底部滑出的预览摘要层（sticky-hover 会使其盖住标题文字） */
+  .ucard .ucard-preview {
+    display: none;
+  }
+  .ucard .ucard-preview--body {
+    display: none;
+  }
 }
 /* 旧浏览器不支持 color-mix() 时（Safari <16.2 / Chrome <111）：降级为纯色 */
 @supports not (background: color-mix(in srgb, red, blue)) {
