@@ -216,11 +216,50 @@ const defaultCity = '你所在的城市';
     transition: width 0.5s linear;
   }
 
-  /* ===== 天气背景动画层 ===== */
+  /* ===== 工作/休息提醒 Toast ===== */
+  .work-toast {
+    position: fixed;
+    left: 50%;
+    top: max(4.5rem, calc(var(--header-h) + 0.75rem));
+    transform: translateX(-50%);
+    z-index: 500;
+    max-width: min(440px, calc(100vw - 2rem));
+    padding: 0.85rem 1.2rem;
+    border-radius: var(--radius-lg);
+    background: var(--bg-glass-strong);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+    box-shadow: var(--shadow-lg);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: var(--text);
+    text-align: center;
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+    transition: opacity 0.35s var(--ease-out), transform 0.35s var(--ease-out);
+    pointer-events: none;
+  }
+  .work-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .work-toast.rest {
+    border-color: color-mix(in srgb, #e11d48 45%, var(--border));
+  }
+  .work-toast .wt-emoji {
+    font-size: 1.25rem;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+</style>
+
+<style is:global>
+  /* ===== 天气背景动画层（JS 动态创建元素，需全局样式） ===== */
   .weather-bg {
     position: fixed;
     inset: 0;
-    z-index: -1;
+    z-index: 0;
     pointer-events: none;
     overflow: hidden;
   }
@@ -312,43 +351,8 @@ const defaultCity = '你所在的城市';
     background: linear-gradient(180deg, transparent, rgba(130, 180, 255, 0.45));
   }
 
-  /* ===== 工作/休息提醒 Toast ===== */
-  .work-toast {
-    position: fixed;
-    left: 50%;
-    top: max(4.5rem, calc(var(--header-h) + 0.75rem));
-    transform: translateX(-50%);
-    z-index: 500;
-    max-width: min(440px, calc(100vw - 2rem));
-    padding: 0.85rem 1.2rem;
-    border-radius: var(--radius-lg);
-    background: var(--bg-glass-strong);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    backdrop-filter: saturate(180%) blur(20px);
-    border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
-    box-shadow: var(--shadow-lg);
-    font-size: var(--text-sm);
-    line-height: 1.6;
-    color: var(--text);
-    text-align: center;
-    opacity: 0;
-    transform: translateX(-50%) translateY(-8px);
-    transition: opacity 0.35s var(--ease-out), transform 0.35s var(--ease-out);
-    pointer-events: none;
-  }
-  .work-toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-  .work-toast.rest {
-    border-color: color-mix(in srgb, #e11d48 45%, var(--border));
-  }
-  .work-toast .wt-emoji {
-    font-size: 1.25rem;
-    display: block;
-    margin-bottom: 0.2rem;
-  }
 </style>
+
 
 <script is:inline>
   (function () {

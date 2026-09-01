@@ -185,7 +185,7 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
 
     <a class="skip-link" href="#main">跳到主要内容</a>
     <Header />
-    <main id="main" style="padding-top: var(--header-h)">
+    <main id="main" style="padding-top: var(--header-h); position: relative; z-index: 1">
       <slot />
     </main>
     {footer && <Footer />}
