@@ -7,7 +7,7 @@ category: ai-edu
 featured: true
 ---
 
-**文献**：Dong, Y. (2026). Generative AI technologies and educational outcomes: A comprehensive meta-analysis comparing traditional and AI-driven approaches. *Humanities and Social Sciences Communications*, 13, Article s41599-026-xxxxx. DOI: 10.1057/s41599-026-xxxxx（**需核对 DOI**，请以期刊官网为准）。
+**文献**：Dong, Y. (2026). Generative AI technologies and educational outcomes: A comprehensive meta-analysis comparing traditional and AI-driven approaches. *Humanities and Social Sciences Communications*, 13, Article 06903-y. DOI: 10.1057/s41599-026-06903-y。
 
 **研究问题**：生成式人工智能（GenAI）进入教育领域以来，相关实证研究迅速积累，但单个研究的样本量小、情境各异，结论彼此不一——有的显示 GenAI 显著提升学习效果，有的则无显著差异甚至产生负面影响。本文要回答的核心问题是：与传统/非 GenAI 教学方法相比，GenAI 干预对教育结果的整体效应量到底有多大？这一效应在不同结果类型（学业成就、高阶思维、学习动机、写作技能）、不同国家和不同干预形式之间是否存在系统性差异？
 
@@ -90,5 +90,5 @@ featured: true
 ## 原文地址
 
 - 期刊：*Humanities and Social Sciences Communications*, 2026, Vol. 13（需核对文章编号与页码）
-- 官方页面/DOI：[10.1057/s41599-026-xxxxx](https://doi.org/10.1057/s41599-026-xxxxx)（**需核对 DOI**）
+- 官方页面/DOI：[10.1057/s41599-026-06903-y](https://doi.org/10.1057/s41599-026-06903-y)
 - 图表来源：原文 Figure 1（PRISMA 文献筛选流程）、原文 Figure 3（学业成就、高阶思维、学习动机与写作技能的元分析结果）

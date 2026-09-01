@@ -7,7 +7,7 @@ category: ai-literacy
 featured: true
 ---
 
-**文献**：Liu, Q., Miao, W., Li, J., & Lei, Y. (2026). *The Six-Facet Artificial Intelligence Literacy Questionnaire (SFAILQ): Assessing AI literacy in adolescents, young adults, and midlife adults.* Behavioral Sciences, 16(7). DOI 10.3390/bs1607xxxx（注：期号与 DOI 末尾编号需对照原文正式版核对，本文撰写时暂按 16(7) 记录）。期刊为 MDPI 旗下 Behavioral Sciences，IF 2.5（Q2），开放获取。
+**文献**：Liu, Q., Miao, W., Li, J., & Lei, Y. (2026). *The Six-Facet Artificial Intelligence Literacy Questionnaire (SFAILQ): Assessing AI literacy in adolescents, young adults, and midlife adults.* Behavioral Sciences, 16(7). DOI 10.3390/bs16071110。期刊为 MDPI 旗下 Behavioral Sciences，IF 2.5（Q2），开放获取。
 
 **研究问题**：AI 素养已成为数字时代个体参与社会生活的核心能力，但现有 AI 素养量表大多面向大学生或职场人群，且测量维度不一、缺乏统一结构。论文要回答的是：能否开发一个**同时适用于青少年、青年与中年成人**的通用 AI 素养问卷？AI 素养应包含哪些核心维度？该量表能否在不同年龄组间保持相同的因子结构？
 
@@ -77,6 +77,6 @@ SFAILQ 将 AI 素养操作化为六个相互关联的维度（维度命名以原
 
 ## 原文地址
 
-- DOI：[10.3390/bs1607xxxx](https://doi.org/10.3390/bs1607xxxx)（后四位待对照原文核对；期号 16(7) 亦请以期刊官网为准）
+- DOI：[10.3390/bs16071110](https://doi.org/10.3390/bs16071110)
 - 期刊：Behavioral Sciences (MDPI), 2026, 16(7)；IF 2.5（Q2），开放获取
 - 图表来源：原文 Figure 1（CFA 结果图），CC BY 许可

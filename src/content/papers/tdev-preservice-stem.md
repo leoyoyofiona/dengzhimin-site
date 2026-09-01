@@ -7,7 +7,7 @@ category: teacher-dev
 featured: true
 ---
 
-**文献**：Chen, L., et al. (2026). *The mechanisms influencing AI teaching readiness among preservice STEM teachers: An empirical analysis based on PLS-SEM and fsQCA*. Frontiers in Psychology, 17. DOI 10.3389/fpsyg.2026.18xxxx（作者以原文为准）。Frontiers in Psychology，IF 2.9（Q1）。
+**文献**：Chen, L., et al. (2026). *The mechanisms influencing AI teaching readiness among preservice STEM teachers: An empirical analysis based on PLS-SEM and fsQCA*. Frontiers in Psychology, 17. DOI 10.3389/fpsyg.2026.1868148。Frontiers in Psychology，IF 2.9（Q1）。
 
 **研究问题**：人工智能正在重塑课堂教学形态，STEM 教师作为技术整合的关键人群，其"是否准备好把 AI 用于教学"直接决定 AI 教育的落地质量。然而已有研究多聚焦在职教师的 AI 使用意向，对**职前教师（师范生）**这一特殊群体的关注明显不足——他们尚未进入真实课堂，却将在未来几年内承担 AI 融入 STEM 教学的任务。论文要回答的核心问题是：哪些因素影响职前 STEM 教师的 AI 教学准备度？这些因素之间是简单的线性叠加，还是存在多条可等价实现的路径？
 
@@ -82,6 +82,6 @@ fsQCA 的结果揭示了比净效应更丰富的图景：**存在多条等价路
 
 ## 原文地址
 
-- DOI：[10.3389/fpsyg.2026.18xxxx](https://doi.org/10.3389/fpsyg.2026.18xxxx)
+- DOI：[10.3389/fpsyg.2026.1868148](https://doi.org/10.3389/fpsyg.2026.1868148)
 - 期刊：Frontiers in Psychology, 2026, 17（IF 2.9，Q1）
 - 图表来源：原文 Figure 2（AI 教学准备度分析结果）（开放获取，CC BY）

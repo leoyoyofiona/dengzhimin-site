@@ -7,7 +7,7 @@ category: teacher-dev
 featured: true
 ---
 
-**文献**：Zhou, X., et al. (2026). *Research on factors influencing teaching staff's continued use intention of AIGC tools based on structural equation modeling and artificial neural networks*. Scientific Reports, 16. DOI 10.1038/s41598-026-xxxxx（作者以原文为准；期刊 *Scientific Reports*，IF 3.9，Q1）。
+**文献**：Zhou, X., et al. (2026). *Research on factors influencing teaching staff's continued use intention of AIGC tools based on structural equation modeling and artificial neural networks*. Scientific Reports, 16, Article 58611-x. DOI 10.1038/s41598-026-58611-x。
 
 **研究问题**：生成式人工智能（AIGC）工具正在快速进入高校教学场景，多数研究关注教师"要不要用"（首次采纳意向），但真正的难题是**"用起来之后会不会坚持用"**——工具在教学中落地的价值，取决于教师的持续使用而非一时尝鲜。论文要回答：**哪些因素决定教职工对 AIGC 工具的持续使用意向？在感知有用性、感知易用性等经典技术接受变量之外，自我效能与机构支持扮演什么角色？这些因素与持续使用意向之间，除了线性关系之外还存在哪些非线性规律？**
 
@@ -98,6 +98,6 @@ SEM 的线性路径回答了"哪些因素有影响"，ANN 则进一步回答"这
 
 ## 原文地址
 
-- DOI：[10.1038/s41598-026-xxxxx](https://doi.org/10.1038/s41598-026-xxxxx)（以原文发布为准）
+- DOI：[10.1038/s41598-026-58611-x](https://doi.org/10.1038/s41598-026-58611-x)
 - 期刊：*Scientific Reports*（Nature Portfolio），2026, Vol. 16（IF 3.9，Q1）
 - 图表来源：原文 Figure 1（研究流程图）、Figure 2（影响因素模型）

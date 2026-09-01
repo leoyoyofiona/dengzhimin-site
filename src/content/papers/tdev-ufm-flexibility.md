@@ -7,7 +7,7 @@ category: teacher-dev
 featured: true
 ---
 
-**文献**：Deng, Y., et al. (2026). *Flexible teachers, thriving classrooms: A unified flexibility and mindfulness (UFM) model of classroom dynamics, teaching practices and teacher burnout.* Behavioral Sciences, 16(7). DOI 10.3390/bs1607xxxx（作者与卷期信息以原文为准）。期刊 IF 2.5（Q2），MDPI 出版。
+**文献**：Deng, Y., et al. (2026). *Flexible teachers, thriving classrooms: A unified flexibility and mindfulness (UFM) model of classroom dynamics, teaching practices and teacher burnout.* Behavioral Sciences, 16(6). DOI 10.3390/bs16061018。期刊 IF 2.5（Q2），MDPI 出版。
 
 **研究问题**：教师倦怠（teacher burnout）是全球教育领域持续关注的职业健康议题——情绪耗竭、去个性化与低成就感不仅侵蚀教师自身的身心健康，也直接削弱课堂质量。与此同时，心理灵活性（psychological flexibility）与正念（mindfulness）作为两类被反复验证的保护性心理资源，长期分属两条研究脉络：前者强调"接纳并坚持有价值行动"的行为弹性，后者强调"对当下经验不带评判的觉察"。两条脉络各自都与教师幸福感相关，却很少被放进同一个模型中考察。论文要回答的核心问题是：**心理灵活性与正念，能否整合为一个统一的理论模型（UFM），并解释它们如何通过课堂动态与教学实践这两层"教学现场"机制，最终降低教师倦怠？**
 
@@ -79,6 +79,6 @@ UFM 模型的价值正在于"统一"：它把觉察（正念）与行动（灵�
 
 ## 原文地址
 
-- DOI：[10.3390/bs1607xxxx](https://doi.org/10.3390/bs1607xxxx)（以原文正式刊出信息为准）
-- 期刊：Behavioral Sciences（MDPI），2026, 16(7)；IF 2.5（Q2）
+- DOI：[10.3390/bs16061018](https://doi.org/10.3390/bs16061018)
+- 期刊：Behavioral Sciences（MDPI），2026, 16(6)；IF 2.5（Q2）
 - 图表来源：原文 Figure 1（探索性网络分析结果，开放获取，CC BY 许可）

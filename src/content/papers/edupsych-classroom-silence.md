@@ -7,7 +7,7 @@ category: edu-psych
 featured: true
 ---
 
-**文献**：Chen, J., Ye, B., & Xu, H. (2025). *Configuration analysis of negative silence in college classroom based on fsQCA method*. Scientific Reports, 15. DOI 10.1038/s41598-025-xxxxx。
+**文献**：Chen, J., Ye, B., & Xu, H. (2025). *Configuration analysis of negative silence in college classroom based on fsQCA method*. Scientific Reports, 15, Article 09608-5. DOI 10.1038/s41598-025-09608-5。
 
 **研究问题**：大学课堂上"老师提问、全班沉默"的场景几乎人人熟悉，但真正值得警惕的不是沉默本身，而是**负沉默（negative silence）**——学生消极不参与：不思考、不回应、回避互动，人在课堂而心不在焉。既有研究多从单一因素（如教师提问方式、学生性格）出发检验其对课堂参与的"净效应"，却难以解释为什么相似的课堂上，有的学生沉默、有的活跃，为什么同样的干预在不同课堂效果迥异。本文要回答的核心问题是：**大学课堂负沉默是否不是由单一原因引起，而是由教师、学生、课程等多侧条件以特定组合（组态）联合作用的结果？哪些条件组态会导致负沉默的出现？**
 
@@ -125,6 +125,6 @@ fsQCA 的结果印证了概念模型的预期，也给出了比"单一原因"更
 
 ## 原文地址
 
-- DOI：[10.1038/s41598-025-xxxxx](https://doi.org/10.1038/s41598-025-xxxxx)
+- DOI：[10.1038/s41598-025-09608-5](https://doi.org/10.1038/s41598-025-09608-5)
 - 期刊：Scientific Reports（Nature Portfolio），2025 年，第 15 卷（IF 3.9，Q1）
 - 图表来源：原文 Figure 1（概念模型），开放获取

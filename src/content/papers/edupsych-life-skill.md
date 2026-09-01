@@ -7,7 +7,7 @@ category: edu-psych
 featured: true
 ---
 
-**文献**：Wang, L., et al. (2025). *The challenge of explicit learning in life skill education*. npj Science of Learning, 10, Article s41539-025-xxxxx。DOI 10.1038/s41539-025-xxxxx（作者与文章编号以原文为准）。npj Science of Learning（Nature Portfolio，Q1）。
+**文献**：Wang, L., et al. (2025). *The challenge of explicit learning in life skill education*. npj Science of Learning, 10, Article 00375-6. DOI 10.1038/s41539-025-00375-6。npj Science of Learning（Nature Portfolio，Q1）。
 
 **研究问题**：生活技能——财务管理、健康习惯、时间规划——是独立生活的基石，近年来也被越来越多地纳入学校与社区课程。然而这类技能的教学几乎默认采用**显性学习**（explicit learning）：教师明确讲授知识点、规则与步骤，学生通过记忆与练习掌握。但生活技能真的能像代数公式那样被"教"出来吗？课堂上"知道了"能否转化为真实情境中"会做、肯做"？论文要回答的核心问题是：显性学习在生活技能教育中面临怎样的挑战？隐性学习（implicit learning）能否为技能习得提供一条被忽视的补充路径？
 
@@ -71,6 +71,6 @@ featured: true
 
 ## 原文地址
 
-- DOI：[10.1038/s41539-025-xxxxx](https://doi.org/10.1038/s41539-025-xxxxx)（以正式发表版本为准）
+- DOI：[10.1038/s41539-025-00375-6](https://doi.org/10.1038/s41539-025-00375-6)
 - 期刊：npj Science of Learning（Nature Portfolio，Q1），2025 年，第 10 卷
 - 图表来源：原文 Figure 1（知识连续体）、Figure 2（干预/治疗效果）

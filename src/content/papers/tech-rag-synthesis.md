@@ -7,7 +7,7 @@ category: ai-tech
 featured: true
 ---
 
-**文献**：Li, A., et al. (2026). *Synthesizing scientific literature with retrieval-augmented language models*. Nature. DOI 10.1038/s41586-026-xxxxx。Nature（Springer Nature 出版，国际公认综合科学顶刊），影响因子 48.5（Q1）。
+**文献**：Li, A., et al. (2026). *Synthesizing scientific literature with retrieval-augmented language models*. Nature, 650, Article s41586-025-10072-4. DOI 10.1038/s41586-025-10072-4。Nature（Springer Nature 出版，国际公认综合科学顶刊），影响因子 48.5（Q1）。
 
 **研究问题**：科研人员最耗时、也最依赖专业能力的工作之一，是从海量论文中**综合**出可靠结论——无论是写文献综述、回答"某方法的最新进展是什么"，还是评估"现有证据是否支持某个结论"。通用大语言模型（LLM）虽然能流畅生成类似综述的文本，却有两个致命问题：其一，模型依赖训练时截断的知识，无法覆盖最新发表的论文，容易"过时"；其二，模型倾向于"编造"参考文献，生成的引用经常张冠李戴甚至根本不存在——这在以严谨著称的科学文献综合场景中是不可接受的。论文要回答的核心问题是：**能否构建一个系统，让大语言模型基于实时检索到的真实论文来回答问题、撰写综述，并给出可核验的引用？**
 
@@ -88,6 +88,6 @@ OpenScholar 的价值不止于一篇论文，它指向科研工具链的一次�
 
 ## 原文地址
 
-- DOI：[10.1038/s41586-026-xxxxx](https://doi.org/10.1038/s41586-026-xxxxx)
+- DOI：[10.1038/s41586-025-10072-4](https://doi.org/10.1038/s41586-025-10072-4)
 - 期刊：Nature（Springer Nature 出版），2026 年，影响因子 48.5（Q1）
 - 图表来源：原文 Figure 1（OpenScholar、ScholarQABench 与评估结果概览）

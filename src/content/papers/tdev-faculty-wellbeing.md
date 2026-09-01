@@ -7,7 +7,7 @@ category: teacher-dev
 featured: true
 ---
 
-**文献**：Liu, Y., et al. (2026). *Exploring university faculty's AI well-being: A structural equation model of social supports, AI literacy and technological self-efficacy*. Behavioral Sciences, 16(7). DOI 10.3390/bs1607xxxx（完整作者列表以原文为准，期刊为 MDPI 出版）。
+**文献**：Liu, Y., et al. (2026). *Exploring university faculty's AI well-being: A structural equation model of social supports, AI literacy and technological self-efficacy*. Behavioral Sciences, 16(7). DOI 10.3390/bs16071168。
 
 **研究问题**：人工智能正在全面渗透高校的教学、科研与行政——教师用它备课、批改、做文献综述、写基金申请，也用它应对课程考核与行政表格。然而，围绕 AI 入校的讨论大多聚焦两件事：学生的学术诚信，以及 AI 能否提升效率。一个更根本的问题反而被冷落：**教师自己在使用 AI 过程中的心理福祉（well-being）如何？** AI 带来的学习压力、对职业被替代的焦虑、与日俱增的工具更新负担，都在真实地消耗教师的身心资源。论文要回答的核心问题是：**社会支持（同事支持与机构支持）、AI 素养与技术自我效能，如何共同影响高校教师的"AI 幸福感"？** 更进一步：支持性环境与个人能力之间，究竟是谁在"托底"教师的心理健康？
 
@@ -80,7 +80,7 @@ SEM 之所以适合本研究，是因为它能在**一个统一模型中**同时
 
 ## 原文地址
 
-- DOI：[10.3390/bs1607xxxx](https://doi.org/10.3390/bs1607xxxx)（正式 DOI 以期刊出版页面为准）
+- DOI：[10.3390/bs16071168](https://doi.org/10.3390/bs16071168)
 - 期刊：Behavioral Sciences（MDPI），2026 年，第 16 卷第 7 期（IF 2.5，Q2）
 - 原文链接：[MDPI 全文（开放获取）](https://www.mdpi.com/journal/behavsci)
 - 图表来源：原文 Figure 1（结构方程模型分析结果）

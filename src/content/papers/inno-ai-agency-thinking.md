@@ -7,7 +7,7 @@ category: innovation
 featured: true
 ---
 
-**文献**：Zhang, Y., et al. (2026). *AI agency drives college students' entrepreneurial thinking through human sense of agency in human-AI symbiosis.* Scientific Reports, 16. DOI 10.1038/s41598-026-xxxxx（作者以原文为准）。期刊 IF 3.9（Q1）。
+**文献**：Zhang, Y., et al. (2026). *AI agency drives college students' entrepreneurial thinking through human sense of agency in human-AI symbiosis.* Scientific Reports, 16, Article 60406-z. DOI 10.1038/s41598-026-60406-z。期刊 IF 3.9（Q1）。
 
 **研究问题**：生成式 AI 已深度嵌入大学生的学习与创业实践，"人机共生"（human-AI symbiosis）正在成为大学生开展创业活动的默认环境。然而，AI 系统的自主程度究竟是促进还是抑制了学生的创业心理，学界尚未给出答案。论文聚焦一个此前未被系统回答的问题：在人机共生环境中，**AI 代理性（AI agency）如何通过人类能动感（human sense of agency）驱动大学生创业思维**？
 
@@ -84,6 +84,6 @@ featured: true
 
 ## 原文地址
 
-- DOI：[10.1038/s41598-026-xxxxx](https://doi.org/10.1038/s41598-026-xxxxx)
+- DOI：[10.1038/s41598-026-60406-z](https://doi.org/10.1038/s41598-026-60406-z)
 - 期刊：Scientific Reports, 2026, 16（IF 3.9，Q1）
 - 图表来源：图1（原文 Figure 1，人机共生环境中的创业思维模型）、图2（PRISMA 系统综述流程图）、图3（原文 Figure 3，机制研究模型）、图4（研究阶段）均引自原文

@@ -7,7 +7,7 @@ category: teacher-dev
 featured: true
 ---
 
-**文献**：Wang, R., et al. (2026). *Examining the relationships between artificial intelligence literacy, AI-TPACK, job satisfaction and well-being among teachers through structural equation modeling.* Acta Psychologica, 248. DOI 10.1016/j.actpsy.2026.xxxxx（作者、卷期与 DOI 后段编号以原文正式版为准）。期刊 IF 2.7（Q2），Elsevier 出版。
+**文献**：Wang, R., et al. (2026). *Examining the relationships between artificial intelligence literacy, AI-TPACK, job satisfaction and well-being among teachers through structural equation modeling.* Acta Psychologica, 248. DOI 10.1016/j.actpsy.2026.107297。期刊 IF 2.7（Q2），Elsevier 出版。
 
 **研究问题**：AI 大规模进入课堂之后，教师培训普遍聚焦于"教老师怎么用工具"，但一个更深层的问题悬而未决：**教师的 AI 能力究竟通过什么机制，转化为职业层面的获得感与生活层面的幸福感？** 过去的研究往往分开考察——AI 素养研究关注教师的能力结构，工作满意度与幸福感研究关注职业心理结果，两者很少被放进同一个模型里检验。论文要回答的核心问题是：教师 AI 素养、AI-TPACK（AI 支持下的技术—教学—内容整合知识）、工作满意度与幸福感之间，是否存在一条可检验的传导路径——**AI 素养能否经由 AI-TPACK 这一教学知识整合环节，依次通向工作满意度与整体幸福感？**
 
@@ -84,6 +84,6 @@ SEM 在此处的优势是**同时处理测量误差与多段路径**：相比逐
 
 ## 原文地址
 
-- DOI：[10.1016/j.actpsy.2026.xxxxx](https://doi.org/10.1016/j.actpsy.2026.xxxxx)（DOI 后段编号与卷期以原文正式刊出信息为准）
+- DOI：[10.1016/j.actpsy.2026.107297](https://doi.org/10.1016/j.actpsy.2026.107297)
 - 期刊：Acta Psychologica（Elsevier），2026, Vol. 248；IF 2.7（Q2）
 - 图表来源：原文 Figure 1（研究概念模型）、Figure 2（结构模型结果）

@@ -7,7 +7,7 @@ category: innovation
 featured: true
 ---
 
-**文献**：Wang, X., et al. (2026). Entrepreneurial team flourishing amidst AI revolution: The interplay of being through efficacy and anxiety. *Behavioral Sciences*, 16(7). DOI: [10.3390/bs1607xxxx](https://doi.org/10.3390/bs1607xxxx)（作者名单以原文为准，MDPI 出版，JCR Q2，影响因子 2.5）。
+**文献**：Wang, X., et al. (2026). Entrepreneurial team flourishing amidst AI revolution: The interplay of being through efficacy and anxiety. *Behavioral Sciences*, 16(7). DOI: [10.3390/bs16071198](https://doi.org/10.3390/bs16071198)。
 
 **研究问题**：生成式 AI 正在重塑创业的每一个环节——从机会识别、产品开发到融资路演。对创业团队而言，AI 既是提升效率与创新能力的"加速器"，也是引发职业不确定性与技能过时的"焦虑源"。同一支团队，为何有的在 AI 浪潮中愈战愈勇、蓬勃发展，有的却陷入迷茫与退缩？论文要回答的核心问题是：在 AI 革命背景下，创业团队的**团队效能感**（collective efficacy）与**AI 焦虑**（AI anxiety）如何分别、又如何交互地影响团队的**蓬勃发展**（flourishing）？
 
@@ -89,6 +89,6 @@ AI 焦虑是技术焦虑在智能时代的新形态，包括对失业替代的�
 
 ## 原文地址
 
-- DOI：[10.3390/bs1607xxxx](https://doi.org/10.3390/bs1607xxxx)
+- DOI：[10.3390/bs16071198](https://doi.org/10.3390/bs16071198)
 - 期刊：*Behavioral Sciences*（MDPI），2026 年第 16 卷第 7 期；JCR Q2，影响因子 2.5
 - 图表来源：原文 Figure 1（理论模型），本文图1 为原图引用

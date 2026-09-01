@@ -7,7 +7,7 @@ category: teacher-dev
 featured: true
 ---
 
-**文献**：Zhang, H., et al. (2026). *The chain-mediating roles of generative AI literacy and TPACK in the relationship between AI support and teaching practice among university teachers*. Frontiers in Psychology, 17. DOI 10.3389/fpsyg.2026.18xxxx（作者署名与文章编号以原文为准）。
+**文献**：Zhang, H., et al. (2026). *The chain-mediating roles of generative AI literacy and TPACK in the relationship between AI support and teaching practice among university teachers*. Frontiers in Psychology, 17. DOI 10.3389/fpsyg.2026.1932185。
 
 **研究问题**：生成式 AI 正在快速进入高校课堂，但一个关键的实践难题仍未解决——**学校层面的 AI 支持（政策、平台、培训、资源），究竟通过什么机制转化为教师日常教学中的真实应用？** 组织投入了算力、平台与培训，教师却未必真的把 AI 用进教学；而有些教师即使支持有限，也能主动探索。这提示支持与教学实践之间并非简单的一一对应，中间隔着"会用什么、信什么、懂什么"的心理与知识环节。论文要回答：AI 支持是否通过"生成式 AI 素养 → TPACK"的链式传导，间接影响高校教师的教学实践？
 
@@ -87,6 +87,6 @@ TPACK（Technological Pedagogical Content Knowledge，整合技术的学科教�
 
 ## 原文地址
 
-- DOI：[10.3389/fpsyg.2026.18xxxx](https://doi.org/10.3389/fpsyg.2026.18xxxx)（文章编号与 DOI 以原文为准）
+- DOI：[10.3389/fpsyg.2026.1932185](https://doi.org/10.3389/fpsyg.2026.1932185)
 - 期刊：*Frontiers in Psychology*，2026 年，第 17 卷（IF 2.9，Q1）
 - 图表来源：图 1（原文 Figure 1）最终结构模型与假设关系，引自原文，供学习交流使用

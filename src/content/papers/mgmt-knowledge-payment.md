@@ -7,7 +7,7 @@ category: management
 featured: true
 ---
 
-**文献**：Gao, J. (2025). *Exploring persuasion and participation in online knowledge payment: A dual-route perspective*. Humanities and Social Sciences Communications, 12, Article 211. DOI 10.1057/s41599-025-xxxxx。期刊 IF 3.6（Q2），由 Springer Nature 出版。
+**文献**：Gao, J. (2025). *Exploring persuasion and participation in online knowledge payment: A dual-route perspective*. Humanities and Social Sciences Communications, 12, Article 211. DOI 10.1057/s41599-025-05431-5。期刊 IF 3.6（Q2），由 Springer Nature 出版。
 
 **研究问题**：在线知识付费（Online Knowledge Payment, OKP）快速扩张的今天，用户为什么愿意为知识内容付费？面对海量课程、问答与专栏，用户的购买决策究竟被什么说服——是内容本身的质量，还是创作者的名气、评分等外在信号？论文要回答：在知识付费情境下，**说服（persuasion）如何经由不同路径发生，并最终转化为用户的付费参与（participation）**。
 
@@ -94,6 +94,6 @@ ELM 的关键洞见在于：**同一种说服效果可能由完全不同路径�
 
 ## 原文地址
 
-- DOI：[10.1057/s41599-025-xxxxx](https://doi.org/10.1057/s41599-025-xxxxx)
+- DOI：[10.1057/s41599-025-05431-5](https://doi.org/10.1057/s41599-025-05431-5)
 - 期刊：Humanities and Social Sciences Communications（Springer Nature），2025 年，第 12 卷
 - 图表来源：图 1（在线知识付费平台生态系统）与图 2（双路径说服模型）均为原文 Figure 1、Figure 2，版权归原作者及期刊所有
