@@ -303,6 +303,7 @@ const isActive = (href: string) => {
     display: flex;
     justify-content: center;
     padding-bottom: 0.4rem;
+    padding-right: 0;
   }
   .nav ul {
     display: flex;
@@ -311,8 +312,9 @@ const isActive = (href: string) => {
     list-style: none;
     padding: 0;
     margin: 0;
+    width: 100%;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-between;
   }
   .nav-item {
     position: relative;
@@ -682,9 +684,10 @@ const isActive = (href: string) => {
     line-height: 1;
   }
 
-  /* ===== 随机音乐（第一行最右侧，面板向下弹出） ===== */
+  /* ===== 随机音乐（第一行最右侧，右缘与内容区"查看全部"箭头对齐） ===== */
   .ambient-music {
     position: relative;
+    margin-right: calc(-1 * var(--gutter));
   }
   .am-toggle {
     display: inline-flex;
@@ -1038,6 +1041,16 @@ const isActive = (href: string) => {
     .disclaimer-link {
       padding: 0.3rem 0.4rem;
       font-size: 0.72rem;
+    }
+  }
+
+  /* 容器贴边时（视口 ≤ maxw）：音乐按钮与"查看全部"箭头同以内容右缘对齐 */
+  @media (max-width: 1120px) {
+    .ambient-music {
+      margin-right: 0;
+    }
+    .nav {
+      padding-right: var(--gutter);
     }
   }
 
