@@ -64,60 +64,6 @@ const isActive = (href: string) => {
       </p>
     </div>
 
-    <nav class="nav" aria-label="主导航">
-      <ul>
-        {
-          nav.map((item) => (
-            <li class="nav-item">
-              <a href={item.href} class:list={['nav-link', { active: isActive(item.href) }]}>
-                {item.label}
-              </a>
-              {item.tip && <span class="nav-tip" role="tooltip">{item.tip}</span>}
-            </li>
-          ))
-        }
-        <li class="nav-item today-item">
-          <a href="/" class="nav-link today-link">
-            <span class="today-dot" aria-hidden="true"></span>
-            今日更新
-          </a>
-          <div class="today-panel" id="today-panel">
-            <div class="today-panel-head">
-              <span class="today-panel-title">今日更新</span>
-              <span class="today-panel-date">{todayStr}</span>
-            </div>
-            {
-              todayPosts.length > 0 ? (
-                <div class="today-list" id="today-list">
-                  <span class="today-active" id="today-active" aria-hidden="true"></span>
-                  {
-                    todayPosts.map((p) => (
-                      <a class="today-card" href={p.href}>
-                        {
-                          p.image && (
-                            <span class="today-card-img">
-                              <img src={p.image} alt="" loading="lazy" />
-                            </span>
-                          )
-                        }
-                        <span class="today-card-body">
-                          <span class="today-card-section" style={`--sc: ${p.color}`}>{p.section}</span>
-                          <span class="today-card-title">{p.title}</span>
-                        </span>
-                        <Icon name="arrow-right" size={13} />
-                      </a>
-                    ))
-                  }
-                </div>
-              ) : (
-                <p class="today-empty">今天还没有发布新文章。</p>
-              )
-            }
-          </div>
-        </li>
-      </ul>
-    </nav>
-
     <div class="actions">
       <a class:list={['icon-btn', { 'is-active': path === '/favorites' }]} href="/favorites/" aria-label="收藏与浏览历史" title="收藏与足迹">
         <Icon name="heart" size={18} />
@@ -145,11 +91,80 @@ const isActive = (href: string) => {
         <span class="aw-icon" id="aw-icon"></span>
         <span class="aw-text" id="aw-text">天气加载中…</span>
       </div>
+      <div class="ambient-music" id="ambient-music" title="随机播放 CC 授权音乐（Jamendo / Free Music Archive）">
+        <button class="am-toggle" id="am-toggle" type="button" aria-label="随机播放音乐" title="随机播放 CC 授权音乐">
+          <span class="am-icon" id="am-icon">🎵</span>
+        </button>
+        <div class="am-panel" id="am-panel" hidden>
+          <div class="am-title" id="am-title">随机音乐</div>
+          <div class="am-song" id="am-song">点击播放，随机来一首 CC 授权音乐</div>
+          <div class="am-controls">
+            <button class="am-btn" id="am-prev" type="button" title="上一曲" aria-label="上一曲">⏮</button>
+            <button class="am-btn am-play" id="am-play" type="button" title="播放/暂停" aria-label="播放/暂停">▶</button>
+            <button class="am-btn" id="am-next" type="button" title="下一曲" aria-label="下一曲">⏭</button>
+          </div>
+          <div class="am-progress"><span id="am-progress-bar"></span></div>
+        </div>
+      </div>
       <button class="icon-btn menu-btn" id="menu-toggle" aria-label="打开菜单" aria-expanded="false">
         <Icon name="menu" size={22} />
       </button>
     </div>
   </div>
+
+  <nav class="nav" aria-label="主导航">
+    <ul>
+      {
+        nav.map((item) => (
+          <li class="nav-item">
+            <a href={item.href} class:list={['nav-link', { active: isActive(item.href) }]}>
+              {item.label}
+            </a>
+            {item.tip && <span class="nav-tip" role="tooltip">{item.tip}</span>}
+          </li>
+        ))
+      }
+      <li class="nav-item today-item">
+        <a href="/" class="nav-link today-link">
+          <span class="today-dot" aria-hidden="true"></span>
+          今日更新
+        </a>
+        <div class="today-panel" id="today-panel">
+          <div class="today-panel-head">
+            <span class="today-panel-title">今日更新</span>
+            <span class="today-panel-date">{todayStr}</span>
+          </div>
+          {
+            todayPosts.length > 0 ? (
+              <div class="today-list" id="today-list">
+                <span class="today-active" id="today-active" aria-hidden="true"></span>
+                {
+                  todayPosts.map((p) => (
+                    <a class="today-card" href={p.href}>
+                      {
+                        p.image && (
+                          <span class="today-card-img">
+                            <img src={p.image} alt="" loading="lazy" />
+                          </span>
+                        )
+                      }
+                      <span class="today-card-body">
+                        <span class="today-card-section" style={`--sc: ${p.color}`}>{p.section}</span>
+                        <span class="today-card-title">{p.title}</span>
+                      </span>
+                      <Icon name="arrow-right" size={13} />
+                    </a>
+                  ))
+                }
+              </div>
+            ) : (
+              <p class="today-empty">今天还没有发布新文章。</p>
+            )
+          }
+        </div>
+      </li>
+    </ul>
+  </nav>
 
   <div class="mobile-menu" id="mobile-menu" hidden>
     <ul>
@@ -283,21 +298,21 @@ const isActive = (href: string) => {
     color: var(--text-tertiary);
   }
 
+  /* ===== 第二行：分类栏目导航（全宽居中） ===== */
   .nav {
-    flex: 1;
-    min-width: 0;
     display: flex;
     justify-content: center;
+    padding: 0 0 0.4rem;
   }
   .nav ul {
     display: flex;
     align-items: center;
-    gap: 0;
+    gap: 0.06rem;
     list-style: none;
     padding: 0;
     margin: 0;
-    flex-wrap: nowrap;
-    white-space: nowrap;
+    flex-wrap: wrap;
+    justify-content: center;
   }
   .nav-item {
     position: relative;
@@ -357,6 +372,7 @@ const isActive = (href: string) => {
     font-weight: 500;
     color: var(--text-secondary);
     border-radius: var(--radius-full);
+    white-space: nowrap;
     transition: color var(--speed) var(--ease), background-color var(--speed) var(--ease);
   }
   .nav-link:hover {
@@ -665,6 +681,130 @@ const isActive = (href: string) => {
     font-size: 0.9rem;
     line-height: 1;
   }
+
+  /* ===== 随机音乐（第一行最右侧，面板向下弹出） ===== */
+  .ambient-music {
+    position: relative;
+  }
+  .am-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--accent);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color var(--speed) var(--ease), transform var(--speed) var(--ease);
+  }
+  .am-toggle:hover {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    transform: scale(1.08);
+  }
+  .am-toggle.playing {
+    animation: am-spin 3s linear infinite;
+  }
+  @keyframes am-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .am-panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    width: 240px;
+    padding: 0.85rem 1rem 0.9rem;
+    border-radius: var(--radius-lg);
+    background: var(--bg-glass-strong);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    z-index: 310;
+  }
+  /* 面板与按钮之间的透明桥接区：鼠标平滑过渡，避免误触隐藏 */
+  .am-panel::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -12px;
+    height: 12px;
+  }
+  .am-panel[hidden] {
+    display: none;
+  }
+  .am-title {
+    font-size: var(--text-xs);
+    font-weight: 650;
+    color: var(--text-tertiary);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+  }
+  .am-song {
+    font-size: var(--text-sm);
+    font-weight: 550;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 0.6rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .am-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+  }
+  .am-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: var(--bg-glass);
+    color: var(--text);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color var(--speed) var(--ease), transform var(--speed) var(--ease);
+  }
+  .am-btn:hover {
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    transform: scale(1.08);
+  }
+  .am-play {
+    width: 40px;
+    height: 40px;
+    background: var(--gradient);
+    color: #fff;
+    font-size: 0.95rem;
+  }
+  .am-play:hover {
+    background: var(--gradient);
+    transform: scale(1.06);
+  }
+  .am-progress {
+    margin-top: 0.6rem;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--border);
+    overflow: hidden;
+  }
+  .am-progress span {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: var(--gradient);
+    border-radius: 3px;
+    transition: width 0.3s linear;
+  }
   /* 中等宽度：时钟/天气压缩为精简胶囊（导航仍显示的区间） */
   @media (max-width: 1280px) {
     .ambient-weather .aw-text {
@@ -955,7 +1095,17 @@ const isActive = (href: string) => {
     }
   }
 
-  /* 超窄屏（<420px）：进一步压缩，保证 5 个操作图标不溢出 */
+  /* 移动端较窄：天气隐藏（空间不足），时钟保留 */
+  @media (max-width: 560px) {
+    .ambient-weather {
+      display: none;
+    }
+    .ambient-clock {
+      max-width: 9em;
+    }
+  }
+
+  /* 超窄屏（<420px）：进一步压缩，保证操作图标不溢出 */
   @media (max-width: 420px) {
     .header-tag {
       display: none;
@@ -966,10 +1116,6 @@ const isActive = (href: string) => {
     .icon-btn {
       width: 30px;
       height: 30px;
-    }
-    /* 超窄：天气隐藏（空间不足），时钟截断为时间 */
-    .ambient-weather {
-      display: none;
     }
     .ambient-clock {
       max-width: 7.5em;
