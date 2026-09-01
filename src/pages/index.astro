@@ -114,14 +114,21 @@ const sectionPosts = await Promise.all(
     padding: clamp(1rem, 3vw, 2rem) var(--gutter);
   }
 
-  /* ===== 首页顶部：访问统计胶囊 ===== */
+  /* ===== 首页顶部：访问统计胶囊（固定在顶部，滚动时始终可见） ===== */
   .home-visits {
+    position: sticky;
+    top: calc(var(--header-h) + 0.5rem);
+    z-index: 60;
     width: 100%;
     max-width: var(--maxw);
     margin: 0 auto;
     display: flex;
     justify-content: center;
     padding-block: 0.25rem 0;
+    pointer-events: none;
+  }
+  .home-visits > * {
+    pointer-events: auto;
   }
 
   /* ===== 按主题分行的卡片区 ===== */
