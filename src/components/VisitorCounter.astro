@@ -2,13 +2,15 @@
 import Icon from './Icon.astro';
 
 interface Props {
-  /** 显示变体：home=首页顶部独立胶囊，footer=页脚行内 */
-  variant?: 'home' | 'footer';
+  /** 显示变体：header=导航栏内联，home=首页顶部独立胶囊，footer=页脚行内 */
+  variant?: 'home' | 'footer' | 'header';
+  /** 自定义 id（同页多实例时避免冲突） */
+  id?: string;
 }
-const { variant = 'footer' } = Astro.props;
+const { variant = 'footer', id = 'visitor-counter' } = Astro.props;
 ---
 
-<span class:list={['visitor-counter', `vc-${variant}`]} id="visitor-counter" title="访问统计">
+<span class:list={['visitor-counter', `vc-${variant}`]} id={id} title="访问统计">
   <Icon name="eye" size={variant === 'home' ? 14 : 13} />
   <span class="vc-text">访问中…</span>
 </span>
@@ -42,17 +44,42 @@ const { variant = 'footer' } = Astro.props;
   .vc-home svg {
     color: var(--accent);
   }
+
+  /* 导航栏内联：紧凑、与免责声明对齐 */
+  .vc-header {
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    padding: 0.3rem 0.45rem;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+  .vc-header svg {
+    color: var(--accent);
+  }
+  @media (max-width: 1080px) {
+    /* 较窄屏隐藏"访问/浏览"文字精简显示 */
+    .vc-header .vc-text {
+      max-width: 7em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  @media (max-width: 860px) {
+    /* 移动端：导航隐藏，Header 计数器一并隐藏（页脚仍有） */
+    .vc-header {
+      display: none;
+    }
+  }
 </style>
 
 <script>
   // ===== 访问统计：上报 + 显示（访客数 / 浏览次数） =====
   // 优先显示全站统计（自建 API）；API 不可用时回退为本机累计访问
+  // Astro 会把组件脚本打包为单份执行，因此用 querySelectorAll 遍历页面上所有实例
   (function () {
-    // 防重复绑定（组件在页面中可能出现多次）
-    const counter = document.getElementById('visitor-counter');
-    if (!counter || counter.dataset.bound) return;
-    counter.dataset.bound = '1';
-
     const API = 'https://dengzhimin-guestbook-api.leooelcn.workers.dev/api/visits';
     const uidKey = 'leodeng:visitor-uid';
     const localKey = 'leodeng:visits-local';
@@ -78,40 +105,43 @@ const { variant = 'footer' } = Astro.props;
       return String(n);
     }
 
-    // 本机累计访问（每次页面加载 +1），作为 API 不可用时的兜底
-    function bumpLocal() {
-      try {
-        const n = (parseInt(localStorage.getItem(localKey), 10) || 0) + 1;
-        localStorage.setItem(localKey, String(n));
-        return n;
-      } catch (_) {
-        return 0;
-      }
-    }
-    const localVisits = bumpLocal();
+    // 本机累计访问（每次页面加载 +1，只加一次），作为 API 不可用时的兜底
+    let localVisits = 0;
+    try {
+      localVisits = (parseInt(localStorage.getItem(localKey), 10) || 0) + 1;
+      localStorage.setItem(localKey, String(localVisits));
+    } catch (_) {}
 
-    const text = counter.querySelector('.vc-text');
+    function init(counter) {
+      if (!counter) return;
+      const text = counter.querySelector('.vc-text');
+      if (!text) return;
 
-    async function report() {
-      try {
-        const res = await fetch(API, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ uid: getUid() }),
-        });
-        if (!res.ok) throw new Error('bad status');
-        const data = await res.json();
-        if (text) text.textContent = '访问 ' + fmt(data.visitors || 0) + ' 人 · 浏览 ' + fmt(data.views || 0) + ' 次';
-      } catch (_) {
-        // API 不可用：显示本机累计（本机视为 1 位访客，浏览为本地累计次数）
-        if (text) {
+      async function report() {
+        try {
+          const res = await fetch(API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ uid: getUid() }),
+          });
+          if (!res.ok) throw new Error('bad status');
+          const data = await res.json();
+          text.textContent = '访问 ' + fmt(data.visitors || 0) + ' 人 · 浏览 ' + fmt(data.views || 0) + ' 次';
+        } catch (_) {
+          // API 不可用：显示本机累计（本机视为 1 位访客，浏览为本地累计次数）
           text.textContent = localVisits > 0 ? '访问 1 人 · 浏览 ' + fmt(localVisits) + ' 次' : '访问 1 人 · 浏览 1 次';
+          counter.title = '全站统计暂不可用，当前为本机累计';
         }
-        counter.title = '全站统计暂不可用，当前为本机累计';
       }
+      // 立即显示本机计数（保证秒开），再异步拉取全站统计覆盖
+      text.textContent = localVisits > 0 ? '访问 1 人 · 浏览 ' + fmt(localVisits) + ' 次' : '访问 1 人 · 浏览 1 次';
+      report();
     }
-    // 立即显示本机计数（保证秒开），再异步拉取全站统计覆盖
-    if (text) text.textContent = localVisits > 0 ? '访问 1 人 · 浏览 ' + fmt(localVisits) + ' 次' : '访问 1 人 · 浏览 1 次';
-    report();
+
+    document.querySelectorAll('.visitor-counter').forEach((el) => {
+      if (el.dataset.bound) return;
+      el.dataset.bound = '1';
+      init(el);
+    });
   })();
 </script>

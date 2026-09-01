@@ -1,6 +1,7 @@
 ---
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
+import VisitorCounter from './VisitorCounter.astro';
 import { SECTIONS, firstImage } from '../lib/site';
 import { getCollection } from 'astro:content';
 
@@ -138,6 +139,7 @@ const isActive = (href: string) => {
           <a class="disclaimer-panel-link" href="/disclaimer/">查看完整声明 <Icon name="arrow-right" size={12} /></a>
         </div>
       </div>
+      <VisitorCounter variant="header" id="visitor-counter-header" />
       <button class="icon-btn menu-btn" id="menu-toggle" aria-label="打开菜单" aria-expanded="false">
         <Icon name="menu" size={22} />
       </button>
