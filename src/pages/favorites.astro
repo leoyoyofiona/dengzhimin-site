@@ -100,7 +100,7 @@ const sectionColors = Object.fromEntries(SECTIONS.map((s) => [s.title, s.color])
         <span class="fav-body">
           <span class="fav-title">${esc(rec.title)}</span>
           <span class="fav-sub">
-            <span class="fav-section" style="color:${esc(color)}">${esc(rec.section)}</span>
+            <span class="fav-section" style="--fc:${esc(color)}">${esc(rec.section)}</span>
             <span class="fav-date">${rec.date ? esc(rec.date) : ''}${rec.time ? ' · ' + fmtTime(rec.time) : ''}</span>
           </span>
         </span>
@@ -295,6 +295,10 @@ const sectionColors = Object.fromEntries(SECTIONS.map((s) => [s.title, s.color])
   }
   .fav-section {
     font-weight: 600;
+    color: var(--fc);
+  }
+  html[data-theme="dark"] .fav-section {
+    color: color-mix(in srgb, var(--fc) 55%, #ffffff);
   }
   .fav-date {
     color: var(--text-tertiary);

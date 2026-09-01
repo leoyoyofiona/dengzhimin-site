@@ -124,12 +124,20 @@ const {
     font-size: var(--text-xs);
     font-weight: 600;
     color: var(--sec-c);
-    background: color-mix(in srgb, var(--sec-c) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--sec-c) 30%, transparent);
+    background: var(--bg-glass);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+    border: 1px solid color-mix(in srgb, var(--sec-c) 30%, var(--border));
     white-space: nowrap;
     max-width: 55%;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  html[data-theme="dark"] .sec-badge {
+    color: color-mix(in srgb, var(--sec-c) 55%, #ffffff);
+  }
+  html[data-theme="dark"] .sec-badge::before {
+    background: color-mix(in srgb, var(--sec-c) 70%, #ffffff);
   }
   .sec-badge::before {
     content: '';

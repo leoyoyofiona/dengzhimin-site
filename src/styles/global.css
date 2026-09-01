@@ -393,8 +393,14 @@ h4 {
   font-weight: 500;
   color: var(--text-secondary);
   background: var(--bg-glass);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  backdrop-filter: saturate(180%) blur(12px);
   border: 1px solid var(--border);
   white-space: nowrap;
+}
+html[data-theme="dark"] .badge {
+  color: #c3c7cf;
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .badge-accent {
@@ -574,11 +580,19 @@ h4 {
   gap: 0.35rem;
   padding: 0.25rem 0.7rem;
   border-radius: var(--radius-full);
-  border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
-  background: color-mix(in srgb, var(--c) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c) 40%, var(--border));
+  background: var(--bg-glass);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  backdrop-filter: saturate(180%) blur(12px);
   color: var(--c);
   font-size: 0.8125rem;
   font-weight: 500;
+}
+html[data-theme="dark"] .prose .tag-chip {
+  color: color-mix(in srgb, var(--c) 55%, #ffffff);
+}
+html[data-theme="dark"] .prose .tag-chip::before {
+  background: color-mix(in srgb, var(--c) 70%, #ffffff);
 }
 .prose .tag-chip::before {
   content: '';

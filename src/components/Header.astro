@@ -101,7 +101,7 @@ const isActive = (href: string) => {
                           )
                         }
                         <span class="today-card-body">
-                          <span class="today-card-section" style={`color: ${p.color}`}>{p.section}</span>
+                          <span class="today-card-section" style={`--sc: ${p.color}`}>{p.section}</span>
                           <span class="today-card-title">{p.title}</span>
                         </span>
                         <Icon name="arrow-right" size={13} />
@@ -164,7 +164,7 @@ const isActive = (href: string) => {
           <div class="mobile-today-list" hidden>
             {todayPosts.map((p) => (
               <a class="mobile-today-item" href={p.href}>
-                <span class="mobile-today-sec" style={`color: ${p.color}`}>{p.section}</span>
+                <span class="mobile-today-sec" style={`--sc: ${p.color}`}>{p.section}</span>
                 <span class="mobile-today-title">{p.title}</span>
               </a>
             ))}
@@ -551,6 +551,10 @@ const isActive = (href: string) => {
   .today-card-section {
     font-size: var(--text-xs);
     font-weight: 600;
+    color: var(--sc);
+  }
+  html[data-theme="dark"] .today-card-section {
+    color: color-mix(in srgb, var(--sc) 55%, #ffffff);
   }
   .today-card-title {
     font-size: var(--text-sm);
@@ -805,6 +809,10 @@ const isActive = (href: string) => {
     flex-shrink: 0;
     font-size: var(--text-xs);
     font-weight: 600;
+    color: var(--sc);
+  }
+  html[data-theme="dark"] .mobile-today-sec {
+    color: color-mix(in srgb, var(--sc) 55%, #ffffff);
   }
   .mobile-today-title {
     min-width: 0;

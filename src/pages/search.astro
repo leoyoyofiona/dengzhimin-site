@@ -101,7 +101,7 @@ const searchIndex = JSON.stringify(index);
         return (
           '<a class="card card-hover result" href="' + p.href + '" style="--c: ' + p.sectionColor + '">' +
             '<div class="r-top">' +
-              '<span class="r-section" style="color: ' + p.sectionColor + '">' + p.section + '</span>' +
+              '<span class="r-section" style="--sc: ' + p.sectionColor + '">' + p.section + '</span>' +
               '<time class="r-date">' + p.date + '</time>' +
             '</div>' +
             '<h3 class="r-title">' + highlight(p.title, query) + '</h3>' +
@@ -209,6 +209,10 @@ const searchIndex = JSON.stringify(index);
   .r-section {
     font-size: var(--text-sm);
     font-weight: 600;
+    color: var(--sc);
+  }
+  html[data-theme="dark"] .r-section {
+    color: color-mix(in srgb, var(--sc) 55%, #ffffff);
   }
   .r-date {
     font-size: var(--text-sm);
