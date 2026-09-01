@@ -12,13 +12,13 @@ const defaultCity = '你所在的城市';
     <span class="aw-icon" id="aw-icon"></span>
     <span class="aw-text" id="aw-text">天气加载中…</span>
   </div>
-  <div class="ambient-music" id="ambient-music" title="随机播放音乐（公共领域/CC，无侵权）">
-    <button class="am-toggle" id="am-toggle" type="button" aria-label="随机播放音乐">
+  <div class="ambient-music" id="ambient-music" title="随机播放 CC 授权音乐（Jamendo / Free Music Archive）">
+    <button class="am-toggle" id="am-toggle" type="button" aria-label="随机播放音乐" title="随机播放 CC 授权音乐">
       <span class="am-icon" id="am-icon">🎵</span>
     </button>
     <div class="am-panel" id="am-panel" hidden>
       <div class="am-title" id="am-title">随机音乐</div>
-      <div class="am-song" id="am-song">点击播放，随机来一首经典金曲</div>
+      <div class="am-song" id="am-song">点击播放，随机来一首 CC 授权音乐</div>
       <div class="am-controls">
         <button class="am-btn" id="am-prev" type="button" title="上一曲" aria-label="上一曲">⏮</button>
         <button class="am-btn am-play" id="am-play" type="button" title="播放/暂停" aria-label="播放/暂停">▶</button>
@@ -594,7 +594,7 @@ const defaultCity = '你所在的城市';
       }
     });
 
-    // ===== 4. 随机音乐（Internet Archive 公共领域/CC，免侵权） =====
+    // ===== 4. 随机音乐（CC 授权：Jamendo / Free Music Archive 镜像） =====
     var musicWrap = document.getElementById('ambient-music');
     var amToggle = document.getElementById('am-toggle');
     var amPanel = document.getElementById('am-panel');
@@ -611,42 +611,106 @@ const defaultCity = '你所在的城市';
     var playTimer = null;
     var curTitle = '';
 
-    // ===== 随机音乐：经典金曲歌单（中英文经典、民歌、标准曲） =====
-    // 从 Internet Archive 搜索公共领域/CC 录音（合法，无侵权）
-    // 歌单以世界流行经典为主：英文标准曲 + 华语民歌/经典
+    // ===== 随机音乐：CC 授权现代音乐（Internet Archive 镜像） =====
+    // 正规来源：
+    //   1) Jamendo 全量镜像（约 29.5 万首，CC 授权现代音乐）——搜索 q: jamendo AND mediatype:audio
+    //   2) Free Music Archive 镜像（约 1.7 万集合，带 licenseurl CC 授权）——搜索 q: freemusicarchive AND mediatype:audio
+    // 每个条目是一张专辑（含多首 mp3），随机选专辑 → 随机选曲目。
+    // 均为 CC 授权，可合法流式播放，无侵权风险。
+    var MUSIC_SOURCES = [
+      { key: 'jamendo', label: 'Jamendo', query: 'jamendo AND mediatype:audio', rows: 24 },
+      { key: 'fma', label: 'Free Music Archive', query: 'freemusicarchive AND mediatype:audio', rows: 24 },
+    ];
+    // 兜底歌单（镜像不可用时）：公共领域经典（中文民歌 + 英文标准曲）
     var CLASSIC_SONGS = [
-      // 英文经典（爵士/民谣/标准曲，公共领域录音丰富）
       'Moon River', 'Fly Me to the Moon', 'My Way', "Can't Help Falling in Love",
       'Edelweiss', 'Singin in the Rain', 'La Vie en Rose', 'Auld Lang Syne',
       'Greensleeves', 'Scarborough Fair', 'Amazing Grace', 'What a Wonderful World',
       'Over the Rainbow', 'Yesterday', 'Stand by Me', 'Unchained Melody',
       'Smoke Gets in Your Eyes', 'Dream a Little Dream of Me', 'Blue Moon',
       'Cheek to Cheek', 'The Way You Look Tonight', 'Autumn Leaves',
-      'When You Wish upon a Star', 'Somewhere Over the Rainbow',
-      // 华语经典（民歌/民谣，多为民歌公共领域录音）
-      '茉莉花', '康定情歌', '在那遥远的地方', '东方红', '南泥湾',
-      '友谊地久天长', '送别', '茉莉花 民歌', '小河淌水', '沂蒙山小调',
-      '彩云追月', '春江花月夜', '茉莉花 合唱',
+      '茉莉花', '康定情歌', '在那遥远的地方', '南泥湾',
+      '友谊地久天长', '送别', '小河淌水', '沂蒙山小调', '彩云追月',
     ];
-    // 记录歌单内已尝试失败的曲目，避免无限重试同一首
+    // 记录失败：镜像条目 identifier / 兜底歌名，避免无限重试
+    var failedIds = {};
     var failedSongs = {};
 
-    function randomSongFromPlaylist() {
-      // 从歌单随机选一首未失败的
+    function randomClassicSong() {
       var candidates = CLASSIC_SONGS.filter(function (s) {
         return !failedSongs[s];
       });
       if (!candidates.length) {
-        // 全部失败过：清空重来
         failedSongs = {};
         candidates = CLASSIC_SONGS.slice();
       }
       return candidates[Math.floor(Math.random() * candidates.length)];
     }
 
-    // 按歌名在 IA 搜索公共领域录音（优先 1970 年前的录音，避免商业唱片）
-    function pickRandomSong() {
-      var songName = randomSongFromPlaylist();
+    // 从 IA 镜像随机取一张专辑（Jamendo / FMA 轮流）
+    function pickRandomAlbum() {
+      var src = MUSIC_SOURCES[Math.floor(Math.random() * MUSIC_SOURCES.length)];
+      var q = encodeURIComponent(src.query);
+      return fetch(
+        'https://archive.org/advancedsearch.php?q=' +
+          q +
+          '&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=downloads&rows=' +
+          src.rows +
+          '&sort%5B%5D=downloads+desc&output=json'
+      )
+        .then(function (r) {
+          return r.ok ? r.json() : Promise.reject(new Error('search failed'));
+        })
+        .then(function (d) {
+          var docs = (d.response && d.response.docs) || [];
+          // 过滤已失败的条目；全失败则整体重试
+          var fresh = docs.filter(function (doc) {
+            return !failedIds[doc.identifier];
+          });
+          var pool = fresh.length ? fresh : docs;
+          if (!pool.length) return Promise.reject(new Error('no docs'));
+          // 随机选一张专辑（下载量高的权重略大）
+          var chosen = pool[Math.floor(Math.random() * Math.min(pool.length, 12))];
+          return fetch('https://archive.org/metadata/' + encodeURIComponent(chosen.identifier)).then(function (r2) {
+            if (!r2.ok) throw new Error('metadata failed');
+            return r2.json();
+          });
+        })
+        .then(function (meta) {
+          var files = meta.files || [];
+          var audioFiles = files.filter(function (f) {
+            return /\.(mp3|ogg|m4a)$/i.test(f.name) && !/64kb|_64\.mp3|\.ogg$/i.test(f.name);
+          });
+          var pool = audioFiles.length ? audioFiles : files.filter(function (f) {
+            return /\.(mp3|ogg|m4a)$/i.test(f.name);
+          });
+          if (!pool.length) throw new Error('no audio');
+          var f = pool[Math.floor(Math.random() * pool.length)];
+          var md = meta.metadata || {};
+          var artist = md.artist || md.creator || '';
+          var album = md.album || md.title || '';
+          var track = f.title || String(f.name).replace(/\.[^.]+$/, '');
+          // 显示：艺术家 - 曲名（专辑）
+          var parts = [artist, track].filter(Boolean);
+          var title = parts.join(' - ');
+          if (album && album !== track && album !== md.title) title += '（' + album + '）';
+          return {
+            url:
+              'https://archive.org/download/' +
+              encodeURIComponent(md.identifier) +
+              '/' +
+              encodeURIComponent(f.name),
+            title: String(title).slice(0, 70),
+            source: 'CC 授权音乐',
+            id: md.identifier,
+            fallback: false,
+          };
+        });
+    }
+
+    // 兜底：按歌名在 IA 搜索公共领域/CC 录音（优先 1980 年前录音）
+    function pickClassicSong() {
+      var songName = randomClassicSong();
       var q = encodeURIComponent('"' + songName + '" AND mediatype:audio');
       return fetch(
         'https://archive.org/advancedsearch.php?q=' +
@@ -662,15 +726,13 @@ const defaultCity = '你所在的城市';
             failedSongs[songName] = true;
             return Promise.reject();
           }
-          // 优先选 date 较老（公共领域）且 downloads 高的
           var pool = docs.filter(function (doc) {
             var dt = String(doc.date || '');
             var y = parseInt(dt, 10);
             return y > 0 && y < 1980;
           });
           var chosen = (pool.length ? pool : docs)[Math.floor(Math.random() * Math.min(pool.length || docs.length, 4))];
-          var id = chosen.identifier;
-          return fetch('https://archive.org/metadata/' + encodeURIComponent(id)).then(function (r2) {
+          return fetch('https://archive.org/metadata/' + encodeURIComponent(chosen.identifier)).then(function (r2) {
             return r2.ok ? r2.json() : Promise.reject();
           });
         })
@@ -688,13 +750,22 @@ const defaultCity = '你所在的城市';
           return {
             url: 'https://archive.org/download/' + encodeURIComponent(meta.metadata.identifier) + '/' + encodeURIComponent(f.name),
             title: String(title).slice(0, 60),
-            songName: songName,
+            source: '经典',
+            id: songName,
+            fallback: true,
           };
         })
         .catch(function (e) {
           failedSongs[songName] = true;
           return Promise.reject(e);
         });
+    }
+
+    // 主路径：CC 镜像 → 失败降级到经典兜底
+    function pickRandomSong() {
+      return pickRandomAlbum().catch(function () {
+        return pickClassicSong();
+      });
     }
 
     function setPlayingUI(playing) {
@@ -728,8 +799,8 @@ const defaultCity = '你所在的城市';
     function playSong() {
       pickRandomSong()
         .then(function (song) {
-          // 显示歌名（歌单里的经典曲目名）
-          curTitle = song.songName || song.title;
+          // 显示曲目名（CC 镜像：艺术家 - 曲名；兜底：经典曲目名）
+          curTitle = song.title || song.id;
           if (!audio) {
             audio = new Audio();
             audio.preload = 'auto';
@@ -747,7 +818,8 @@ const defaultCity = '你所在的城市';
               }
             });
             audio.addEventListener('error', function () {
-              // 播放失败换下一首
+              // 播放失败：标记该条目失败后换下一首
+              if (song.id) failedIds[song.id] = true;
               playSong();
             });
           }
@@ -759,7 +831,7 @@ const defaultCity = '你所在的城市';
               setPlayingUI(true);
               startTimer();
             }).catch(function () {
-              failedSongs[song.songName] = true;
+              if (song.id) failedIds[song.id] = true;
               amSong.textContent = '这首没找到合适录音，换一首…';
               setTimeout(playSong, 1500);
             });
@@ -771,7 +843,7 @@ const defaultCity = '你所在的城市';
         .catch(function () {
           amSong.textContent = '暂时没找到合适的歌，再试一次？';
           setTimeout(function () {
-            amSong.textContent = '点击播放，随机来一首经典金曲';
+            amSong.textContent = '点击播放，随机来一首 CC 授权音乐';
           }, 2500);
         });
     }
