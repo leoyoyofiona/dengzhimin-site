@@ -147,6 +147,200 @@ const defaultCity = '你所在的城市';
     background: linear-gradient(180deg, transparent, rgba(130, 180, 255, 0.45));
   }
 
+  /* ===== 右上角天空图标：表达当前天气（低调不抢眼） ===== */
+  .weather-bg .w-sky {
+    position: absolute;
+    top: 14%;
+    right: 6%;
+    width: 92px;
+    height: 92px;
+    opacity: 0.85;
+    pointer-events: none;
+    filter: saturate(0.95);
+  }
+  /* 太阳：核心 + 旋转光芒 */
+  .w-sky[data-sky='sun']::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 38%, #fff6d8, #ffd766 55%, #ffb03a);
+    box-shadow: 0 0 22px 10px rgba(255, 196, 90, 0.35), 0 0 48px 22px rgba(255, 196, 90, 0.18);
+  }
+  .w-sky[data-sky='sun']::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 96px;
+    height: 96px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: repeating-conic-gradient(rgba(255, 208, 110, 0.55) 0deg 7deg, transparent 7deg 22deg);
+    -webkit-mask: radial-gradient(circle, transparent 46%, #000 60%);
+    mask: radial-gradient(circle, transparent 46%, #000 60%);
+    animation: w-sky-spin 36s linear infinite;
+  }
+  /* 多云：小太阳 + 云 */
+  .w-sky[data-sky='cloud-sun']::before {
+    content: '';
+    position: absolute;
+    right: 8px;
+    top: 6px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 38%, #fff6d8, #ffd766 55%, #ffb03a);
+    box-shadow: 0 0 16px 6px rgba(255, 196, 90, 0.3);
+  }
+  .w-sky[data-sky='cloud-sun']::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 22px;
+    width: 66px;
+    height: 30px;
+    border-radius: 30px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(214, 222, 236, 0.8));
+    box-shadow:
+      24px -12px 0 -2px rgba(255, 255, 255, 0.88),
+      44px -4px 0 -4px rgba(214, 222, 236, 0.8);
+  }
+  /* 阴天：灰云 */
+  .w-sky[data-sky='cloud']::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 26px;
+    width: 76px;
+    height: 32px;
+    border-radius: 30px;
+    background: linear-gradient(180deg, rgba(208, 216, 232, 0.95), rgba(170, 180, 200, 0.85));
+    box-shadow:
+      26px -14px 0 -2px rgba(208, 216, 232, 0.9),
+      48px -6px 0 -5px rgba(170, 180, 200, 0.85);
+  }
+  /* 毛毛雨 / 雨：云 + 斜雨丝 */
+  .w-sky[data-sky='drizzle']::before,
+  .w-sky[data-sky='rain']::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 18px;
+    width: 76px;
+    height: 32px;
+    border-radius: 30px;
+    background: linear-gradient(180deg, rgba(190, 200, 220, 0.95), rgba(150, 162, 188, 0.88));
+    box-shadow:
+      26px -14px 0 -2px rgba(190, 200, 220, 0.9),
+      48px -6px 0 -5px rgba(150, 162, 188, 0.88);
+  }
+  .w-sky[data-sky='drizzle']::after,
+  .w-sky[data-sky='rain']::after {
+    content: '';
+    position: absolute;
+    left: 22px;
+    top: 56px;
+    width: 46px;
+    height: 26px;
+    background:
+      linear-gradient(200deg, transparent 42%, rgba(96, 148, 232, 0.7) 43% 52%, transparent 53%) 0 0 / 12px 100% no-repeat,
+      linear-gradient(200deg, transparent 42%, rgba(96, 148, 232, 0.6) 43% 52%, transparent 53%) 14px 4px / 12px 100% no-repeat,
+      linear-gradient(200deg, transparent 42%, rgba(96, 148, 232, 0.55) 43% 52%, transparent 53%) 30px 2px / 12px 100% no-repeat;
+  }
+  /* 雪：云 + 雪花 */
+  .w-sky[data-sky='snow']::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 18px;
+    width: 76px;
+    height: 32px;
+    border-radius: 30px;
+    background: linear-gradient(180deg, rgba(220, 228, 242, 0.95), rgba(178, 190, 212, 0.88));
+    box-shadow:
+      26px -14px 0 -2px rgba(220, 228, 242, 0.9),
+      48px -6px 0 -5px rgba(178, 190, 212, 0.88);
+  }
+  .w-sky[data-sky='snow']::after {
+    content: '❄';
+    position: absolute;
+    left: 20px;
+    top: 50px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 0 6px rgba(180, 210, 255, 0.9);
+  }
+  /* 雷暴：云 + 闪电 */
+  .w-sky[data-sky='storm']::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 18px;
+    width: 76px;
+    height: 32px;
+    border-radius: 30px;
+    background: linear-gradient(180deg, rgba(120, 130, 152, 0.95), rgba(88, 98, 122, 0.9));
+    box-shadow:
+      26px -14px 0 -2px rgba(120, 130, 152, 0.9),
+      48px -6px 0 -5px rgba(88, 98, 122, 0.9);
+  }
+  .w-sky[data-sky='storm']::after {
+    content: '⚡';
+    position: absolute;
+    left: 30px;
+    top: 44px;
+    font-size: 16px;
+    color: rgba(255, 214, 90, 0.95);
+    text-shadow: 0 0 8px rgba(255, 200, 70, 0.7);
+    animation: w-sky-flicker 2.6s ease-in-out infinite;
+  }
+  /* 雾：淡淡的横带 */
+  .w-sky[data-sky='fog']::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 30px;
+    width: 80px;
+    height: 8px;
+    border-radius: 8px;
+    background: rgba(210, 220, 235, 0.55);
+    box-shadow:
+      0 14px 0 -2px rgba(210, 220, 235, 0.4),
+      0 28px 0 -4px rgba(210, 220, 235, 0.32),
+      0 42px 0 -6px rgba(210, 220, 235, 0.22);
+  }
+  @keyframes w-sky-spin {
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+  @keyframes w-sky-flicker {
+    0%,
+    86%,
+    100% {
+      opacity: 0.55;
+    }
+    90% {
+      opacity: 1;
+    }
+    94% {
+      opacity: 0.7;
+    }
+  }
+  @media (max-width: 640px) {
+    .weather-bg .w-sky {
+      top: 10%;
+      right: 4%;
+      transform: scale(0.72);
+      transform-origin: top right;
+    }
+  }
+
 </style>
 
 
@@ -185,20 +379,20 @@ const defaultCity = '你所在的城市';
     var textEl = document.getElementById('aw-text');
     var bgEl = document.getElementById('weather-bg');
 
-    // weathercode → { icon, label, effect }
+    // weathercode → { icon, label, effect, sky }
     function weatherInfo(code, isDay, windKmh) {
-      var e = { icon: '☀️', label: '晴', effect: 'none' };
-      if (code === 0) e = { icon: isDay ? '☀️' : '🌙', label: '晴', effect: 'none' };
-      else if (code === 1) e = { icon: '🌤️', label: '大致晴朗', effect: 'none' };
-      else if (code === 2) e = { icon: '⛅', label: '多云', effect: 'none' };
-      else if (code === 3) e = { icon: '☁️', label: '阴', effect: 'none' };
-      else if (code === 45 || code === 48) e = { icon: '🌫️', label: '雾', effect: 'fog' };
-      else if (code >= 51 && code <= 57) e = { icon: '🌦️', label: '毛毛雨', effect: 'drizzle' };
-      else if ((code >= 61 && code <= 67) || code === 80 || code === 81) e = { icon: '🌧️', label: '雨', effect: 'rain' };
-      else if (code === 82) e = { icon: '⛈️', label: '大雨', effect: 'rain-heavy' };
-      else if (code >= 71 && code <= 77) e = { icon: '🌨️', label: '雪', effect: 'snow' };
-      else if (code === 85 || code === 86) e = { icon: '🌨️', label: '阵雪', effect: 'snow' };
-      else if (code >= 95) e = { icon: '⛈️', label: '雷暴', effect: 'storm' };
+      var e = { icon: '☀️', label: '晴', effect: 'none', sky: 'sun' };
+      if (code === 0) e = { icon: isDay ? '☀️' : '🌙', label: '晴', effect: 'none', sky: 'sun' };
+      else if (code === 1) e = { icon: '🌤️', label: '大致晴朗', effect: 'none', sky: 'sun' };
+      else if (code === 2) e = { icon: '⛅', label: '多云', effect: 'none', sky: 'cloud-sun' };
+      else if (code === 3) e = { icon: '☁️', label: '阴', effect: 'none', sky: 'cloud' };
+      else if (code === 45 || code === 48) e = { icon: '🌫️', label: '雾', effect: 'fog', sky: 'fog' };
+      else if (code >= 51 && code <= 57) e = { icon: '🌦️', label: '毛毛雨', effect: 'drizzle', sky: 'drizzle' };
+      else if ((code >= 61 && code <= 67) || code === 80 || code === 81) e = { icon: '🌧️', label: '雨', effect: 'rain', sky: 'rain' };
+      else if (code === 82) e = { icon: '⛈️', label: '大雨', effect: 'rain-heavy', sky: 'rain' };
+      else if (code >= 71 && code <= 77) e = { icon: '🌨️', label: '雪', effect: 'snow', sky: 'snow' };
+      else if (code === 85 || code === 86) e = { icon: '🌨️', label: '阵雪', effect: 'snow', sky: 'snow' };
+      else if (code >= 95) e = { icon: '⛈️', label: '雷暴', effect: 'storm', sky: 'storm' };
       if (windKmh > 40) {
         e.icon = e.icon + ' 💨';
         e.effect = e.effect === 'none' ? 'wind' : e.effect + '-wind';
@@ -206,9 +400,14 @@ const defaultCity = '你所在的城市';
       return e;
     }
 
-    function renderWeatherBG(effect) {
+    function renderWeatherBG(effect, sky) {
       if (!bgEl) return;
       bgEl.innerHTML = '';
+      // 右上角天空图标：表达当前天气（太阳 / 云 / 雨 / 雪 / 雷暴 / 雾）
+      var skyEl = document.createElement('div');
+      skyEl.className = 'w-sky';
+      skyEl.setAttribute('data-sky', sky || 'sun');
+      bgEl.appendChild(skyEl);
       var count = 0;
       if (effect === 'rain' || effect === 'rain-heavy' || effect === 'drizzle' || effect === 'rain-wind') {
         count = effect === 'rain-heavy' ? 140 : effect === 'drizzle' ? 55 : 95;
@@ -301,7 +500,7 @@ const defaultCity = '你所在的城市';
           weatherEl.hidden = false;
           iconEl.textContent = info.icon;
           textEl.textContent = (data.city || defaultCity) + ' · ' + info.label + ' ' + Math.round(cw.temperature) + '°C';
-          renderWeatherBG(info.effect);
+          renderWeatherBG(info.effect, info.sky);
         })
         .catch(function () {
           // IP 定位或天气失败：隐藏天气，保持时间显示
