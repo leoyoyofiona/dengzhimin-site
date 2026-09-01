@@ -1,0 +1,453 @@
+---
+// 环境层：当前时间 + 天气（按访问者 IP 定位）+ 天气背景动画 + 工作/休息提醒
+// 所有页面由 BaseLayout 引入，低调呈现
+const now = new Date();
+const defaultCity = '你所在的城市';
+---
+
+<!-- 时间与天气浮动条（右下角，低调） -->
+<div class="ambient-bar" id="ambient-bar" aria-hidden="false">
+  <div class="ambient-clock" id="ambient-clock" title="当前时间">--</div>
+  <div class="ambient-weather" id="ambient-weather" title="按你的位置显示的天气" hidden>
+    <span class="aw-icon" id="aw-icon"></span>
+    <span class="aw-text" id="aw-text">天气加载中…</span>
+  </div>
+</div>
+
+<!-- 天气背景动画层（不遮挡内容） -->
+<div class="weather-bg" id="weather-bg" aria-hidden="true"></div>
+
+<!-- 工作提醒 Toast -->
+<div class="work-toast" id="work-toast" role="alert" hidden></div>
+
+<style>
+  /* ===== 时间与天气浮动条 ===== */
+  .ambient-bar {
+    position: fixed;
+    right: max(0.9rem, env(safe-area-inset-right));
+    bottom: max(0.9rem, env(safe-area-inset-bottom));
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.42rem 0.85rem;
+    border-radius: var(--radius-full);
+    background: var(--bg-glass-strong);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    backdrop-filter: saturate(180%) blur(16px);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    white-space: nowrap;
+    opacity: 0.78;
+    transition: opacity 0.3s var(--ease);
+    pointer-events: auto;
+  }
+  .ambient-bar:hover {
+    opacity: 1;
+  }
+  .ambient-clock {
+    font-variant-numeric: tabular-nums;
+    font-weight: 550;
+    color: var(--text);
+  }
+  .ambient-weather {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--text-tertiary);
+  }
+  .ambient-weather[hidden] {
+    display: none;
+  }
+  .aw-icon {
+    font-size: 0.95rem;
+    line-height: 1;
+  }
+  @media (max-width: 560px) {
+    .ambient-bar {
+      font-size: 0.68rem;
+      padding: 0.35rem 0.7rem;
+    }
+    .ambient-clock {
+      max-width: 9.5em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  /* ===== 天气背景动画层 ===== */
+  .weather-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .weather-bg .w-drop,
+  .weather-bg .w-flake,
+  .weather-bg .w-gust,
+  .weather-bg .w-flash {
+    position: absolute;
+    top: -10%;
+    display: block;
+  }
+  .weather-bg .w-drop {
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, transparent, rgba(90, 140, 220, 0.5));
+    animation: w-fall linear infinite;
+  }
+  .weather-bg .w-flake {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+    animation: w-fall linear infinite, w-sway ease-in-out infinite alternate;
+  }
+  .weather-bg .w-gust {
+    width: 60px;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    animation: w-gust linear infinite;
+  }
+  .weather-bg .w-flash {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 244, 200, 0.14);
+    animation: w-flash 4s ease-in-out infinite;
+  }
+  @keyframes w-fall {
+    0% {
+      transform: translateY(-10vh);
+    }
+    100% {
+      transform: translateY(110vh);
+    }
+  }
+  @keyframes w-sway {
+    0% {
+      margin-left: 0;
+    }
+    100% {
+      margin-left: 18px;
+    }
+  }
+  @keyframes w-gust {
+    0% {
+      transform: translateX(-15vw);
+      opacity: 0;
+    }
+    20% {
+      opacity: 1;
+    }
+    80% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(115vw);
+      opacity: 0;
+    }
+  }
+  @keyframes w-flash {
+    0%,
+    88%,
+    100% {
+      opacity: 0;
+    }
+    90% {
+      opacity: 1;
+    }
+    93% {
+      opacity: 0;
+    }
+    96% {
+      opacity: 0.7;
+    }
+  }
+  html[data-theme='dark'] .weather-bg .w-drop {
+    background: linear-gradient(180deg, transparent, rgba(130, 180, 255, 0.45));
+  }
+
+  /* ===== 工作/休息提醒 Toast ===== */
+  .work-toast {
+    position: fixed;
+    left: 50%;
+    top: max(4.5rem, calc(var(--header-h) + 0.75rem));
+    transform: translateX(-50%);
+    z-index: 500;
+    max-width: min(440px, calc(100vw - 2rem));
+    padding: 0.85rem 1.2rem;
+    border-radius: var(--radius-lg);
+    background: var(--bg-glass-strong);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+    box-shadow: var(--shadow-lg);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: var(--text);
+    text-align: center;
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+    transition: opacity 0.35s var(--ease-out), transform 0.35s var(--ease-out);
+    pointer-events: none;
+  }
+  .work-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .work-toast.rest {
+    border-color: color-mix(in srgb, #e11d48 45%, var(--border));
+  }
+  .work-toast .wt-emoji {
+    font-size: 1.25rem;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    // ===== 1. 当前时间：年月日 星期 =====
+    var clockEl = document.getElementById('ambient-clock');
+    function pad(n) {
+      return n < 10 ? '0' + n : '' + n;
+    }
+    function weekCN(i) {
+      return ['日', '一', '二', '三', '四', '五', '六'][i];
+    }
+    function tick() {
+      if (!clockEl) return;
+      var d = new Date();
+      clockEl.textContent =
+        d.getFullYear() +
+        '年' +
+        (d.getMonth() + 1) +
+        '月' +
+        d.getDate() +
+        '日 星期' +
+        weekCN(d.getDay()) +
+        ' ' +
+        pad(d.getHours()) +
+        ':' +
+        pad(d.getMinutes());
+    }
+    tick();
+    setInterval(tick, 30000);
+
+    // ===== 2. 天气：按访问者 IP 定位城市，open-meteo 取天气 =====
+    var weatherEl = document.getElementById('ambient-weather');
+    var iconEl = document.getElementById('aw-icon');
+    var textEl = document.getElementById('aw-text');
+    var bgEl = document.getElementById('weather-bg');
+
+    // weathercode → { icon, label, effect }
+    function weatherInfo(code, isDay, windKmh) {
+      var e = { icon: '☀️', label: '晴', effect: 'none' };
+      if (code === 0) e = { icon: isDay ? '☀️' : '🌙', label: '晴', effect: 'none' };
+      else if (code === 1) e = { icon: '🌤️', label: '大致晴朗', effect: 'none' };
+      else if (code === 2) e = { icon: '⛅', label: '多云', effect: 'none' };
+      else if (code === 3) e = { icon: '☁️', label: '阴', effect: 'none' };
+      else if (code === 45 || code === 48) e = { icon: '🌫️', label: '雾', effect: 'fog' };
+      else if (code >= 51 && code <= 57) e = { icon: '🌦️', label: '毛毛雨', effect: 'drizzle' };
+      else if ((code >= 61 && code <= 67) || code === 80 || code === 81) e = { icon: '🌧️', label: '雨', effect: 'rain' };
+      else if (code === 82) e = { icon: '⛈️', label: '大雨', effect: 'rain-heavy' };
+      else if (code >= 71 && code <= 77) e = { icon: '🌨️', label: '雪', effect: 'snow' };
+      else if (code === 85 || code === 86) e = { icon: '🌨️', label: '阵雪', effect: 'snow' };
+      else if (code >= 95) e = { icon: '⛈️', label: '雷暴', effect: 'storm' };
+      if (windKmh > 40) {
+        e.icon = e.icon + ' 💨';
+        e.effect = e.effect === 'none' ? 'wind' : e.effect + '-wind';
+      }
+      return e;
+    }
+
+    function renderWeatherBG(effect) {
+      if (!bgEl) return;
+      bgEl.innerHTML = '';
+      var count = 0;
+      if (effect === 'rain' || effect === 'rain-heavy' || effect === 'drizzle' || effect === 'rain-wind') {
+        count = effect === 'rain-heavy' ? 90 : effect === 'drizzle' ? 35 : 60;
+        for (var i = 0; i < count; i++) {
+          var d = document.createElement('span');
+          d.className = 'w-drop';
+          d.style.left = Math.random() * 100 + '%';
+          d.style.height = 12 + Math.random() * 18 + 'px';
+          d.style.animationDuration = 0.7 + Math.random() * 0.9 + 's';
+          d.style.animationDelay = Math.random() * 2 + 's';
+          bgEl.appendChild(d);
+        }
+      } else if (effect === 'snow' || effect === 'snow-wind') {
+        for (var j = 0; j < 45; j++) {
+          var f = document.createElement('span');
+          f.className = 'w-flake';
+          f.style.left = Math.random() * 100 + '%';
+          f.style.animationDuration = 5 + Math.random() * 5 + 's';
+          f.style.animationDelay = Math.random() * 6 + 's';
+          f.style.opacity = 0.4 + Math.random() * 0.5;
+          bgEl.appendChild(f);
+        }
+      } else if (effect === 'storm' || effect === 'storm-wind') {
+        // 雷暴：闪电 + 雨
+        var fl = document.createElement('span');
+        fl.className = 'w-flash';
+        bgEl.appendChild(fl);
+        for (var k = 0; k < 70; k++) {
+          var dd = document.createElement('span');
+          dd.className = 'w-drop';
+          dd.style.left = Math.random() * 100 + '%';
+          dd.style.height = 14 + Math.random() * 20 + 'px';
+          dd.style.animationDuration = 0.6 + Math.random() * 0.8 + 's';
+          dd.style.animationDelay = Math.random() * 2 + 's';
+          bgEl.appendChild(dd);
+        }
+      } else if (effect === 'wind') {
+        for (var w = 0; w < 12; w++) {
+          var g = document.createElement('span');
+          g.className = 'w-gust';
+          g.style.top = Math.random() * 100 + '%';
+          g.style.animationDuration = 3 + Math.random() * 3 + 's';
+          g.style.animationDelay = Math.random() * 4 + 's';
+          bgEl.appendChild(g);
+        }
+      } else if (effect === 'fog') {
+        // 雾：轻微缓慢漂移的横条
+        for (var m = 0; m < 8; m++) {
+          var fg = document.createElement('span');
+          fg.className = 'w-gust';
+          fg.style.top = Math.random() * 100 + '%';
+          fg.style.width = 200 + Math.random() * 300 + 'px';
+          fg.style.animationDuration = 12 + Math.random() * 8 + 's';
+          fg.style.animationDelay = Math.random() * 6 + 's';
+          fg.style.opacity = 0.25;
+          bgEl.appendChild(fg);
+        }
+      }
+    }
+
+    (function loadWeather() {
+      if (!weatherEl || !bgEl) return;
+      // 1) IP 定位城市（ipwho.is 免费，无需 key）
+      fetch('https://ipwho.is/', { mode: 'cors' })
+        .then(function (r) {
+          return r.ok ? r.json() : Promise.reject();
+        })
+        .then(function (ip) {
+          var lat = ip.latitude;
+          var lon = ip.longitude;
+          var city = ip.city || '';
+          if (lat === undefined || lon === undefined) return Promise.reject();
+          // 2) open-meteo 天气（免费，无需 key）
+          var api =
+            'https://api.open-meteo.com/v1/forecast?latitude=' +
+            lat +
+            '&longitude=' +
+            lon +
+            '&current_weather=true&timezone=auto';
+          return fetch(api, { mode: 'cors' }).then(function (r2) {
+            return r2.ok ? r2.json().then(function (w) {
+              return { city: city, w: w };
+            }) : Promise.reject();
+          });
+        })
+        .then(function (data) {
+          var cw = data.w.current_weather;
+          var hour = new Date().getHours();
+          var info = weatherInfo(cw.weathercode, hour >= 6 && hour < 19, cw.windspeed);
+          weatherEl.hidden = false;
+          iconEl.textContent = info.icon;
+          textEl.textContent = (data.city || defaultCity) + ' · ' + info.label + ' ' + Math.round(cw.temperature) + '°C';
+          renderWeatherBG(info.effect);
+        })
+        .catch(function () {
+          // IP 定位或天气失败：隐藏天气，保持时间显示
+          if (weatherEl) weatherEl.hidden = true;
+        });
+    })();
+
+    // ===== 3. 工作/休息提醒 =====
+    var toast = document.getElementById('work-toast');
+    var STORAGE = 'leodeng:work';
+    var MINS = 60000;
+    var shown30 = false;
+    var shown60 = false;
+    var shownLate = false;
+
+    function readState() {
+      try {
+        var s = JSON.parse(localStorage.getItem(STORAGE) || '{}');
+        return s;
+      } catch (e) {
+        return {};
+      }
+    }
+    function writeState(s) {
+      try {
+        localStorage.setItem(STORAGE, JSON.stringify(s));
+      } catch (e) {}
+    }
+
+    function showToast(msg, isRest, duration) {
+      if (!toast) return;
+      toast.className = 'work-toast' + (isRest ? ' rest' : '');
+      toast.innerHTML = '<span class="wt-emoji">' + (isRest ? '💪' : '🌿') + '</span>' + msg;
+      toast.hidden = false;
+      // 强制重绘触发过渡
+      void toast.offsetWidth;
+      toast.classList.add('show');
+      setTimeout(function () {
+        toast.classList.remove('show');
+      }, duration || 6000);
+    }
+
+    function checkWork() {
+      var s = readState();
+      var now = Date.now();
+      // 会话开始时间：本次页面会话（刷新/跳页后重置为继续累计？用 localStorage 跨页累计）
+      if (!s.start) {
+        s.start = now;
+        writeState(s);
+        return;
+      }
+      var elapsedMin = Math.floor((now - s.start) / MINS);
+
+      // 30 分钟
+      if (!shown30 && elapsedMin >= 30 && elapsedMin < 60) {
+        shown30 = true;
+        showToast('已经连续工作 ' + elapsedMin + ' 分钟啦～<br>起来活动活动，喝口水，看看窗外，眼睛和颈椎都需要休息。', false, 7000);
+      }
+      // 60 分钟
+      if (!shown60 && elapsedMin >= 60) {
+        shown60 = true;
+        showToast('已经连续工作超过 1 小时了！<br>站起来走动几分钟，伸展一下，身体是革命的本钱。', true, 9000);
+      }
+      // 晚上 10 点后
+      var h = new Date().getHours();
+      if (!shownLate && h >= 22) {
+        shownLate = true;
+        showToast('已经晚上 10 点了～<br>身体是革命的本钱，早点休息、好好睡觉，明天再奋斗！晚安 🌙', true, 10000);
+      }
+    }
+    // 启动：首次访问 2 秒后检查一次；之后每 1 分钟检查
+    setTimeout(checkWork, 2000);
+    setInterval(checkWork, 60000);
+
+    // 页面可见时重置？不重置——"连续工作"指打开电脑/浏览本站持续时长
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) {
+        // 回到页面：若离开超过 15 分钟，视为新会话（不算连续工作）
+        var s = readState();
+        if (s.start && Date.now() - s.start > 15 * MINS) {
+          s.start = Date.now();
+          shown30 = false;
+          shown60 = false;
+          writeState(s);
+        }
+      }
+    });
+  })();
+</script>
