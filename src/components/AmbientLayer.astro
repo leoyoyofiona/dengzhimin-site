@@ -12,6 +12,21 @@ const defaultCity = '你所在的城市';
     <span class="aw-icon" id="aw-icon"></span>
     <span class="aw-text" id="aw-text">天气加载中…</span>
   </div>
+  <div class="ambient-music" id="ambient-music" title="随机播放音乐（公共领域/CC，无侵权）">
+    <button class="am-toggle" id="am-toggle" type="button" aria-label="随机播放音乐">
+      <span class="am-icon" id="am-icon">🎵</span>
+    </button>
+    <div class="am-panel" id="am-panel" hidden>
+      <div class="am-title" id="am-title">随机音乐</div>
+      <div class="am-song" id="am-song">点击播放，随机来一首世界各地的歌</div>
+      <div class="am-controls">
+        <button class="am-btn" id="am-prev" type="button" title="上一曲" aria-label="上一曲">⏮</button>
+        <button class="am-btn am-play" id="am-play" type="button" title="播放/暂停" aria-label="播放/暂停">▶</button>
+        <button class="am-btn" id="am-next" type="button" title="下一曲" aria-label="下一曲">⏭</button>
+      </div>
+      <div class="am-progress"><span id="am-progress-bar"></span></div>
+    </div>
+  </div>
 </div>
 
 <!-- 天气背景动画层（不遮挡内容） -->
@@ -77,6 +92,121 @@ const defaultCity = '你所在的城市';
     }
   }
 
+  /* ===== 随机音乐 ===== */
+  .ambient-music {
+    position: relative;
+    margin-left: 0.15rem;
+  }
+  .am-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--accent);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color var(--speed) var(--ease), transform var(--speed) var(--ease);
+  }
+  .am-toggle:hover {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    transform: scale(1.08);
+  }
+  .am-toggle.playing {
+    animation: am-spin 3s linear infinite;
+  }
+  @keyframes am-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .am-panel {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 10px);
+    width: 240px;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-lg);
+    background: var(--bg-glass-strong);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    z-index: 310;
+  }
+  .am-panel[hidden] {
+    display: none;
+  }
+  .am-title {
+    font-size: var(--text-xs);
+    font-weight: 650;
+    color: var(--text-tertiary);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+  }
+  .am-song {
+    font-size: var(--text-sm);
+    font-weight: 550;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 0.6rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .am-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+  }
+  .am-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: var(--bg-glass);
+    color: var(--text);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color var(--speed) var(--ease), transform var(--speed) var(--ease);
+  }
+  .am-btn:hover {
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    transform: scale(1.08);
+  }
+  .am-play {
+    width: 40px;
+    height: 40px;
+    background: var(--gradient);
+    color: #fff;
+    font-size: 0.95rem;
+  }
+  .am-play:hover {
+    background: var(--gradient);
+    transform: scale(1.06);
+  }
+  .am-progress {
+    margin-top: 0.6rem;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--border);
+    overflow: hidden;
+  }
+  .am-progress span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--gradient);
+    transition: width 0.5s linear;
+  }
+
   /* ===== 天气背景动画层 ===== */
   .weather-bg {
     position: fixed;
@@ -94,30 +224,31 @@ const defaultCity = '你所在的城市';
     display: block;
   }
   .weather-bg .w-drop {
-    width: 2px;
+    width: 3px;
     border-radius: 2px;
-    background: linear-gradient(180deg, transparent, rgba(90, 140, 220, 0.5));
+    background: linear-gradient(180deg, transparent, rgba(96, 148, 232, 0.85));
+    box-shadow: 0 0 3px rgba(96, 148, 232, 0.35);
     animation: w-fall linear infinite;
   }
   .weather-bg .w-flake {
-    width: 8px;
-    height: 8px;
+    width: 11px;
+    height: 11px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.85);
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.75);
     animation: w-fall linear infinite, w-sway ease-in-out infinite alternate;
   }
   .weather-bg .w-gust {
-    width: 60px;
+    width: 80px;
     height: 2px;
     border-radius: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
     animation: w-gust linear infinite;
   }
   .weather-bg .w-flash {
     width: 100%;
     height: 100%;
-    background: rgba(255, 244, 200, 0.14);
+    background: rgba(255, 244, 200, 0.2);
     animation: w-flash 4s ease-in-out infinite;
   }
   @keyframes w-fall {
@@ -271,24 +402,24 @@ const defaultCity = '你所在的城市';
       bgEl.innerHTML = '';
       var count = 0;
       if (effect === 'rain' || effect === 'rain-heavy' || effect === 'drizzle' || effect === 'rain-wind') {
-        count = effect === 'rain-heavy' ? 90 : effect === 'drizzle' ? 35 : 60;
+        count = effect === 'rain-heavy' ? 140 : effect === 'drizzle' ? 55 : 95;
         for (var i = 0; i < count; i++) {
           var d = document.createElement('span');
           d.className = 'w-drop';
           d.style.left = Math.random() * 100 + '%';
-          d.style.height = 12 + Math.random() * 18 + 'px';
-          d.style.animationDuration = 0.7 + Math.random() * 0.9 + 's';
+          d.style.height = 22 + Math.random() * 26 + 'px';
+          d.style.animationDuration = 0.55 + Math.random() * 0.7 + 's';
           d.style.animationDelay = Math.random() * 2 + 's';
           bgEl.appendChild(d);
         }
       } else if (effect === 'snow' || effect === 'snow-wind') {
-        for (var j = 0; j < 45; j++) {
+        for (var j = 0; j < 70; j++) {
           var f = document.createElement('span');
           f.className = 'w-flake';
           f.style.left = Math.random() * 100 + '%';
-          f.style.animationDuration = 5 + Math.random() * 5 + 's';
+          f.style.animationDuration = 4.5 + Math.random() * 4.5 + 's';
           f.style.animationDelay = Math.random() * 6 + 's';
-          f.style.opacity = 0.4 + Math.random() * 0.5;
+          f.style.opacity = 0.5 + Math.random() * 0.5;
           bgEl.appendChild(f);
         }
       } else if (effect === 'storm' || effect === 'storm-wind') {
@@ -296,12 +427,12 @@ const defaultCity = '你所在的城市';
         var fl = document.createElement('span');
         fl.className = 'w-flash';
         bgEl.appendChild(fl);
-        for (var k = 0; k < 70; k++) {
+        for (var k = 0; k < 110; k++) {
           var dd = document.createElement('span');
           dd.className = 'w-drop';
           dd.style.left = Math.random() * 100 + '%';
-          dd.style.height = 14 + Math.random() * 20 + 'px';
-          dd.style.animationDuration = 0.6 + Math.random() * 0.8 + 's';
+          dd.style.height = 24 + Math.random() * 28 + 'px';
+          dd.style.animationDuration = 0.5 + Math.random() * 0.6 + 's';
           dd.style.animationDelay = Math.random() * 2 + 's';
           bgEl.appendChild(dd);
         }
@@ -449,5 +580,196 @@ const defaultCity = '你所在的城市';
         }
       }
     });
+
+    // ===== 4. 随机音乐（Internet Archive 公共领域/CC，免侵权） =====
+    var musicWrap = document.getElementById('ambient-music');
+    var amToggle = document.getElementById('am-toggle');
+    var amPanel = document.getElementById('am-panel');
+    var amIcon = document.getElementById('am-icon');
+    var amTitle = document.getElementById('am-title');
+    var amSong = document.getElementById('am-song');
+    var amPlay = document.getElementById('am-play');
+    var amPrev = document.getElementById('am-prev');
+    var amNext = document.getElementById('am-next');
+    var amProgress = document.getElementById('am-progress-bar');
+
+    var audio = null;
+    var isPlaying = false;
+    var playTimer = null;
+    var curTitle = '';
+
+    // 随机挑选一个 IA 音乐专辑的 mp3
+    // 集合：audio_music（CC/公共领域音乐，50万+）
+    function pickRandomSong() {
+      return fetch(
+        'https://archive.org/advancedsearch.php?q=collection:audio_music+AND+mediatype:audio&fl%5B%5D=identifier&rows=30&sort%5B%5D=random&output=json'
+      )
+        .then(function (r) {
+          return r.ok ? r.json() : Promise.reject();
+        })
+        .then(function (d) {
+          var docs = (d.response && d.response.docs) || [];
+          if (!docs.length) return Promise.reject();
+          var id = docs[Math.floor(Math.random() * docs.length)].identifier;
+          // 获取该专辑文件列表，挑一个音频
+          return fetch('https://archive.org/metadata/' + encodeURIComponent(id)).then(function (r2) {
+            return r2.ok ? r2.json() : Promise.reject();
+          });
+        })
+        .then(function (meta) {
+          var files = meta.files || [];
+          var audioFiles = files.filter(function (f) {
+            return /\.(mp3|ogg|m4a)$/i.test(f.name) && !/64kb|_64|hq\.mp3|\.ogg$/i.test(f.name);
+          });
+          var pool = audioFiles.length ? audioFiles : files.filter(function (f) {
+            return /\.(mp3|ogg|m4a)$/i.test(f.name);
+          });
+          if (!pool.length) return Promise.reject();
+          var f = pool[Math.floor(Math.random() * pool.length)];
+          var title = meta.metadata && (meta.metadata.title || meta.metadata.artist) || meta.d1 || '未知曲目';
+          return {
+            url: 'https://archive.org/download/' + encodeURIComponent(meta.metadata.identifier) + '/' + encodeURIComponent(f.name),
+            title: String(title).slice(0, 60),
+          };
+        });
+    }
+
+    function setPlayingUI(playing) {
+      isPlaying = playing;
+      amPlay.textContent = playing ? '⏸' : '▶';
+      if (amToggle) amToggle.classList.toggle('playing', playing);
+      amIcon.textContent = playing ? '🎶' : '🎵';
+      if (playing && audio) {
+        amSong.textContent = '正在播放：' + curTitle;
+        amTitle.textContent = '随机音乐 · 30 分钟后自动停止';
+      } else if (audio) {
+        amSong.textContent = '已暂停：' + curTitle;
+        amTitle.textContent = '随机音乐';
+      }
+    }
+
+    function startTimer() {
+      // 30 分钟自动停止
+      if (playTimer) clearTimeout(playTimer);
+      playTimer = setTimeout(function () {
+        if (audio) {
+          audio.pause();
+          setPlayingUI(false);
+          amSong.textContent = '已播放 30 分钟，休息一下耳朵～';
+          amTitle.textContent = '随机音乐';
+          amProgress.style.width = '0%';
+        }
+      }, 30 * 60000);
+    }
+
+    function playSong() {
+      pickRandomSong()
+        .then(function (song) {
+          curTitle = song.title;
+          if (!audio) {
+            audio = new Audio();
+            audio.preload = 'auto';
+            // 挂到 DOM 便于调试与进度显示（不显示控件）
+            audio.style.display = 'none';
+            document.body.appendChild(audio);
+            audio.addEventListener('ended', function () {
+              // 一首结束自动下一曲
+              playSong();
+            });
+            audio.addEventListener('timeupdate', function () {
+              if (audio.duration) {
+                var pct = (audio.currentTime / audio.duration) * 100;
+                amProgress.style.width = pct + '%';
+              }
+            });
+            audio.addEventListener('error', function () {
+              // 播放失败换下一首
+              playSong();
+            });
+          }
+          audio.src = song.url;
+          audio.load();
+          var p = audio.play();
+          if (p && typeof p.then === 'function') {
+            p.then(function () {
+              setPlayingUI(true);
+              startTimer();
+            }).catch(function () {
+              amSong.textContent = '播放失败，换一首试试…';
+              setTimeout(playSong, 1500);
+            });
+          } else {
+            setPlayingUI(true);
+            startTimer();
+          }
+        })
+        .catch(function () {
+          amSong.textContent = '暂时没找到合适的歌，再试一次？';
+          setTimeout(function () {
+            amSong.textContent = '点击播放，随机来一首世界各地的歌';
+          }, 2500);
+        });
+    }
+
+    function togglePlay() {
+      if (!audio) {
+        playSong();
+        return;
+      }
+      if (isPlaying) {
+        audio.pause();
+        setPlayingUI(false);
+      } else {
+        audio.play().then(function () {
+          setPlayingUI(true);
+          startTimer();
+        }).catch(function () {});
+      }
+    }
+
+    function nextSong() {
+      if (audio) {
+        audio.pause();
+        audio.src = '';
+      }
+      amProgress.style.width = '0%';
+      playSong();
+    }
+
+    // 面板：hover 显示 / 移出隐藏（触屏点按切换）
+    if (musicWrap && amPanel) {
+      musicWrap.addEventListener('mouseenter', function () {
+        amPanel.hidden = false;
+      });
+      musicWrap.addEventListener('mouseleave', function () {
+        amPanel.hidden = true;
+      });
+      amToggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        // 触屏/点击：展开面板；再次点击切换播放
+        if (amPanel.hidden) {
+          amPanel.hidden = false;
+        } else {
+          togglePlay();
+        }
+      });
+      if (amPlay) amPlay.addEventListener('click', function (e) {
+        e.stopPropagation();
+        togglePlay();
+      });
+      if (amPrev) amPrev.addEventListener('click', function (e) {
+        e.stopPropagation();
+        // 上一曲：重播当前（无历史列表），简单回到开头
+        if (audio && audio.currentTime > 3) {
+          audio.currentTime = 0;
+        } else {
+          nextSong();
+        }
+      });
+      if (amNext) amNext.addEventListener('click', function (e) {
+        e.stopPropagation();
+        nextSong();
+      });
+    }
   })();
 </script>
