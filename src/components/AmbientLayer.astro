@@ -5,13 +5,8 @@ const now = new Date();
 const defaultCity = '你所在的城市';
 ---
 
-<!-- 时间与天气浮动条（右下角，低调） -->
+<!-- 音乐按钮（右下角，低调；时钟与天气已移入导航栏） -->
 <div class="ambient-bar" id="ambient-bar" aria-hidden="false">
-  <div class="ambient-clock" id="ambient-clock" title="当前时间">--</div>
-  <div class="ambient-weather" id="ambient-weather" title="按你的位置显示的天气" hidden>
-    <span class="aw-icon" id="aw-icon"></span>
-    <span class="aw-text" id="aw-text">天气加载中…</span>
-  </div>
   <div class="ambient-music" id="ambient-music" title="随机播放 CC 授权音乐（Jamendo / Free Music Archive）">
     <button class="am-toggle" id="am-toggle" type="button" aria-label="随机播放音乐" title="随机播放 CC 授权音乐">
       <span class="am-icon" id="am-icon">🎵</span>
@@ -36,7 +31,7 @@ const defaultCity = '你所在的城市';
 <div class="work-toast" id="work-toast" role="alert" hidden></div>
 
 <style>
-  /* ===== 时间与天气浮动条 ===== */
+  /* ===== 音乐按钮（右下角悬浮） ===== */
   .ambient-bar {
     position: fixed;
     right: max(0.9rem, env(safe-area-inset-right));
@@ -44,52 +39,7 @@ const defaultCity = '你所在的城市';
     z-index: 300;
     display: flex;
     align-items: center;
-    gap: 0.45rem;
-    padding: 0.42rem 0.85rem;
-    border-radius: var(--radius-full);
-    background: var(--bg-glass-strong);
-    -webkit-backdrop-filter: saturate(180%) blur(16px);
-    backdrop-filter: saturate(180%) blur(16px);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
-    font-size: var(--text-xs);
-    color: var(--text-secondary);
-    white-space: nowrap;
-    opacity: 0.78;
-    transition: opacity 0.3s var(--ease);
     pointer-events: auto;
-  }
-  .ambient-bar:hover {
-    opacity: 1;
-  }
-  .ambient-clock {
-    font-variant-numeric: tabular-nums;
-    font-weight: 550;
-    color: var(--text);
-  }
-  .ambient-weather {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    color: var(--text-tertiary);
-  }
-  .ambient-weather[hidden] {
-    display: none;
-  }
-  .aw-icon {
-    font-size: 0.95rem;
-    line-height: 1;
-  }
-  @media (max-width: 560px) {
-    .ambient-bar {
-      font-size: 0.68rem;
-      padding: 0.35rem 0.7rem;
-    }
-    .ambient-clock {
-      max-width: 9.5em;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
   }
 
   /* ===== 随机音乐 ===== */

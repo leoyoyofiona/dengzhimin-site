@@ -140,6 +140,11 @@ const isActive = (href: string) => {
         </div>
       </div>
       <VisitorCounter variant="header" id="visitor-counter-header" />
+      <div class="ambient-clock" id="ambient-clock" title="当前时间">--</div>
+      <div class="ambient-weather" id="ambient-weather" title="按你的位置显示的天气" hidden>
+        <span class="aw-icon" id="aw-icon"></span>
+        <span class="aw-text" id="aw-text">天气加载中…</span>
+      </div>
       <button class="icon-btn menu-btn" id="menu-toggle" aria-label="打开菜单" aria-expanded="false">
         <Icon name="menu" size={22} />
       </button>
@@ -634,6 +639,55 @@ const isActive = (href: string) => {
     border-color: color-mix(in srgb, var(--accent) 55%, transparent);
     background: color-mix(in srgb, var(--accent) 18%, transparent);
   }
+  /* 时钟 + 天气（从右下角浮动条移入导航栏，与访问统计同风格） */
+  .ambient-clock,
+  .ambient-weather {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.28rem 0.4rem;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+    font-size: 0.64rem;
+    white-space: nowrap;
+    color: var(--text-secondary);
+  }
+  .ambient-clock {
+    font-variant-numeric: tabular-nums;
+    font-weight: 550;
+    color: var(--text);
+  }
+  .ambient-weather[hidden] {
+    display: none;
+  }
+  .aw-icon {
+    font-size: 0.9rem;
+    line-height: 1;
+  }
+  /* 中等宽度：时钟/天气压缩为精简胶囊（导航仍显示的区间） */
+  @media (max-width: 1280px) {
+    .ambient-weather .aw-text {
+      max-width: 8em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  @media (min-width: 1025px) and (max-width: 1100px) {
+    .ambient-clock,
+    .ambient-weather {
+      padding: 0.26rem 0.3rem;
+      font-size: 0.6rem;
+    }
+    .ambient-clock {
+      max-width: 10em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ambient-weather {
+      display: none;
+    }
+  }
   .disclaimer-panel {
     position: absolute;
     top: calc(100% + 10px);
@@ -878,6 +932,27 @@ const isActive = (href: string) => {
     .disclaimer-panel {
       display: none;
     }
+    /* 移动端：搜索/收藏在移动菜单里有入口，header 图标隐藏给时钟天气让位 */
+    .search-btn,
+    .actions a[href="/favorites/"] {
+      display: none;
+    }
+    /* 移动端时钟/天气：紧凑显示，天气文字省略 */
+    .ambient-clock,
+    .ambient-weather {
+      padding: 0.26rem 0.3rem;
+      font-size: 0.6rem;
+    }
+    .ambient-clock {
+      max-width: 11em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ambient-weather .aw-text {
+      max-width: 8em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   /* 超窄屏（<420px）：进一步压缩，保证 5 个操作图标不溢出 */
@@ -891,6 +966,13 @@ const isActive = (href: string) => {
     .icon-btn {
       width: 30px;
       height: 30px;
+    }
+    /* 超窄：天气隐藏（空间不足），时钟截断为时间 */
+    .ambient-weather {
+      display: none;
+    }
+    .ambient-clock {
+      max-width: 7.5em;
     }
   }
 </style>
