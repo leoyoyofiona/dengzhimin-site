@@ -277,26 +277,28 @@ const {
 </style>
 
 <script>
-  // ===== 卡片快捷收藏（与文章页收藏共用 localStorage） =====
-  const FAV_KEY = 'leodeng:favs';
-  function readFavs() {
-    try {
-      return JSON.parse(localStorage.getItem(FAV_KEY)) || [];
-    } catch (_) {
-      return [];
-    }
-  }
-  function writeFavs(v) {
-    try {
-      localStorage.setItem(FAV_KEY, JSON.stringify(v));
-    } catch (_) {
-      /* ignore */
-    }
-  }
-  // 初始化：标记已收藏的卡片
+  // ===== 卡片快捷收藏（本地 + 云端按访客 uid 同步） =====
+  import { FAV_KEY, HIST_KEY, readLocal, writeLocal, fetchCloud, pushCloud, mergeCloud, getUid } from '../lib/favcloud';
+  // 初始化：标记已收藏的卡片，并从云端拉取合并
   const favBtns = document.querySelectorAll('.pc-fav');
   if (favBtns.length > 0) {
-    let favs = readFavs();
+    let favs = readLocal(FAV_KEY);
+    const history = readLocal(HIST_KEY);
+    // 云端合并（收藏按 uid 独立，换设备也能恢复）
+    fetchCloud().then((cloud) => {
+      const merged = mergeCloud(favs, history, cloud);
+      favs = merged.favs;
+      writeLocal(FAV_KEY, favs);
+      writeLocal(HIST_KEY, merged.history);
+      favBtns.forEach((btn) => {
+        const url = btn.dataset.url;
+        if (favs.some((f) => f.url === url)) {
+          btn.classList.add('is-faved');
+          btn.setAttribute('aria-label', '取消收藏');
+          btn.title = '取消收藏';
+        }
+      });
+    });
     favBtns.forEach((btn) => {
       const url = btn.dataset.url;
       if (favs.some((f) => f.url === url)) {
@@ -315,7 +317,7 @@ const {
           date: btn.dataset.date,
           time: Date.now(),
         };
-        favs = readFavs();
+        favs = readLocal(FAV_KEY);
         const i = favs.findIndex((f) => f.url === url);
         if (i >= 0) {
           favs.splice(i, 1);
@@ -328,7 +330,8 @@ const {
           btn.setAttribute('aria-label', '取消收藏');
           btn.title = '取消收藏';
         }
-        writeFavs(favs);
+        writeLocal(FAV_KEY, favs);
+        pushCloud(favs, readLocal(HIST_KEY));
       });
     });
   }

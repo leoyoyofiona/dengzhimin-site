@@ -222,23 +222,8 @@ const postColor = isMaoxuanPost ? '#b91c1c' : section.color;
     });
   }
 
-  // ===== 收藏 + 浏览历史（localStorage） =====
-  const FAV_KEY = 'leodeng:favs';
-  const HIST_KEY = 'leodeng:history';
-  const read = (k) => {
-    try {
-      return JSON.parse(localStorage.getItem(k)) || [];
-    } catch (_) {
-      return [];
-    }
-  };
-  const write = (k, v) => {
-    try {
-      localStorage.setItem(k, JSON.stringify(v));
-    } catch (_) {
-      /* 隐私模式等场景忽略 */
-    }
-  };
+  // ===== 收藏 + 浏览历史（本地 + 云端按访客 uid 同步） =====
+  import { FAV_KEY, HIST_KEY, readLocal, writeLocal, fetchCloud, pushCloud, mergeCloud } from '../lib/favcloud';
 
   const favBtn = document.getElementById('fav-btn');
   if (favBtn) {
@@ -252,15 +237,25 @@ const postColor = isMaoxuanPost ? '#b91c1c' : section.color;
       time: Date.now(),
     };
 
-    // 刷新收藏状态
-    const favs = read(FAV_KEY);
-    if (favs.some((f) => f.url === url)) {
+    // 刷新收藏状态（先从云端合并，保证换设备后状态一致）
+    fetchCloud().then((cloud) => {
+      const merged = mergeCloud(readLocal(FAV_KEY), readLocal(HIST_KEY), cloud);
+      writeLocal(FAV_KEY, merged.favs);
+      writeLocal(HIST_KEY, merged.history);
+      if (merged.favs.some((f) => f.url === url)) {
+        favBtn.classList.add('is-faved');
+        favBtn.setAttribute('aria-pressed', 'true');
+        favBtn.title = '取消收藏';
+      }
+    });
+    // 本地已有收藏则立即标记（不等云端）
+    if (readLocal(FAV_KEY).some((f) => f.url === url)) {
       favBtn.classList.add('is-faved');
       favBtn.setAttribute('aria-pressed', 'true');
       favBtn.title = '取消收藏';
     }
     favBtn.addEventListener('click', () => {
-      let list = read(FAV_KEY);
+      let list = readLocal(FAV_KEY);
       const i = list.findIndex((f) => f.url === url);
       if (i >= 0) {
         list.splice(i, 1);
@@ -277,11 +272,12 @@ const postColor = isMaoxuanPost ? '#b91c1c' : section.color;
         const label = favBtn.querySelector('.fav-label');
         if (label) label.textContent = '已收藏';
       }
-      write(FAV_KEY, list);
+      writeLocal(FAV_KEY, list);
+      pushCloud(list, readLocal(HIST_KEY));
     });
   }
 
-  // 浏览历史：去重，最多保留 60 条
+  // 浏览历史：去重，最多保留 60 条（本地 + 云端）
   const histUrl = window.location.pathname;
   if (histUrl && !histUrl.endsWith('/favorites/')) {
     const title = document.querySelector('.article-title')?.textContent || '';
@@ -289,7 +285,7 @@ const postColor = isMaoxuanPost ? '#b91c1c' : section.color;
     const sectionName = favBtnEl?.dataset.section || document.querySelector('.back')?.textContent?.trim()?.replace(/^返回/, '') || '';
     const sectionColor = favBtnEl?.dataset.color || '';
     const dateStr = favBtnEl?.dataset.date || '';
-    let history = read(HIST_KEY);
+    let history = readLocal(HIST_KEY);
     history = history.filter((h) => h.url !== histUrl);
     history.unshift({
       url: histUrl,
@@ -300,7 +296,8 @@ const postColor = isMaoxuanPost ? '#b91c1c' : section.color;
       time: Date.now(),
     });
     history = history.slice(0, 60);
-    write(HIST_KEY, history);
+    writeLocal(HIST_KEY, history);
+    pushCloud(readLocal(FAV_KEY), history);
   }
 </script>
 

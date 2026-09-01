@@ -44,6 +44,7 @@ const sectionColors = Object.fromEntries(SECTIONS.map((s) => [s.title, s.color])
 
 <script is:inline define:vars={{ sectionColors }}>
   const SECTION_COLORS = sectionColors;
+  const API = 'https://dengzhimin-guestbook-api.leooelcn.workers.dev/api/favorites';
 
   const FAV_KEY = 'leodeng:favs';
   const HIST_KEY = 'leodeng:history';
@@ -61,6 +62,46 @@ const sectionColors = Object.fromEntries(SECTIONS.map((s) => [s.title, s.color])
       /* ignore */
     }
   };
+  const getUid = () => {
+    try {
+      let uid = localStorage.getItem('leodeng:visitor-uid');
+      if (!uid) {
+        uid =
+          (crypto.randomUUID && crypto.randomUUID()) ||
+          'v-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+        localStorage.setItem('leodeng:visitor-uid', uid);
+      }
+      return uid;
+    } catch (_) {
+      return '';
+    }
+  };
+  // 云端合并：收藏/足迹按 uid 拉取，合并到本地（云端优先，按 url 去重）
+  function fetchCloud() {
+    const uid = getUid();
+    if (!uid) return Promise.resolve(null);
+    return fetch(API + '?uid=' + encodeURIComponent(uid), { mode: 'cors' })
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .catch(() => null);
+  }
+  function pushCloud(favs, history) {
+    const uid = getUid();
+    if (!uid) return;
+    fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ uid, favs: favs.slice(0, 300), history: history.slice(0, 100) }),
+      mode: 'cors',
+    }).catch(() => {});
+  }
+  function mergeCloud(localFavs, localHist, cloud) {
+    if (!cloud) return { favs: localFavs, history: localHist };
+    const favMap = new Map(localFavs.map((r) => [r.url, r]));
+    for (const r of cloud.favs || []) if (r && r.url) favMap.set(r.url, r);
+    const histMap = new Map(localHist.map((r) => [r.url, r]));
+    for (const r of cloud.history || []) if (r && r.url) histMap.set(r.url, r);
+    return { favs: Array.from(favMap.values()), history: Array.from(histMap.values()).slice(0, 60) };
+  }
 
   const favList = document.getElementById('fav-list');
   const histList = document.getElementById('hist-list');
@@ -142,7 +183,7 @@ const sectionColors = Object.fromEntries(SECTIONS.map((s) => [s.title, s.color])
   tabFavs.addEventListener('click', () => switchTab('favs'));
   tabHistory.addEventListener('click', () => switchTab('history'));
 
-  // 取消收藏
+  // 取消收藏（本地 + 云端）
   favList.addEventListener('click', (e) => {
     const btn = e.target.closest('.fav-remove');
     if (!btn) return;
@@ -151,16 +192,27 @@ const sectionColors = Object.fromEntries(SECTIONS.map((s) => [s.title, s.color])
     favs = favs.filter((f) => f.url !== url);
     write(FAV_KEY, favs);
     renderFavs();
+    pushCloud(favs, read(HIST_KEY));
   });
 
-  // 清空历史
+  // 清空历史（本地 + 云端）
   histClear.addEventListener('click', () => {
     write(HIST_KEY, []);
     renderHist();
+    pushCloud(read(FAV_KEY), []);
   });
 
   renderFavs();
   renderHist();
+  // 从云端拉取并合并（换设备也能恢复收藏与足迹）
+  fetchCloud().then((cloud) => {
+    if (!cloud) return;
+    const merged = mergeCloud(read(FAV_KEY), read(HIST_KEY), cloud);
+    write(FAV_KEY, merged.favs);
+    write(HIST_KEY, merged.history);
+    renderFavs();
+    renderHist();
+  });
 </script>
 
 <style>

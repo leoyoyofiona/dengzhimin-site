@@ -63,6 +63,27 @@ export default {
           return json({ visitors: v.visitors, views: v.views });
         }
       }
+      if (path === '/api/favorites') {
+        // 每个访客的收藏与浏览足迹，按 uid 存 KV（与访问统计同 uid）
+        if (request.method === 'GET') {
+          const uid = String(url.searchParams.get('uid') || '').trim().slice(0, 64);
+          if (!uid) return json({ favs: [], history: [] });
+          const d = await readJson(kv, 'fav:' + uid, null);
+          return json({
+            favs: (d && Array.isArray(d.favs)) ? d.favs : [],
+            history: (d && Array.isArray(d.history)) ? d.history : [],
+          });
+        }
+        if (request.method === 'POST') {
+          const body = await request.json().catch(() => ({}));
+          const uid = String(body.uid || '').trim().slice(0, 64);
+          if (!uid) return json({ error: '缺少 uid' }, 400);
+          const favs = Array.isArray(body.favs) ? body.favs.slice(0, 300) : [];
+          const history = Array.isArray(body.history) ? body.history.slice(0, 100) : [];
+          await kv.put('fav:' + uid, JSON.stringify({ favs, history, updated: Date.now() }));
+          return json({ ok: true });
+        }
+      }
       return json({ error: 'Not Found' }, 404);
     } catch (e) {
       return json({ error: 'Internal Error' }, 500);

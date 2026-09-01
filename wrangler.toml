@@ -1,0 +1,7 @@
+name = "dengzhimin-guestbook-api"
+main = "workers/guestbook-api.js"
+compatibility_date = "2024-11-01"
+
+[[kv_namespaces]]
+binding = "GUESTBOOK_KV"
+id = "a88ad814209b4b9685b7a290bb7def3c"

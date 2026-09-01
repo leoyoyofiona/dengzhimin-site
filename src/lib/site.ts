@@ -8,8 +8,10 @@ export const SITE = {
   email: 'leooelcn@gmail.com',
   github: 'leoyoyofiona',
   domain: 'www.dengzhimin.cn',
-  /** 留言板 API（Render 上的留言服务） */
+  /** 留言板 API（Cloudflare Workers 上的留言服务） */
   guestbookApi: 'https://dengzhimin-guestbook-api.leooelcn.workers.dev/api/guestbook',
+  /** 收藏/足迹 API（Cloudflare Workers，按访客 uid 存取） */
+  favoritesApi: 'https://dengzhimin-guestbook-api.leooelcn.workers.dev/api/favorites',
 } as const;
 
 export interface Section {
