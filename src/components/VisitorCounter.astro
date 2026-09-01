@@ -45,7 +45,7 @@ const { variant = 'footer' } = Astro.props;
 
 <script>
   // ===== 访问统计：上报 + 显示（访客数 / 浏览次数） =====
-  // 依赖自建留言板 API；API 不可用时静默隐藏
+  // 优先显示全站统计（自建 API）；API 不可用时回退为本机累计访问
   (function () {
     // 防重复绑定（组件在页面中可能出现多次）
     const counter = document.getElementById('visitor-counter');
@@ -54,6 +54,8 @@ const { variant = 'footer' } = Astro.props;
 
     const API = 'https://dengzhimin-guestbook-api.onrender.com/api/visits';
     const uidKey = 'leodeng:visitor-uid';
+    const localKey = 'leodeng:visits-local';
+
     function getUid() {
       try {
         let uid = localStorage.getItem(uidKey);
@@ -75,6 +77,20 @@ const { variant = 'footer' } = Astro.props;
       return String(n);
     }
 
+    // 本机累计访问（每次页面加载 +1），作为 API 不可用时的兜底
+    function bumpLocal() {
+      try {
+        const n = (parseInt(localStorage.getItem(localKey), 10) || 0) + 1;
+        localStorage.setItem(localKey, String(n));
+        return n;
+      } catch (_) {
+        return 0;
+      }
+    }
+    const localVisits = bumpLocal();
+
+    const text = counter.querySelector('.vc-text');
+
     async function report() {
       try {
         const res = await fetch(API, {
@@ -84,12 +100,17 @@ const { variant = 'footer' } = Astro.props;
         });
         if (!res.ok) throw new Error('bad status');
         const data = await res.json();
-        const text = counter.querySelector('.vc-text');
         if (text) text.textContent = '访问 ' + fmt(data.visitors || 0) + ' 人 · 浏览 ' + fmt(data.views || 0) + ' 次';
       } catch (_) {
-        counter.style.display = 'none';
+        // API 不可用：显示本机累计访问（不隐藏，保证用户能看到数字）
+        if (text) {
+          text.textContent = localVisits > 0 ? '本机访问 ' + fmt(localVisits) + ' 次' : '访问统计加载中…';
+        }
+        counter.title = '全站统计暂不可用，当前为本机累计';
       }
     }
+    // 立即显示本地计数（保证秒开），再异步拉取全站统计覆盖
+    if (text) text.textContent = localVisits > 0 ? '本机访问 ' + fmt(localVisits) + ' 次' : '访问统计加载中…';
     report();
   })();
 </script>
