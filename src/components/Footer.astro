@@ -178,7 +178,7 @@ const year = new Date().getFullYear();
   // ===== 访问统计：上报 + 显示（访客数 / 浏览次数） =====
   // 依赖自建留言板 API（dengzhimin-guestbook-api）；API 不可用时静默隐藏
   (function () {
-    const API = 'https://dengzhimin-guestbook-api.onrender.com/api/visits';
+    const API = 'https://dengzhimin-guestbook-api.leooelcn.workers.dev/api/visits';
     const counter = document.getElementById('visits-counter');
     if (!counter) return;
     if (counter.dataset.bound) return;
