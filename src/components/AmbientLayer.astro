@@ -468,29 +468,50 @@ const defaultCity = '你所在的城市';
       }
     }
 
+    // 带超时的 fetch 辅助（大陆网络抖动时快速失败，不长时间挂起）
+    function wfetch(url, ms) {
+      var ctrl = new AbortController();
+      var timer = setTimeout(function () { ctrl.abort(); }, ms || 6000);
+      return fetch(url, { signal: ctrl.signal }).finally(function () { clearTimeout(timer); });
+    }
+
+    // IP 定位多源 fallback：任一成功即返回 {lat, lon, city}，提高大陆可用性
+    var GEO_SOURCES = [
+      { url: 'https://ipwho.is/', parse: function (d) { return d && d.success !== false && d.latitude !== undefined ? { lat: d.latitude, lon: d.longitude, city: d.city || '' } : null; } },
+      { url: 'https://ipinfo.io/json', parse: function (d) { var c = d && d.loc ? d.loc.split(',') : []; return c.length === 2 ? { lat: parseFloat(c[0]), lon: parseFloat(c[1]), city: d.city || '' } : null; } },
+      { url: 'http://ip-api.com/json/', parse: function (d) { return d && d.status === 'success' ? { lat: d.lat, lon: d.lon, city: d.city || '' } : null; } },
+    ];
+    function locate() {
+      function tryOne(i) {
+        if (i >= GEO_SOURCES.length) return Promise.reject(new Error('geo all failed'));
+        var src = GEO_SOURCES[i];
+        return wfetch(src.url, 5000)
+          .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+          .then(function (d) {
+            var p = src.parse(d);
+            return p ? p : Promise.reject();
+          })
+          .catch(function () { return tryOne(i + 1); });
+      }
+      return tryOne(0);
+    }
+
     (function loadWeather() {
       if (!weatherEl || !bgEl) return;
-      // 1) IP 定位城市（ipwho.is 免费，无需 key）
-      fetch('https://ipwho.is/', { mode: 'cors' })
-        .then(function (r) {
-          return r.ok ? r.json() : Promise.reject();
-        })
-        .then(function (ip) {
-          var lat = ip.latitude;
-          var lon = ip.longitude;
-          var city = ip.city || '';
-          if (lat === undefined || lon === undefined) return Promise.reject();
-          // 2) open-meteo 天气（免费，无需 key）
+      locate()
+        .then(function (geo) {
+          // open-meteo 天气（免费，无需 key；大陆一般可直连）
           var api =
             'https://api.open-meteo.com/v1/forecast?latitude=' +
-            lat +
+            geo.lat +
             '&longitude=' +
-            lon +
+            geo.lon +
             '&current_weather=true&timezone=auto';
-          return fetch(api, { mode: 'cors' }).then(function (r2) {
-            return r2.ok ? r2.json().then(function (w) {
-              return { city: city, w: w };
-            }) : Promise.reject();
+          return wfetch(api, 7000).then(function (r2) {
+            if (!r2.ok) return Promise.reject();
+            return r2.json().then(function (w) {
+              return { city: geo.city, w: w };
+            });
           });
         })
         .then(function (data) {
@@ -503,7 +524,7 @@ const defaultCity = '你所在的城市';
           renderWeatherBG(info.effect, info.sky);
         })
         .catch(function () {
-          // IP 定位或天气失败：隐藏天气，保持时间显示
+          // 定位或天气失败：隐藏天气，保持时间显示
           if (weatherEl) weatherEl.hidden = true;
         });
     })();
