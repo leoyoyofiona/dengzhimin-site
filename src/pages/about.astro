@@ -109,15 +109,34 @@ import { SITE } from '../lib/site';
     listEl.scrollTop = 0;
   }
 
+  // 带超时的探测：区分"留言服务被墙（大陆等地区）"与普通故障
+  function probeAPI() {
+    const ctrl = new AbortController();
+    const timer = setTimeout(function () { ctrl.abort(); }, 4000);
+    return fetch(API, { signal: ctrl.signal })
+      .then(function (r) { clearTimeout(timer); return r.ok; })
+      .catch(function () { clearTimeout(timer); return false; });
+  }
+
   async function load() {
     try {
-      const res = await fetch(API);
+      const ctrl = new AbortController();
+      const timer = setTimeout(function () { ctrl.abort(); }, 6000);
+      const res = await fetch(API, { signal: ctrl.signal });
+      clearTimeout(timer);
       if (!res.ok) throw new Error('load failed');
       const list = await res.json();
       render(list);
     } catch (e) {
-      countEl.textContent = '加载失败';
-      listEl.innerHTML = '<div class="empty-state"><p class="empty-title">留言加载失败</p><p class="secondary">请稍后刷新重试。</p></div>';
+      // 再探测一次，判断是否是地区网络限制（被墙通常表现为连接失败/超时）
+      const reachable = await probeAPI();
+      if (reachable) {
+        countEl.textContent = '加载失败';
+        listEl.innerHTML = '<div class="empty-state"><p class="empty-title">留言加载失败</p><p class="secondary">请稍后刷新重试。</p></div>';
+      } else {
+        countEl.textContent = '暂不可用';
+        listEl.innerHTML = '<div class="empty-state"><p class="empty-title">留言服务在你的网络不可用</p><p class="secondary">所在地区可能无法直连留言服务器（大陆等地区受限），海外访客可正常使用。</p></div>';
+      }
     }
   }
 
