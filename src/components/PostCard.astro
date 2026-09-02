@@ -283,9 +283,10 @@ const {
   const favBtns = document.querySelectorAll('.pc-fav');
   if (favBtns.length > 0) {
     let favs = readLocal(FAV_KEY);
-    const history = readLocal(HIST_KEY);
     // 用户本次会话是否操作过收藏：操作后不再用云端旧数据覆盖本地
     let touched = false;
+    // 本会话取消收藏的 url（推送时从云端合并结果剔除，防止"复活"）
+    const sessionRemoved = new Set<string>();
     // 云端合并基准（单次拉取）：页面加载时把云端并到本地，之后用户操作以此为基准
     const cloudReady = fetchCloud().then((cloud) => {
       const merged = mergeCloud(readLocal(FAV_KEY), readLocal(HIST_KEY), cloud);
@@ -324,24 +325,31 @@ const {
           date: btn.dataset.date,
           time: Date.now(),
         };
-        // 等待云端合并完成后基于完整数据操作再推送，
-        // 避免页面刚加载本地为空时用空数据覆盖云端（收藏清零问题）
+        // 立即基于本地状态切换并反馈（即时生效，不等云端）
+        let list = readLocal(FAV_KEY);
+        const i = list.findIndex((f) => f.url === url);
+        if (i >= 0) {
+          list.splice(i, 1);
+          sessionRemoved.add(url);
+          btn.classList.remove('is-faved');
+          btn.setAttribute('aria-label', '收藏这篇文章');
+          btn.title = '收藏';
+        } else {
+          list.unshift(rec);
+          sessionRemoved.delete(url);
+          btn.classList.add('is-faved');
+          btn.setAttribute('aria-label', '取消收藏');
+          btn.title = '取消收藏';
+        }
+        writeLocal(FAV_KEY, list);
+        // 推送：等云端基准完成后，合并云端项并剔除本会话删除项（防清零/防复活）
         cloudReady.then((base) => {
-          favs = base.favs.slice();
-          const i = favs.findIndex((f) => f.url === url);
-          if (i >= 0) {
-            favs.splice(i, 1);
-            btn.classList.remove('is-faved');
-            btn.setAttribute('aria-label', '收藏这篇文章');
-            btn.title = '收藏';
-          } else {
-            favs.unshift(rec);
-            btn.classList.add('is-faved');
-            btn.setAttribute('aria-label', '取消收藏');
-            btn.title = '取消收藏';
-          }
-          writeLocal(FAV_KEY, favs);
-          pushCloud(favs, readLocal(HIST_KEY));
+          const latest = readLocal(FAV_KEY);
+          const finalFavs = mergeCloud(latest, [], { favs: base.favs, history: [] }).favs.filter(
+            (f) => !sessionRemoved.has(f.url),
+          );
+          writeLocal(FAV_KEY, finalFavs);
+          pushCloud(finalFavs, readLocal(HIST_KEY));
         });
       });
     });
