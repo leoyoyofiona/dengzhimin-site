@@ -609,10 +609,12 @@ const defaultCity = '你所在的城市';
 
     // ===== 随机音乐：CC 授权现代音乐（Internet Archive 镜像） =====
     // 正规来源：
+    //   0) COS 音乐库（腾讯云，大陆可直连）——用户自备曲库，playlist.json 清单
     //   1) Jamendo 全量镜像（约 29.5 万首，CC 授权现代音乐）——搜索 q: jamendo AND mediatype:audio
     //   2) Free Music Archive 镜像（约 1.7 万集合，带 licenseurl CC 授权）——搜索 q: freemusicarchive AND mediatype:audio
     // 每个条目是一张专辑（含多首 mp3），随机选专辑 → 随机选曲目。
     // 均为 CC 授权，可合法流式播放，无侵权风险。
+    var COS_BASE = 'https://thesis-music-hk-1303737693.cos.ap-hongkong.myqcloud.com';
     var MUSIC_SOURCES = [
       { key: 'jamendo', label: 'Jamendo', query: 'jamendo AND mediatype:audio', rows: 24 },
       { key: 'fma', label: 'Free Music Archive', query: 'freemusicarchive AND mediatype:audio', rows: 24 },
@@ -757,9 +759,56 @@ const defaultCity = '你所在的城市';
         });
     }
 
-    // 主路径：CC 镜像 → 失败降级到经典兜底
+    // ===== COS 音乐库（腾讯云香港，大陆/海外均可直连；用户自备 mp3） =====
+    // 播放清单：优先站点同源 public/music/playlist.json（构建时由脚本生成，无 CORS 问题）
+    var cosTried = false;
+    var cosTracks = [];
+    var cosUsed = {};
+    function loadCosTracks() {
+      if (cosTried) return Promise.resolve(cosTracks);
+      cosTried = true;
+      var ctrl = new AbortController();
+      var timer = setTimeout(function () { ctrl.abort(); }, 6000);
+      function parse(d) {
+        var arr = (d && Array.isArray(d.tracks)) ? d.tracks : [];
+        cosTracks = arr.filter(function (t) { return t && t.url; });
+        return cosTracks;
+      }
+      // 同源清单（随站点发布）；失败则尝试 COS 远程清单（加歌后上传的）
+      var local = location.origin + '/music/playlist.json';
+      return fetch(local, { signal: ctrl.signal })
+        .then(function (r) { clearTimeout(timer); return r.ok ? r.json() : Promise.reject(); })
+        .then(parse)
+        .catch(function () {
+          return fetch(COS_BASE + '/music/playlist.json', { signal: ctrl.signal })
+            .then(function (r) { clearTimeout(timer); return r.ok ? r.json() : Promise.reject(); })
+            .then(parse)
+            .catch(function () { clearTimeout(timer); return []; });
+        });
+    }
+    // 从 COS 随机选一首未播过的
+    function pickCosTrack() {
+      return loadCosTracks().then(function (tracks) {
+        var fresh = tracks.filter(function (t) { return !cosUsed[t.url]; });
+        var pool = fresh.length ? fresh : tracks;
+        if (!pool.length) return Promise.reject(new Error('cos empty'));
+        var t = pool[Math.floor(Math.random() * pool.length)];
+        cosUsed[t.url] = true;
+        return {
+          url: t.url.indexOf('http') === 0 ? t.url : COS_BASE + '/' + t.url.replace(/^\//, ''),
+          title: t.title || String(t.url.split('/').pop()).replace(/\.[^.]+$/, ''),
+          source: 'COS 音乐库',
+          id: t.url,
+          fallback: false,
+        };
+      });
+    }
+
+    // 主路径：COS 自备曲库 → CC 镜像 → 失败降级到经典兜底
     function pickRandomSong() {
-      return pickRandomAlbum().catch(function () {
+      return pickCosTrack().catch(function () {
+        return pickRandomAlbum();
+      }).catch(function () {
         return pickClassicSong();
       });
     }
@@ -898,7 +947,7 @@ const defaultCity = '你所在的城市';
           maybeLimitedHint();
           amSong.textContent = '暂时没找到合适的歌，再试一次？';
           setTimeout(function () {
-            amSong.textContent = '点击播放，随机来一首 CC 授权音乐';
+            amSong.textContent = '点击播放，随机来一首歌（COS 音乐库 / CC 授权）';
           }, 2500);
         });
     }
