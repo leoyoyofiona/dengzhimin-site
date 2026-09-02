@@ -216,5 +216,5 @@ Castellacci 等研究者系统讨论生成式 AI 进入科研全过程后的收�
 - 电商关注消费者入口与第一方数据控制权；
 - 科研领域关注知识生产及其评价权。
 
-建议持续追踪的三个前沿关键词是：**Agentic AI Literacy、AI-mediated Consumer Decision Making、Responsible Research with AI**。它们的理论体系尚未完全固化，但现实问题已经出现，因此比高度饱和的"ChatGPT 使用意愿"类研究更值得布局。
+建议持续追踪的三个前沿关键词是：**Agentic AI Literacy、AI-mediated Consumer Decision Making、Responsible Research with AI**。它们的理论体系尚未完全固化，但现实问题已经出现，因此比高度饱和的“ChatGPT 使用意愿”类研究更值得布局。
 
