@@ -284,8 +284,11 @@ const {
   if (favBtns.length > 0) {
     let favs = readLocal(FAV_KEY);
     const history = readLocal(HIST_KEY);
+    // 用户本次会话是否操作过收藏：操作后不再用云端旧数据覆盖本地
+    let touched = false;
     // 云端合并（收藏按 uid 独立，换设备也能恢复）
     fetchCloud().then((cloud) => {
+      if (touched || !cloud) return;
       const merged = mergeCloud(favs, history, cloud);
       favs = merged.favs;
       writeLocal(FAV_KEY, favs);
@@ -309,6 +312,7 @@ const {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
+        touched = true;
         const rec = {
           url,
           title: btn.dataset.title,

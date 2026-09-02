@@ -236,9 +236,12 @@ const postColor = isMaoxuanPost ? '#b91c1c' : section.color;
       date: favBtn.dataset.date,
       time: Date.now(),
     };
+    // 用户本次会话是否操作过收藏：操作后不再用云端旧数据覆盖本地
+    let touched = false;
 
     // 刷新收藏状态（先从云端合并，保证换设备后状态一致）
     fetchCloud().then((cloud) => {
+      if (touched || !cloud) return;
       const merged = mergeCloud(readLocal(FAV_KEY), readLocal(HIST_KEY), cloud);
       writeLocal(FAV_KEY, merged.favs);
       writeLocal(HIST_KEY, merged.history);
@@ -255,6 +258,7 @@ const postColor = isMaoxuanPost ? '#b91c1c' : section.color;
       favBtn.title = '取消收藏';
     }
     favBtn.addEventListener('click', () => {
+      touched = true;
       let list = readLocal(FAV_KEY);
       const i = list.findIndex((f) => f.url === url);
       if (i >= 0) {

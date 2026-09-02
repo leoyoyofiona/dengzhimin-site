@@ -891,12 +891,9 @@ const defaultCity = '你所在的城市';
       });
       amToggle.addEventListener('click', function (e) {
         e.stopPropagation();
-        // 触屏/点击：展开面板；再次点击切换播放
-        if (amPanel.hidden) {
-          amPanel.hidden = false;
-        } else {
-          togglePlay();
-        }
+        // 触屏/点击：展开面板；未在播放则直接开始播放，再点切换播放/暂停
+        amPanel.hidden = false;
+        togglePlay();
       });
       if (amPlay) amPlay.addEventListener('click', function (e) {
         e.stopPropagation();

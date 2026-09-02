@@ -703,6 +703,13 @@ const isActive = (href: string) => {
     cursor: pointer;
     transition: background-color var(--speed) var(--ease), transform var(--speed) var(--ease);
   }
+  /* 黑夜模式：音符更亮更清晰 */
+  html[data-theme='dark'] .am-toggle {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #ffd76e;
+    text-shadow: 0 0 6px rgba(255, 215, 110, 0.45);
+  }
   .am-toggle:hover {
     background: color-mix(in srgb, var(--accent) 22%, transparent);
     transform: scale(1.08);
@@ -1063,6 +1070,9 @@ const isActive = (href: string) => {
     }
     .mobile-menu:not([hidden]) {
       display: block;
+      max-height: calc(100dvh - var(--header-h));
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
     /* 触屏/窄屏：压缩品牌区与操作区，避免 actions 溢出视口 */
     .brand,
@@ -1085,9 +1095,8 @@ const isActive = (href: string) => {
     .disclaimer-panel {
       display: none;
     }
-    /* 移动端：搜索/收藏在移动菜单里有入口，header 图标隐藏给时钟天气让位 */
-    .search-btn,
-    .actions a[href="/favorites/"] {
+    /* 移动端：搜索在移动菜单里有入口，header 图标隐藏给时钟天气让位；收藏按钮保留（方便进收藏夹） */
+    .search-btn {
       display: none;
     }
     /* 移动端时钟/天气：紧凑显示，天气文字省略 */

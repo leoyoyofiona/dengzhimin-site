@@ -183,10 +183,14 @@ const sectionColors = Object.fromEntries(SECTIONS.map((s) => [s.title, s.color])
   tabFavs.addEventListener('click', () => switchTab('favs'));
   tabHistory.addEventListener('click', () => switchTab('history'));
 
+  // 用户本次会话是否操作过：操作后不再用云端旧数据覆盖本地
+  let touched = false;
+
   // 取消收藏（本地 + 云端）
   favList.addEventListener('click', (e) => {
     const btn = e.target.closest('.fav-remove');
     if (!btn) return;
+    touched = true;
     const url = btn.dataset.url;
     let favs = read(FAV_KEY);
     favs = favs.filter((f) => f.url !== url);
@@ -197,6 +201,7 @@ const sectionColors = Object.fromEntries(SECTIONS.map((s) => [s.title, s.color])
 
   // 清空历史（本地 + 云端）
   histClear.addEventListener('click', () => {
+    touched = true;
     write(HIST_KEY, []);
     renderHist();
     pushCloud(read(FAV_KEY), []);
@@ -206,7 +211,7 @@ const sectionColors = Object.fromEntries(SECTIONS.map((s) => [s.title, s.color])
   renderHist();
   // 从云端拉取并合并（换设备也能恢复收藏与足迹）
   fetchCloud().then((cloud) => {
-    if (!cloud) return;
+    if (!cloud || touched) return;
     const merged = mergeCloud(read(FAV_KEY), read(HIST_KEY), cloud);
     write(FAV_KEY, merged.favs);
     write(HIST_KEY, merged.history);
