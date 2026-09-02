@@ -223,7 +223,17 @@ const postColor = isMaoxuanPost ? '#b91c1c' : section.color;
   }
 
   // ===== 收藏 + 浏览历史（本地 + 云端按访客 uid 同步） =====
-  import { FAV_KEY, HIST_KEY, readLocal, writeLocal, fetchCloud, pushCloud, mergeCloud } from '../lib/favcloud';
+  import { FAV_KEY, HIST_KEY, readLocal, writeLocal, fetchCloud, pushCloud, mergeCloud, syncCloud } from '../lib/favcloud';
+
+  // 用户本次会话是否操作过收藏：操作后不再用云端旧数据覆盖本地
+  let touched = false;
+  // 云端合并基准（单次拉取）：页面加载把云端并到本地，用户操作为基准
+  const cloudReady = fetchCloud().then((cloud) => {
+    const merged = mergeCloud(readLocal(FAV_KEY), readLocal(HIST_KEY), cloud);
+    writeLocal(FAV_KEY, merged.favs);
+    writeLocal(HIST_KEY, merged.history);
+    return merged;
+  }).catch(() => ({ favs: readLocal(FAV_KEY), history: readLocal(HIST_KEY) }));
 
   const favBtn = document.getElementById('fav-btn');
   if (favBtn) {
@@ -236,15 +246,10 @@ const postColor = isMaoxuanPost ? '#b91c1c' : section.color;
       date: favBtn.dataset.date,
       time: Date.now(),
     };
-    // 用户本次会话是否操作过收藏：操作后不再用云端旧数据覆盖本地
-    let touched = false;
 
     // 刷新收藏状态（先从云端合并，保证换设备后状态一致）
-    fetchCloud().then((cloud) => {
-      if (touched || !cloud) return;
-      const merged = mergeCloud(readLocal(FAV_KEY), readLocal(HIST_KEY), cloud);
-      writeLocal(FAV_KEY, merged.favs);
-      writeLocal(HIST_KEY, merged.history);
+    cloudReady.then((merged) => {
+      if (touched) return;
       if (merged.favs.some((f) => f.url === url)) {
         favBtn.classList.add('is-faved');
         favBtn.setAttribute('aria-pressed', 'true');
@@ -259,29 +264,34 @@ const postColor = isMaoxuanPost ? '#b91c1c' : section.color;
     }
     favBtn.addEventListener('click', () => {
       touched = true;
-      let list = readLocal(FAV_KEY);
-      const i = list.findIndex((f) => f.url === url);
-      if (i >= 0) {
-        list.splice(i, 1);
-        favBtn.classList.remove('is-faved');
-        favBtn.setAttribute('aria-pressed', 'false');
-        favBtn.title = '收藏这篇文章';
-        const label = favBtn.querySelector('.fav-label');
-        if (label) label.textContent = '收藏';
-      } else {
-        list.unshift({ ...rec });
-        favBtn.classList.add('is-faved');
-        favBtn.setAttribute('aria-pressed', 'true');
-        favBtn.title = '取消收藏';
-        const label = favBtn.querySelector('.fav-label');
-        if (label) label.textContent = '已收藏';
-      }
-      writeLocal(FAV_KEY, list);
-      pushCloud(list, readLocal(HIST_KEY));
+      // 等待云端合并完成后基于完整数据操作再推送（防止空本地覆盖云端清零）
+      cloudReady.then((base) => {
+        let list = base.favs.slice();
+        const i = list.findIndex((f) => f.url === url);
+        if (i >= 0) {
+          list.splice(i, 1);
+          favBtn.classList.remove('is-faved');
+          favBtn.setAttribute('aria-pressed', 'false');
+          favBtn.title = '收藏这篇文章';
+          const label = favBtn.querySelector('.fav-label');
+          if (label) label.textContent = '收藏';
+        } else {
+          list.unshift({ ...rec });
+          favBtn.classList.add('is-faved');
+          favBtn.setAttribute('aria-pressed', 'true');
+          favBtn.title = '取消收藏';
+          const label = favBtn.querySelector('.fav-label');
+          if (label) label.textContent = '已收藏';
+        }
+        writeLocal(FAV_KEY, list);
+        pushCloud(list, readLocal(HIST_KEY));
+      });
     });
   }
 
   // 浏览历史：去重，最多保留 60 条（本地 + 云端）
+  // 注意：先合并云端再写本地并推送，避免页面加载早期本地为空时
+  // 用空数据覆盖云端导致收藏/足迹清零。
   const histUrl = window.location.pathname;
   if (histUrl && !histUrl.endsWith('/favorites/')) {
     const title = document.querySelector('.article-title')?.textContent || '';
@@ -289,19 +299,24 @@ const postColor = isMaoxuanPost ? '#b91c1c' : section.color;
     const sectionName = favBtnEl?.dataset.section || document.querySelector('.back')?.textContent?.trim()?.replace(/^返回/, '') || '';
     const sectionColor = favBtnEl?.dataset.color || '';
     const dateStr = favBtnEl?.dataset.date || '';
-    let history = readLocal(HIST_KEY);
-    history = history.filter((h) => h.url !== histUrl);
-    history.unshift({
-      url: histUrl,
-      title,
-      section: sectionName,
-      color: sectionColor,
-      date: dateStr,
-      time: Date.now(),
+    // 先拉取云端合并（用户已操作过则跳过覆盖，仅保留本地）
+    syncCloud(readLocal(FAV_KEY), readLocal(HIST_KEY), { push: false }).then((merged) => {
+      let history = merged.history;
+      history = history.filter((h) => h.url !== histUrl);
+      history.unshift({
+        url: histUrl,
+        title,
+        section: sectionName,
+        color: sectionColor,
+        date: dateStr,
+        time: Date.now(),
+      });
+      history = history.slice(0, 60);
+      const favs = touched ? readLocal(FAV_KEY) : merged.favs;
+      writeLocal(FAV_KEY, favs);
+      writeLocal(HIST_KEY, history);
+      pushCloud(favs, history);
     });
-    history = history.slice(0, 60);
-    writeLocal(HIST_KEY, history);
-    pushCloud(readLocal(FAV_KEY), history);
   }
 </script>
 

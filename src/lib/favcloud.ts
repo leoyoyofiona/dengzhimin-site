@@ -67,6 +67,18 @@ export function pushCloud(favs: any[], history: any[]) {
   }
 }
 
+/**
+ * 安全推送：先拉取云端并合并本地，再用合并结果推送。
+ * 防止页面加载早期（云端数据尚未合并到本地）用空/残缺本地数据
+ * 覆盖云端，导致收藏/足迹"清零"。返回合并后的 { favs, history }。
+ */
+export async function syncCloud(localFavs: any[], localHist: any[], opts: { push?: boolean } = {}) {
+  const cloud = await fetchCloud();
+  const merged = mergeCloud(localFavs, localHist, cloud);
+  if (opts.push !== false) pushCloud(merged.favs, merged.history);
+  return merged;
+}
+
 /** 合并云端数据到本地：收藏按 url 去重（云端优先保留），足迹按 url 去重（云端优先） */
 export function mergeCloud(localFavs: any[], localHist: any[], cloud: { favs: any[]; history: any[] }) {
   const byUrl = (list: any[]) => new Map(list.map((r) => [r.url, r]));

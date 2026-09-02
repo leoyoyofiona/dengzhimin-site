@@ -286,13 +286,16 @@ const {
     const history = readLocal(HIST_KEY);
     // 用户本次会话是否操作过收藏：操作后不再用云端旧数据覆盖本地
     let touched = false;
-    // 云端合并（收藏按 uid 独立，换设备也能恢复）
-    fetchCloud().then((cloud) => {
-      if (touched || !cloud) return;
-      const merged = mergeCloud(favs, history, cloud);
-      favs = merged.favs;
-      writeLocal(FAV_KEY, favs);
+    // 云端合并基准（单次拉取）：页面加载时把云端并到本地，之后用户操作以此为基准
+    const cloudReady = fetchCloud().then((cloud) => {
+      const merged = mergeCloud(readLocal(FAV_KEY), readLocal(HIST_KEY), cloud);
+      writeLocal(FAV_KEY, merged.favs);
       writeLocal(HIST_KEY, merged.history);
+      return merged;
+    }).catch(() => ({ favs: readLocal(FAV_KEY), history: readLocal(HIST_KEY) }));
+    cloudReady.then((merged) => {
+      if (touched) return;
+      favs = merged.favs;
       favBtns.forEach((btn) => {
         const url = btn.dataset.url;
         if (favs.some((f) => f.url === url)) {
@@ -321,21 +324,25 @@ const {
           date: btn.dataset.date,
           time: Date.now(),
         };
-        favs = readLocal(FAV_KEY);
-        const i = favs.findIndex((f) => f.url === url);
-        if (i >= 0) {
-          favs.splice(i, 1);
-          btn.classList.remove('is-faved');
-          btn.setAttribute('aria-label', '收藏这篇文章');
-          btn.title = '收藏';
-        } else {
-          favs.unshift(rec);
-          btn.classList.add('is-faved');
-          btn.setAttribute('aria-label', '取消收藏');
-          btn.title = '取消收藏';
-        }
-        writeLocal(FAV_KEY, favs);
-        pushCloud(favs, readLocal(HIST_KEY));
+        // 等待云端合并完成后基于完整数据操作再推送，
+        // 避免页面刚加载本地为空时用空数据覆盖云端（收藏清零问题）
+        cloudReady.then((base) => {
+          favs = base.favs.slice();
+          const i = favs.findIndex((f) => f.url === url);
+          if (i >= 0) {
+            favs.splice(i, 1);
+            btn.classList.remove('is-faved');
+            btn.setAttribute('aria-label', '收藏这篇文章');
+            btn.title = '收藏';
+          } else {
+            favs.unshift(rec);
+            btn.classList.add('is-faved');
+            btn.setAttribute('aria-label', '取消收藏');
+            btn.title = '取消收藏';
+          }
+          writeLocal(FAV_KEY, favs);
+          pushCloud(favs, readLocal(HIST_KEY));
+        });
       });
     });
   }
