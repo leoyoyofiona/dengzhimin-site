@@ -605,6 +605,7 @@ const defaultCity = '你所在的城市';
     var isPlaying = false;
     var playTimer = null;
     var curTitle = '';
+    var curSongId = '';
 
     // ===== 随机音乐：CC 授权现代音乐（Internet Archive 镜像） =====
     // 正规来源：
@@ -791,33 +792,54 @@ const defaultCity = '你所在的城市';
       }, 30 * 60000);
     }
 
+    // 一次性手势解锁（Safari/移动端）：用独立临时音源播放一次静音，
+    // 不接 ended 事件、不影响主播放 audio，用完即弃
+    var unlocked = false;
+    function unlockAutoplay() {
+      if (unlocked) return;
+      try {
+        var u = new Audio();
+        u.volume = 0.0001;
+        u.preload = 'auto';
+        u.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
+        u.play().then(function () {
+          unlocked = true;
+          u.src = '';
+        }).catch(function () {});
+      } catch (e) {}
+    }
+
     function playSong() {
+      // Safari/移动端自动播放限制：fetch 异步结束后 play() 已脱离用户
+      // 手势上下文会被拒绝，故先解锁一次。
+      unlockAutoplay();
+      if (!audio) {
+        audio = new Audio();
+        audio.preload = 'auto';
+        // 挂到 DOM 便于调试与进度显示（不显示控件）
+        audio.style.display = 'none';
+        document.body.appendChild(audio);
+        audio.addEventListener('ended', function () {
+          // 一首结束自动下一曲
+          playSong();
+        });
+        audio.addEventListener('timeupdate', function () {
+          if (audio.duration) {
+            var pct = (audio.currentTime / audio.duration) * 100;
+            amProgress.style.width = pct + '%';
+          }
+        });
+        audio.addEventListener('error', function () {
+          // 播放失败：标记该条目失败后换下一首
+          if (curSongId) failedIds[curSongId] = true;
+          playSong();
+        });
+      }
       pickRandomSong()
         .then(function (song) {
           // 显示曲目名（CC 镜像：艺术家 - 曲名；兜底：经典曲目名）
           curTitle = song.title || song.id;
-          if (!audio) {
-            audio = new Audio();
-            audio.preload = 'auto';
-            // 挂到 DOM 便于调试与进度显示（不显示控件）
-            audio.style.display = 'none';
-            document.body.appendChild(audio);
-            audio.addEventListener('ended', function () {
-              // 一首结束自动下一曲
-              playSong();
-            });
-            audio.addEventListener('timeupdate', function () {
-              if (audio.duration) {
-                var pct = (audio.currentTime / audio.duration) * 100;
-                amProgress.style.width = pct + '%';
-              }
-            });
-            audio.addEventListener('error', function () {
-              // 播放失败：标记该条目失败后换下一首
-              if (song.id) failedIds[song.id] = true;
-              playSong();
-            });
-          }
+          curSongId = song.id || '';
           audio.src = song.url;
           audio.load();
           var p = audio.play();
