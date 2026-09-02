@@ -77,22 +77,35 @@ const sectionColors = Object.fromEntries(SECTIONS.map((s) => [s.title, s.color])
     }
   };
   // 云端合并：收藏/足迹按 uid 拉取，合并到本地（云端优先，按 url 去重）
+  // 大陆等地区被墙：探测后本地模式不再请求云端（收藏仍本地可用）
+  function localMode() {
+    try {
+      return sessionStorage.getItem('leodeng:api-mode') === 'local';
+    } catch (_) {
+      return false;
+    }
+  }
+  function tFetch(url, opts, ms) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(function () { ctrl.abort(); }, ms || 4000);
+    return fetch(url, Object.assign({}, opts || {}, { signal: ctrl.signal })).finally(function () { clearTimeout(timer); });
+  }
   function fetchCloud() {
     const uid = getUid();
-    if (!uid) return Promise.resolve(null);
-    return fetch(API + '?uid=' + encodeURIComponent(uid), { mode: 'cors' })
+    if (!uid || localMode()) return Promise.resolve(null);
+    return tFetch(API + '?uid=' + encodeURIComponent(uid), { mode: 'cors' })
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .catch(() => null);
   }
   function pushCloud(favs, history) {
     const uid = getUid();
-    if (!uid) return;
-    fetch(API, {
+    if (!uid || localMode()) return;
+    tFetch(API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ uid, favs: favs.slice(0, 300), history: history.slice(0, 100) }),
       mode: 'cors',
-    }).catch(() => {});
+    }, 5000).catch(() => {});
   }
   function mergeCloud(localFavs, localHist, cloud) {
     if (!cloud) return { favs: localFavs, history: localHist };

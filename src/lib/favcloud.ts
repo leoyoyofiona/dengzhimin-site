@@ -41,6 +41,8 @@ export async function fetchCloud(): Promise<{ favs: any[]; history: any[] }> {
   try {
     const uid = getUid();
     if (!uid) return { favs: [], history: [] };
+    // 已探测为本地（被墙）模式：不再发起请求，直接返回空（避免每次 4s 挂起）
+    if (isLocalMode()) return { favs: [], history: [] };
     const res = await fetchWithTimeout(FAV_API + '?uid=' + encodeURIComponent(uid));
     if (!res.ok) return { favs: [], history: [] };
     const d = await res.json();
