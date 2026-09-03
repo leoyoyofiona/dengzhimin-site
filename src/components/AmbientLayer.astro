@@ -838,9 +838,25 @@ const defaultCity = '你所在的城市';
         if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) dmSubmit();
       });
     }
+    // 前端轻量预检（与后端词库一致提示；最终以后端为准）
+    function dmLocalBanned(text) {
+      var words = ['法轮功', '六四', '天安门事件', '打倒中共', '推翻政府', '台独', '藏独', '疆独', '港独',
+        '杀光', '炸掉', '恐怖袭击', '自杀式袭击', '制造炸弹', '出售枪支', '迷奸药', '卖淫',
+        '裸聊', '色情片', '黄网', '成人视频', '赌博网站', '博彩', '刷单兼职', '高利贷',
+        '代开发票', '贷款秒到', '日赚千元', '点击领红包', '免费领取苹果'];
+      for (var i = 0; i < words.length; i++) {
+        if (text.indexOf(words[i]) !== -1) return words[i];
+      }
+      return null;
+    }
     function dmSubmit() {
       var text = (dmText && dmText.value || '').trim();
       if (!text) { if (dmText) dmText.focus(); return; }
+      var banned = dmLocalBanned(text);
+      if (banned) {
+        if (dmStatus) { dmStatus.textContent = '内容包含被屏蔽的敏感词，请修改后重试'; dmStatus.hidden = false; }
+        return;
+      }
       if (dmSendBtn) dmSendBtn.disabled = true;
       if (dmStatus) dmStatus.hidden = true;
       var ctrl = new AbortController();

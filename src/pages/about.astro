@@ -146,6 +146,16 @@ import { SITE } from '../lib/site';
       textInput.focus();
       return;
     }
+    // 前端轻量预检（与后端词库一致提示；最终以后端为准）
+    const bannedWords = ['法轮功', '六四', '天安门事件', '打倒中共', '推翻政府', '台独', '藏独', '疆独', '港独',
+      '杀光', '炸掉', '恐怖袭击', '自杀式袭击', '制造炸弹', '出售枪支', '迷奸药', '卖淫',
+      '裸聊', '色情片', '黄网', '成人视频', '赌博网站', '博彩', '刷单兼职', '高利贷',
+      '代开发票', '贷款秒到', '日赚千元', '点击领红包', '免费领取苹果'];
+    if (bannedWords.some(function (w) { return text.indexOf(w) !== -1; })) {
+      statusEl.textContent = '内容包含被屏蔽的敏感词，请修改后重试';
+      statusEl.hidden = false;
+      return;
+    }
     sendBtn.disabled = true;
     statusEl.hidden = true;
     try {
