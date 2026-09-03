@@ -1,5 +1,5 @@
 // dengzhimin-guestbook-api — Cloudflare Worker
-// 留言板 + 全站访问统计，数据存 KV（免费，免绑卡）
+// 留言板 + 建议墙 + 全站访问统计，数据存 KV（免费，免绑卡）
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
@@ -9,6 +9,7 @@ const MAX_MESSAGES = 200;
 const MAX_TEXT = 500;
 const MAX_NAME = 20;
 const MAX_SEEN = 5000;
+const MAX_SUGGESTIONS = 300;
 
 export default {
   async fetch(request, env, ctx) {
@@ -81,6 +82,23 @@ export default {
           const favs = Array.isArray(body.favs) ? body.favs.slice(0, 300) : [];
           const history = Array.isArray(body.history) ? body.history.slice(0, 100) : [];
           await kv.put('fav:' + uid, JSON.stringify({ favs, history, updated: Date.now() }));
+          return json({ ok: true });
+        }
+      }
+      if (path === '/api/suggestions') {
+        // 建议墙：公开透明，任何人提交的建议所有访客可见
+        if (request.method === 'GET') {
+          const list = await readJson(kv, 'suggestions:list', []);
+          return json(list.slice().reverse());
+        }
+        if (request.method === 'POST') {
+          const body = await request.json().catch(() => ({}));
+          const text = String(body.text || '').trim().slice(0, MAX_TEXT);
+          if (!text) return json({ error: '建议内容不能为空' }, 400);
+          const name = String(body.name || '').trim().slice(0, MAX_NAME) || '匿名';
+          const list = await readJson(kv, 'suggestions:list', []);
+          list.push({ name, text, time: Date.now() });
+          await kv.put('suggestions:list', JSON.stringify(list.slice(-MAX_SUGGESTIONS)));
           return json({ ok: true });
         }
       }
