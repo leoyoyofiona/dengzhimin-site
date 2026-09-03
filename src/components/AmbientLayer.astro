@@ -8,19 +8,19 @@ const defaultCity = '你所在的城市';
 <!-- 全站建议弹幕（顶部飘过，pointer-events:none） -->
 <div class="dm-layer" id="dm-layer" aria-hidden="true"></div>
 
-<!-- 发弹幕：右下角按钮 + 输入卡 -->
+<!-- 发弹幕：桌面 = 导航"今日更新"右侧按钮（在 Header 中）；移动 = 右下角按钮 -->
 <div class="dm-send" id="dm-send">
   <button class="dm-open" id="dm-open" type="button" title="发条弹幕/建议（公开可见）" aria-label="发弹幕">💬 弹幕</button>
-  <div class="dm-card" id="dm-card" hidden>
-    <div class="dm-card-title">发条建议 / 弹幕（公开可见）</div>
-    <input id="dm-name" class="dm-name" type="text" maxlength="20" placeholder="昵称（可选，默认匿名）" autocomplete="off" />
-    <textarea id="dm-text" class="dm-text" rows="2" maxlength="500" placeholder="想说什么…（⌘/Ctrl+Enter 发送）"></textarea>
-    <div class="dm-card-foot">
-      <span class="dm-count" id="dm-count">0/500</span>
-      <button class="dm-sendbtn" id="dm-sendbtn" type="button">发送 💬</button>
-    </div>
-    <p class="dm-status" id="dm-status" hidden></p>
+</div>
+<div class="dm-card" id="dm-card" hidden>
+  <div class="dm-card-title">发条建议 / 弹幕（公开可见）</div>
+  <input id="dm-name" class="dm-name" type="text" maxlength="20" placeholder="昵称（可选，默认匿名）" autocomplete="off" />
+  <textarea id="dm-text" class="dm-text" rows="2" maxlength="500" placeholder="想说什么…（⌘/Ctrl+Enter 发送）"></textarea>
+  <div class="dm-card-foot">
+    <span class="dm-count" id="dm-count">0/500</span>
+    <button class="dm-sendbtn" id="dm-sendbtn" type="button">发送 💬</button>
   </div>
+  <p class="dm-status" id="dm-status" hidden></p>
 </div>
 
 <!-- 天气背景动画层（不遮挡内容） -->
@@ -108,20 +108,18 @@ const defaultCity = '你所在的城市';
   /* 弹幕内昵称高亮 */
   .dm-item .dm-who { color: var(--accent); font-weight: 700; margin-right: 0.35em; }
 
-  /* ===== 发弹幕：右下角 ===== */
+  /* ===== 发弹幕：桌面 = Header 导航"今日更新"右侧按钮；移动 = 右下角按钮 ===== */
   .dm-send {
     position: fixed;
     right: max(0.9rem, env(safe-area-inset-right));
     bottom: max(3.6rem, calc(env(safe-area-inset-bottom) + 2.8rem));
     z-index: 320;
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.5rem;
   }
   .dm-open {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.3rem;
     padding: 0.42rem 0.85rem;
     border: none;
@@ -135,6 +133,25 @@ const defaultCity = '你所在的城市';
     transition: transform var(--speed) var(--ease), box-shadow var(--speed) var(--ease);
   }
   .dm-open:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+  /* 桌面：隐藏右下角浮钮（改用导航按钮），输入卡移到导航下方右侧 */
+  @media (min-width: 1025px) {
+    .dm-send { display: none; }
+    .dm-card {
+      position: fixed;
+      top: calc(var(--header-h) + 3.1rem);
+      right: max(calc((100vw - var(--maxw)) / 2), var(--gutter));
+      z-index: 340;
+    }
+  }
+  /* 移动：保留右下角浮钮，输入卡在浮钮上方 */
+  @media (max-width: 1024px) {
+    .dm-card {
+      position: fixed;
+      right: max(0.9rem, env(safe-area-inset-right));
+      bottom: max(5.6rem, calc(env(safe-area-inset-bottom) + 4.9rem));
+      z-index: 340;
+    }
+  }
   .dm-card {
     width: min(300px, calc(100vw - 2rem));
     padding: 0.9rem 1rem;
@@ -720,13 +737,16 @@ const defaultCity = '你所在的城市';
         .catch(function () { clearTimeout(timer); /* 网络不可用：静默，不打扰 */ });
     }
 
-    // 打开/关闭发送卡片
-    if (dmOpen && dmCard) {
-      dmOpen.addEventListener('click', function () {
-        var show = dmCard.hidden;
-        dmCard.hidden = !show;
-        dmSend.classList.toggle('open', show);
-        if (show) dmText.focus();
+    // 打开/关闭发送卡片（支持多个入口按钮：桌面导航 + 移动右下角）
+    if (dmCard) {
+      const dmBtns = document.querySelectorAll('.dm-open');
+      dmBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var show = dmCard.hidden;
+          dmCard.hidden = !show;
+          dmSend.classList.toggle('open', show);
+          if (show) dmText.focus();
+        });
       });
     }
     if (dmText) {

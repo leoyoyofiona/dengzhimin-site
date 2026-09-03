@@ -163,6 +163,9 @@ const isActive = (href: string) => {
           }
         </div>
       </li>
+      <li class="nav-item dm-nav-item">
+        <button class="dm-open nav-dm-btn" id="dm-open-nav" type="button" title="发条弹幕/建议（公开可见）" aria-label="发弹幕">💬 弹幕</button>
+      </li>
     </ul>
   </nav>
 
@@ -399,6 +402,34 @@ const isActive = (href: string) => {
   /* ===== 今日更新：导航项 + 悬停下拉面板 ===== */
   .today-item {
     position: relative;
+  }
+  /* 导航内"弹幕"按钮：与今日更新同排、紧凑胶囊（配色来自 AmbientLayer .dm-open） */
+  .dm-nav-item {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .dm-nav-item .nav-dm-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 0.22rem 0.62rem;
+    border: none;
+    border-radius: var(--radius-full);
+    background: var(--gradient);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--speed) var(--ease), box-shadow var(--speed) var(--ease);
+  }
+  .dm-nav-item .nav-dm-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-glow);
   }
   .today-link {
     display: inline-flex;
