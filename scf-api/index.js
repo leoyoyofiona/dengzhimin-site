@@ -191,9 +191,13 @@ async function handle(event) {
       }
     }
 
-    // ===== 建议弹幕：公开 GET/POST + 管理(密码) =====
-    if (path === '/api/suggestions' || path === '/api/suggestions/admin') {
+    // ===== 建议弹幕：公开 GET/POST/点赞 + 管理(密码) =====
+    if (path === '/api/suggestions' || path === '/api/suggestions/like' || path === '/api/suggestions/admin') {
       const list = await cosGetJSON(keyOf('suggestions:list'), []);
+      // 旧数据补默认点赞字段
+      for (const it of list) {
+        if (typeof it.likes !== 'number') it.likes = 0;
+      }
 
       if (method === 'GET' && path === '/api/suggestions') {
         return out(200, list.slice().reverse());
@@ -206,9 +210,24 @@ async function handle(event) {
         const hit = checkBanned(rawText);
         if (hit) return out(422, { error: '内容包含被屏蔽的敏感词，请修改后重试' });
         const name = String(body.name || '').trim().slice(0, MAX_NAME) || '匿名';
-        list.push({ name, text: rawText, time: Date.now() });
+        list.push({ name, text: rawText, time: Date.now(), likes: 0 });
         await cosPutJSON(keyOf('suggestions:list'), list.slice(-MAX_SUGGESTIONS));
         return out(200, { ok: true });
+      }
+
+      // ===== 点赞：按 time 定位，likes +1（同一客户端去重由前端 localStorage 负责） =====
+      if (method === 'POST' && path === '/api/suggestions/like') {
+        const body = JSON.parse(readBodyStr(event) || '{}');
+        const time = Number(body.time);
+        if (!time) return out(400, { error: '缺少 time' });
+        let hitIdx = -1;
+        for (let i = 0; i < list.length; i++) {
+          if (Number(list[i].time) === time) { hitIdx = i; break; }
+        }
+        if (hitIdx < 0) return out(404, { error: '未找到该条弹幕' });
+        list[hitIdx].likes = (Number(list[hitIdx].likes) || 0) + 1;
+        await cosPutJSON(keyOf('suggestions:list'), list);
+        return out(200, { ok: true, likes: list[hitIdx].likes });
       }
 
       // ===== 管理入口：密码校验后 删除某条 / 清空 =====

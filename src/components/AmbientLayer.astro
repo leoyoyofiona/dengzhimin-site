@@ -114,6 +114,92 @@ const defaultCity = '你所在的城市';
     box-shadow: var(--shadow-sm);
     opacity: 0.94;
     animation: dm-fly linear forwards;
+    /* 单条弹幕可被鼠标命中（悬浮暂停 / 点赞） */
+    pointer-events: auto;
+    cursor: default;
+  }
+  /* 悬浮：弹幕暂停飘动，显示点赞按钮 */
+  .dm-layer .dm-item:hover {
+    animation-play-state: paused;
+  }
+  .dm-item .dm-actions {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    margin-left: 0.55rem;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.18s var(--ease), transform 0.18s var(--ease);
+    pointer-events: none;
+  }
+  .dm-item:hover .dm-actions {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+  .dm-item .dm-like-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.15rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.1rem 0.25rem;
+    border-radius: var(--radius-full);
+    transition: transform 0.15s var(--ease), color 0.15s var(--ease);
+  }
+  .dm-item .dm-like-btn:hover {
+    transform: scale(1.25);
+    color: var(--accent);
+  }
+  .dm-item .dm-like-btn.is-liked {
+    color: var(--accent);
+  }
+  .dm-item .dm-like-num {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    margin-left: 0.1rem;
+    font-variant-numeric: tabular-nums;
+  }
+  /* 弹幕下方点赞计数徽标 */
+  .dm-item .dm-likes {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.12rem;
+    margin-left: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--accent);
+    vertical-align: middle;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border-radius: var(--radius-full);
+    padding: 0.08rem 0.4rem;
+    pointer-events: none;
+  }
+  .dm-item .dm-likes:empty { display: none; }
+  /* 点击后跳出的大拇指动画 */
+  .dm-thumb-pop {
+    position: fixed;
+    z-index: 340;
+    pointer-events: none;
+    font-size: 2.4rem;
+    line-height: 1;
+    animation: dm-thumb-pop 0.9s var(--ease-out) forwards;
+  }
+  @keyframes dm-thumb-pop {
+    0% { transform: translate(-50%, 0) scale(0.3); opacity: 0; }
+    35% { transform: translate(-50%, -14px) scale(1.25); opacity: 1; }
+    70% { transform: translate(-50%, -30px) scale(1); opacity: 1; }
+    100% { transform: translate(-50%, -54px) scale(0.9); opacity: 0; }
+  }
+  @media (hover: none) {
+    /* 触屏：不自动显示赞按钮，仅保留点击赞（由 JS 点击弹幕切换） */
+    .dm-item .dm-actions { opacity: 1; transform: none; pointer-events: auto; margin-left: 0.3rem; }
   }
   @keyframes dm-fly {
     from { transform: translateX(0); }
@@ -785,16 +871,107 @@ const defaultCity = '你所在的城市';
       });
     }
 
+    // ===== 弹幕点赞 =====
+    var DM_LIKED_KEY = 'leodeng:dm-liked'; // 已点赞 time 列表（localStorage）
+    function dmReadLiked() {
+      try {
+        var v = JSON.parse(localStorage.getItem(DM_LIKED_KEY) || '[]');
+        return Array.isArray(v) ? v : [];
+      } catch (e) { return []; }
+    }
+    function dmIsLiked(time) {
+      return dmReadLiked().indexOf(String(time)) !== -1;
+    }
+    function dmMarkLiked(time) {
+      try {
+        var v = dmReadLiked();
+        v.push(String(time));
+        if (v.length > 400) v = v.slice(-300); // 只记最近 300 条，防无限增长
+        localStorage.setItem(DM_LIKED_KEY, JSON.stringify(v));
+      } catch (e) {}
+    }
+    // 点击后在该位置跳出一个大拇指
+    function dmPopThumb(x, y) {
+      var el = document.createElement('span');
+      el.className = 'dm-thumb-pop';
+      el.textContent = '👍';
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      document.body.appendChild(el);
+      setTimeout(function () { el.remove(); }, 950);
+    }
+    // 给一条弹幕绑定点赞交互
+    function dmBindLike(span, item) {
+      var time = Number(item && item.time);
+      if (!time) return;
+      var likeBtn = span.querySelector('.dm-like-btn');
+      if (!likeBtn) return;
+      var numEl = span.querySelector('.dm-like-num');
+      var likesEl = span.querySelector('.dm-likes');
+      function renderNum(n) {
+        if (numEl) numEl.textContent = n > 0 ? String(n) : '';
+        if (likesEl) {
+          likesEl.textContent = n > 0 ? '👍 ' + n : '';
+        }
+      }
+      function updateLikedUI() {
+        if (likeBtn) likeBtn.classList.toggle('is-liked', dmIsLiked(time));
+        renderNum(item.likes || 0);
+      }
+      updateLikedUI();
+      likeBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        if (dmIsLiked(time)) return;
+        likeBtn.disabled = true;
+        var ctrl = new AbortController();
+        var timer = setTimeout(function () { ctrl.abort(); }, 6000);
+        fetch(SUG_API + '/like', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ time: time }),
+          signal: ctrl.signal,
+        })
+          .then(function (r) { clearTimeout(timer); return r.json().catch(function () { return {}; }); })
+          .then(function (res) {
+            likeBtn.disabled = false;
+            if (res && res.ok) {
+              dmMarkLiked(time);
+              item.likes = Number(res.likes) || (item.likes || 0) + 1;
+              updateLikedUI();
+              var r = likeBtn.getBoundingClientRect();
+              dmPopThumb(r.left + r.width / 2, r.top);
+            }
+          })
+          .catch(function () {
+            clearTimeout(timer);
+            likeBtn.disabled = false;
+          });
+      });
+    }
+
     // 顶部发射一条弹幕
     function dmFire(item) {
       if (!dmLayer || dmPaused || !item || !item.text) return;
       var span = document.createElement('span');
       span.className = 'dm-item';
       var who = (item.name && item.name !== '匿名' && item.name !== '匿名 ') ? item.name : DM_NAMES[Math.floor(Math.random() * DM_NAMES.length)];
-      span.innerHTML = '<span class="dm-who">' + dmEsc(who) + '</span>' + dmEsc(item.text);
+      var likesN = Number(item.likes) || 0;
+      span.innerHTML =
+        '<span class="dm-who">' + dmEsc(who) + '</span>' +
+        dmEsc(item.text) +
+        '<span class="dm-likes">' + (likesN > 0 ? '👍 ' + likesN : '') + '</span>' +
+        '<span class="dm-actions"><button type="button" class="dm-like-btn" aria-label="点赞">👍<span class="dm-like-num"></span></button></span>';
       dmLayer.appendChild(span);
       span.addEventListener('animationend', function () { span.remove(); });
       span.style.animationDuration = DM_TRAVEL_SEC + 's';
+      // 点击弹幕本体（非按钮区域）也弹出大拇指 + 点赞（触屏友好）
+      span.addEventListener('click', function (e) {
+        if (e.target && e.target.closest && e.target.closest('.dm-like-btn')) return; // 按钮已单独处理
+        var btn = span.querySelector('.dm-like-btn');
+        if (btn) btn.click();
+      });
+      dmBindLike(span, item);
     }
 
     function dmNext() {
