@@ -188,6 +188,12 @@ const defaultCity = '你所在的城市';
     pointer-events: none;
   }
   .dm-item .dm-likes:empty { display: none; }
+  /* hover 时只留一个 👍（浮现按钮），常驻计数徽标隐藏，避免两个大拇指 */
+  .dm-item:hover .dm-likes { display: none; }
+  @media (hover: none) {
+    .dm-item .dm-likes { display: none; }
+    .dm-item:hover .dm-likes { display: none; }
+  }
   /* 点击后跳出的大拇指动画 */
   .dm-thumb-pop {
     position: fixed;
