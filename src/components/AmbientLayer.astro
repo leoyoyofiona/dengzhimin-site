@@ -231,6 +231,32 @@ const defaultCity = '你所在的城市';
     60% { transform: translate(-50%, -40px) scale(1.1); opacity: 1; }
     100% { transform: translate(-50%, -72px) scale(0.95); opacity: 0; }
   }
+  /* 点赞/操作提示条 */
+  .dm-toast {
+    position: fixed;
+    top: max(7.2rem, calc(var(--header-h) + 2.5rem + 2rem));
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    z-index: 360;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    background: var(--bg-glass-strong);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    backdrop-filter: saturate(180%) blur(16px);
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border));
+    box-shadow: var(--shadow-lg);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+  }
+  .dm-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
   @media (hover: none) {
     /* 触屏：不自动显示赞按钮，仅保留点击赞（由 JS 点击弹幕切换） */
     .dm-item .dm-actions { opacity: 1; transform: none; pointer-events: auto; margin-left: 0.3rem; }
@@ -944,6 +970,24 @@ const defaultCity = '你所在的城市';
       document.body.appendChild(el);
       setTimeout(function () { el.remove(); }, 900);
     }
+    // 点赞重复提示条
+    var dmToastEl = null;
+    var dmToastTimer = null;
+    function dmToast(msg) {
+      if (!dmToastEl) {
+        dmToastEl = document.createElement('div');
+        dmToastEl.className = 'dm-toast';
+        dmToastEl.setAttribute('role', 'status');
+        document.body.appendChild(dmToastEl);
+      }
+      dmToastEl.textContent = msg;
+      dmToastEl.classList.add('show');
+      if (dmToastTimer) clearTimeout(dmToastTimer);
+      dmToastTimer = setTimeout(function () {
+        dmToastEl.classList.remove('show');
+      }, 1800);
+    }
+
     // 给一条弹幕绑定点赞交互（乐观更新：点了立即 +1，不等后端）
     function dmBindLike(span, item) {
       var time = Number(item && item.time);
@@ -966,7 +1010,11 @@ const defaultCity = '你所在的城市';
       likeBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         e.preventDefault();
-        if (dmIsLiked(time)) return; // 本浏览器已赞过
+        if (dmIsLiked(time)) {
+          // 本浏览器已赞过：给提示，不再 +1
+          dmToast('你已经点赞过了 👍');
+          return;
+        }
         // —— 乐观更新：立即 +1 并显示 ——
         dmMarkLiked(time);
         item.likes = (Number(item.likes) || 0) + 1;
@@ -1074,15 +1122,35 @@ const defaultCity = '你所在的城市';
     }
 
     // 打开/关闭发送卡片（支持多个入口按钮：桌面导航 + 移动右下角）
+    function dmCloseCard() {
+      if (dmCard && !dmCard.hidden) {
+        dmCard.hidden = true;
+        dmSend.classList.remove('open');
+      }
+    }
     if (dmCard) {
       const dmBtns = document.querySelectorAll('.dm-open');
       dmBtns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation(); // 阻止冒泡到 document（避免开卡同时又被外部点击关闭）
           var show = dmCard.hidden;
           dmCard.hidden = !show;
           dmSend.classList.toggle('open', show);
           if (show) dmText.focus();
         });
+      });
+      // 点击卡片外部任意处：关闭输入卡
+      document.addEventListener('click', function (e) {
+        if (dmCard.hidden) return;
+        var t = e.target;
+        if (!t || !t.closest) return;
+        // 点在卡片内或两个开关按钮上：不关闭
+        if (t.closest('#dm-card') || t.closest('.dm-open')) return;
+        dmCloseCard();
+      });
+      // Esc 也关闭
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') dmCloseCard();
       });
     }
     if (dmText) {
