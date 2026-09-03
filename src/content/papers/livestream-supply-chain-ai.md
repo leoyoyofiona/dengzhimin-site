@@ -22,6 +22,12 @@ featured: true
 
 - 当消费者观看直播的麻烦成本较高时，AI 直播的价格优势减弱，零售商可能通过降价提高竞争力。
 
+
+<figure>
+  <img src="/images/papers/livestream-supply-chain-ai-fig1.png" alt="论文页面截图（Taylor &amp; Francis）" loading="lazy" />
+  <figcaption>论文页面截图（Taylor & Francis，International Journal of Production Research）</figcaption>
+</figure>
+
 ## 精读笔记
 
 **方法要点**：以论文摘要整理的中文概述为基础，具体方法（模型、样本、分析方法）详见原文。

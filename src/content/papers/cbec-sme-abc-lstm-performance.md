@@ -13,6 +13,12 @@ featured: true
 
 **论证思路**：研究提出**人工蜂群算法优化的长短期记忆网络模型（ABC-LSTM）**——用人工蜂群算法（ABC）自动寻优 LSTM 的超参数，提高复杂时间序列分析的预测精度与泛化能力，并与 GA-LSTM、XGBoost 和传统 LSTM 对比验证。
 
+
+<figure>
+  <img src="/images/papers/cbec-sme-abc-lstm-performance-fig1.png" alt="ABC-LSTM 与对照模型损失对比" loading="lazy" />
+  <figcaption>原文 Figure 1：ABC-LSTM 与对照模型的训练与验证损失对比</figcaption>
+</figure>
+
 ## 方法
 
 使用 10 家跨境电商中小企业 2020 年至 2023 年 10 月的数据，构建 ABC-LSTM 模型：

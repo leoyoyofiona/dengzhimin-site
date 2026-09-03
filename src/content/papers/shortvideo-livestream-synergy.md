@@ -22,6 +22,12 @@ featured: true
 
 - 粉丝效应与消费者时间成本共同决定最优模式：在粉丝效应较强的条件下，时间成本较高、较低或中等时，最优选择分别可能是仅短视频、两者并用或仅直播。
 
+
+<figure>
+  <img src="/images/papers/shortvideo-livestream-synergy-fig1.png" alt="短视频与直播协同数值分析结果" loading="lazy" />
+  <figcaption>论文原图（Figure 2）：模型数值分析结果</figcaption>
+</figure>
+
 ## 精读笔记
 
 **方法要点**：以论文摘要整理的中文概述为基础，具体方法（模型、样本、分析方法）详见原文。

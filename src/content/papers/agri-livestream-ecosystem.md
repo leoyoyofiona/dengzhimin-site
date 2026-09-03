@@ -22,6 +22,12 @@ featured: true
 
 - 研究据此提出，应优先支持直播电商平台和多频道网络机构，以推动农产品直播电商产业的可持续发展。
 
+
+<figure>
+  <img src="/images/papers/agri-livestream-ecosystem-fig1.png" alt="农产品直播电商生态系统研究框架" loading="lazy" />
+  <figcaption>原文 Figure 1：研究框架——从模型设定、模型检验到仿真的分析路径</figcaption>
+</figure>
+
 ## 精读笔记
 
 **方法要点**：以论文摘要整理的中文概述为基础，具体方法（模型、样本、分析方法）详见原文。

@@ -20,6 +20,12 @@ featured: true
 
 - 监管与激励相结合，能够进一步改善环境价值传递过程。
 
+
+<figure>
+  <img src="/images/papers/green-agri-environmental-value-fig1.png" alt="绿色农产品环境价值传递链" loading="lazy" />
+  <figcaption>原文 Figure 2：绿色农产品环境价值“生成—传递—实现”链条</figcaption>
+</figure>
+
 ## 精读笔记
 
 **方法要点**：以论文摘要整理的中文概述为基础，具体方法（模型、样本、分析方法）详见原文。

@@ -13,6 +13,12 @@ featured: true
 
 **论证思路**：研究基于**社会交换理论**与**资源依赖理论**，构建"物流服务业务流程再造 → 物流服务数字化 → 消费者持续使用意愿"的路径模型，并考察**供应链整合**与**信息共享**的调节作用——供应链整合是否增强业务流程再造对数字化的促进？平台与物流商之间的信息共享是否进一步强化这一调节？
 
+
+<figure>
+  <img src="/images/papers/cbec-logistics-reconstruction-continuance-fig1.png" alt="物流服务重构研究模型" loading="lazy" />
+  <figcaption>原文 Figure 3：研究模型——物流服务重构经数字化影响持续使用意愿的路径</figcaption>
+</figure>
+
 ## 方法
 
 研究以中国跨境电商企业为样本，采用**验证性因子分析**和**结构方程模型**进行检验。

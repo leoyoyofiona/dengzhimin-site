@@ -13,6 +13,12 @@ featured: true
 
 **论证思路**：研究将**跨境电子商务综合试验区政策**视为数字贸易的制度实践，使用 2006—2023 年中国 280 个地级市的面板数据，通过**多期双重差分模型**评估数字贸易对城市能源利用效率的影响，并进行内生性处理与多维稳健性检验。
 
+
+<figure>
+  <img src="/images/papers/digital-trade-energy-efficiency-fig1.png" alt="数字贸易影响能源效率机制示意" loading="lazy" />
+  <figcaption>原文 Figure 1：数字贸易突破时空障碍、降低交易成本的机制示意</figcaption>
+</figure>
+
 ## 方法
 
 - **多期双重差分（DID）**：利用综合试验区分批设立的时间与地区差异
