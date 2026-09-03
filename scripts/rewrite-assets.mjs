@@ -34,3 +34,4 @@ for (const file of walked) {
   }
 }
 console.log(`rewrite done: ${changed} files updated → ${COS_BASE}`);
+// build cache bust
