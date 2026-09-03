@@ -15,12 +15,29 @@ const defaultCity = '你所在的城市';
 <div class="dm-card" id="dm-card" hidden>
   <div class="dm-card-title">发条建议 / 弹幕（公开可见）</div>
   <input id="dm-name" class="dm-name" type="text" maxlength="20" placeholder="昵称（可选，默认匿名）" autocomplete="off" />
-  <textarea id="dm-text" class="dm-text" rows="2" maxlength="500" placeholder="想说什么…（⌘/Ctrl+Enter 发送）"></textarea>
+  <textarea id="dm-text" class="dm-text" rows="2" maxlength="500" placeholder="想说什么…（⌘/Ctrl+Enter 发送，内容经自动过滤）"></textarea>
   <div class="dm-card-foot">
     <span class="dm-count" id="dm-count">0/500</span>
     <button class="dm-sendbtn" id="dm-sendbtn" type="button">发送 💬</button>
   </div>
   <p class="dm-status" id="dm-status" hidden></p>
+  <div class="dm-card-adminbar">
+    <button class="dm-admin-toggle" id="dm-admin-toggle" type="button">🔧 管理弹幕</button>
+  </div>
+  <div class="dm-admin" id="dm-admin" hidden>
+    <div class="dm-admin-login">
+      <input id="dm-admin-pass" class="dm-name" type="password" maxlength="20" placeholder="管理密码" autocomplete="off" />
+      <button class="dm-sendbtn" id="dm-admin-loginbtn" type="button">验证</button>
+    </div>
+    <div class="dm-admin-body" id="dm-admin-body" hidden>
+      <div class="dm-admin-tools">
+        <button class="dm-admin-clear" id="dm-admin-clear" type="button">🗑 清空全部</button>
+        <span class="dm-admin-tip">点击条目右侧 × 可删除单条</span>
+      </div>
+      <div class="dm-admin-list" id="dm-admin-list"></div>
+      <p class="dm-admin-status" id="dm-admin-status" hidden></p>
+    </div>
+  </div>
 </div>
 
 <!-- 天气背景动画层（不遮挡内容） -->
@@ -194,6 +211,70 @@ const defaultCity = '你所在的城市';
   .dm-sendbtn:hover { transform: scale(1.05); }
   .dm-status { margin: 0; font-size: 0.78rem; color: #e03131; }
   .dm-status[hidden] { display: none; }
+  /* ===== 弹幕管理 ===== */
+  .dm-card-adminbar {
+    border-top: 1px dashed var(--border);
+    padding-top: 0.4rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .dm-admin-toggle {
+    border: none;
+    background: none;
+    color: var(--text-tertiary);
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 0.1rem 0.2rem;
+  }
+  .dm-admin-toggle:hover { color: var(--accent); }
+  .dm-admin { display: flex; flex-direction: column; gap: 0.4rem; border-top: 1px dashed var(--border); padding-top: 0.5rem; }
+  .dm-admin[hidden] { display: none; }
+  .dm-admin-login { display: flex; gap: 0.4rem; }
+  .dm-admin-login .dm-name { flex: 1; }
+  .dm-admin-body { display: flex; flex-direction: column; gap: 0.4rem; }
+  .dm-admin-body[hidden] { display: none; }
+  .dm-admin-tools { display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; }
+  .dm-admin-clear {
+    border: none;
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, #e03131 12%, transparent);
+    color: #e03131;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .dm-admin-clear:hover { background: #e03131; color: #fff; }
+  .dm-admin-tip { font-size: 0.66rem; color: var(--text-tertiary); }
+  .dm-admin-list { display: flex; flex-direction: column; gap: 0.3rem; max-height: 190px; overflow-y: auto; }
+  .dm-admin-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.35rem;
+    font-size: 0.74rem;
+    line-height: 1.45;
+    padding: 0.3rem 0.45rem;
+    border-radius: var(--radius-sm);
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+  }
+  .dm-admin-item .dai-who { color: var(--accent); font-weight: 700; flex-shrink: 0; }
+  .dm-admin-item .dai-text { flex: 1; color: var(--text-secondary); word-break: break-word; }
+  .dm-admin-item .dai-time { color: var(--text-tertiary); font-size: 0.62rem; flex-shrink: 0; }
+  .dm-admin-item .dai-del {
+    border: none;
+    background: none;
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .dm-admin-item .dai-del:hover { color: #e03131; }
+  .dm-admin-status { margin: 0; font-size: 0.72rem; color: #2f9e44; }
+  .dm-admin-status.error { color: #e03131; }
+  .dm-admin-status[hidden] { display: none; }
 
   /* ===== 天气背景动画层（JS 动态创建元素，需全局样式） ===== */
   .weather-bg {
@@ -674,7 +755,7 @@ const defaultCity = '你所在的城市';
     })();
 
     // ===== 3. 全站建议弹幕（顶部飘过 + 右下角发弹幕） =====
-    var SUG_API = 'https://dengzhimin-guestbook-api.leooelcn.workers.dev/api/suggestions';
+    var SUG_API = 'https://1303737693-hqp1nw586s.ap-shanghai.tencentscf.com/api/suggestions';
     var dmLayer = document.getElementById('dm-layer');
     var dmSend = document.getElementById('dm-send');
     var dmOpen = document.getElementById('dm-open');
@@ -770,7 +851,7 @@ const defaultCity = '你所在的城市';
         body: JSON.stringify({ name: dmName ? dmName.value.trim() : '', text: text }),
         signal: ctrl.signal,
       })
-        .then(function (r) { clearTimeout(timer); if (!r.ok) throw new Error(); 
+        .then(async function (r) { clearTimeout(timer); if (!r.ok) { let m = ''; try { m = (await r.json()).error || ''; } catch (_) {} throw new Error(m || 'http'); }
           // 乐观加入并立即发射
           var rec = { name: (dmName && dmName.value.trim()) || '匿名', text: text, time: Date.now() };
           dmItems.push(rec);
@@ -782,9 +863,13 @@ const defaultCity = '你所在的城市';
           dmSend.classList.remove('open');
           if (!dmTimer) dmNext();
           return null; })
-        .catch(function () {
+        .catch(function (err) {
           clearTimeout(timer);
-          if (dmStatus) { dmStatus.textContent = '发送失败，请稍后重试。'; dmStatus.hidden = false; }
+          var msg = (err && err.message) || '';
+          if (dmStatus) {
+            dmStatus.textContent = msg && msg !== 'http' ? msg : '发送失败，请稍后重试。';
+            dmStatus.hidden = false;
+          }
         })
         .finally(function () { if (dmSendBtn) dmSendBtn.disabled = false; });
     }
@@ -798,6 +883,162 @@ const defaultCity = '你所在的城市';
 
     // 首次加载：延迟一会儿（页面稳定后再弹），避免与初始布局冲突
     setTimeout(dmLoad, 2500);
+
+    // ===== 3.5 弹幕管理（输入管理密码 xz123 后可删单条/清空） =====
+    var dmAdminToggle = document.getElementById('dm-admin-toggle');
+    var dmAdmin = document.getElementById('dm-admin');
+    var dmAdminLogin = document.getElementById('dm-admin-login');
+    var dmAdminPass = document.getElementById('dm-admin-pass');
+    var dmAdminLoginBtn = document.getElementById('dm-admin-loginbtn');
+    var dmAdminBody = document.getElementById('dm-admin-body');
+    var dmAdminList = document.getElementById('dm-admin-list');
+    var dmAdminClear = document.getElementById('dm-admin-clear');
+    var dmAdminStatus = document.getElementById('dm-admin-status');
+    var ADMIN_API = SUG_API + '/admin';
+    var ADMIN_STORAGE = 'leodeng:dm-admin-ok'; // 会话内记住已验证
+
+    function dmAdminMsg(msg, isErr) {
+      if (!dmAdminStatus) return;
+      dmAdminStatus.textContent = msg;
+      dmAdminStatus.hidden = false;
+      dmAdminStatus.classList.toggle('error', !!isErr);
+    }
+    function dmAdminRender(list) {
+      if (!dmAdminList) return;
+      dmAdminList.innerHTML = '';
+      var arr = Array.isArray(list) ? list.slice().reverse() : []; // 新的在前
+      if (!arr.length) {
+        dmAdminList.innerHTML = '<span style="font-size:0.72rem;color:var(--text-tertiary)">暂无弹幕。</span>';
+        return;
+      }
+      arr.forEach(function (it) {
+        var row = document.createElement('div');
+        row.className = 'dm-admin-item';
+        var who = document.createElement('span');
+        who.className = 'dai-who';
+        who.textContent = (it.name && it.name !== '匿名') ? it.name : '匿名';
+        var txt = document.createElement('span');
+        txt.className = 'dai-text';
+        txt.textContent = it.text;
+        var t = document.createElement('span');
+        t.className = 'dai-time';
+        var d = new Date(it.time);
+        t.textContent = (d.getMonth() + 1) + '/' + d.getDate();
+        var del = document.createElement('button');
+        del.className = 'dai-del';
+        del.type = 'button';
+        del.textContent = '×';
+        del.title = '删除这条';
+        del.addEventListener('click', function () {
+          dmAdminMsg('删除中…');
+          var ctrl2 = new AbortController();
+          var timer2 = setTimeout(function () { ctrl2.abort(); }, 6000);
+          fetch(ADMIN_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: dmAdminPass.value, action: 'delete', time: Number(it.time) }),
+            signal: ctrl2.signal,
+          })
+            .then(function (r) { clearTimeout(timer2); return r.json(); })
+            .then(function (res) {
+              if (res && res.ok) {
+                dmAdminMsg('已删除。');
+                dmAdminRefresh();
+                dmItems = dmItems.filter(function (x) { return Number(x.time) !== Number(it.time); });
+              } else {
+                dmAdminMsg((res && res.error) || '删除失败', true);
+              }
+            })
+            .catch(function () { clearTimeout(timer2); dmAdminMsg('删除失败，请重试', true); });
+        });
+        row.appendChild(who);
+        row.appendChild(txt);
+        row.appendChild(t);
+        row.appendChild(del);
+        dmAdminList.appendChild(row);
+      });
+    }
+    function dmAdminRefresh() {
+      var ctrl3 = new AbortController();
+      var timer3 = setTimeout(function () { ctrl3.abort(); }, 6000);
+      fetch(SUG_API, { signal: ctrl3.signal })
+        .then(function (r) { clearTimeout(timer3); return r.ok ? r.json() : Promise.reject(); })
+        .then(function (list) { dmAdminRender(list); })
+        .catch(function () { clearTimeout(timer3); dmAdminMsg('拉取失败', true); });
+    }
+    function dmAdminAuth() {
+      var pass = dmAdminPass ? dmAdminPass.value.trim() : '';
+      if (!pass) { dmAdminMsg('请输入管理密码', true); return; }
+      var ctrl4 = new AbortController();
+      var timer4 = setTimeout(function () { ctrl4.abort(); }, 6000);
+      fetch(ADMIN_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pass, action: 'auth' }),
+        signal: ctrl4.signal,
+      })
+        .then(function (r) { clearTimeout(timer4); return r.json(); })
+        .then(function (res) {
+          if (res && res.ok) {
+            try { sessionStorage.setItem(ADMIN_STORAGE, '1'); } catch (_) {}
+            if (dmAdminBody) dmAdminBody.hidden = false;
+            if (dmAdminLogin) dmAdminLogin.hidden = true;
+            dmAdminMsg('');
+            dmAdminRefresh();
+          } else {
+            dmAdminMsg((res && res.error) || '密码错误', true);
+          }
+        })
+        .catch(function () { clearTimeout(timer4); dmAdminMsg('验证失败，请重试', true); });
+    }
+    if (dmAdminToggle && dmAdmin) {
+      dmAdminToggle.addEventListener('click', function () {
+        var show = dmAdmin.hidden;
+        dmAdmin.hidden = !show;
+        if (!show) {
+          // 打开：若本会话已验证直接展示列表
+          var authed = false;
+          try { authed = sessionStorage.getItem(ADMIN_STORAGE) === '1'; } catch (_) {}
+          if (authed) {
+            if (dmAdminBody) dmAdminBody.hidden = false;
+            if (dmAdminLogin) dmAdminLogin.hidden = true;
+            dmAdminRefresh();
+          } else if (dmAdminPass) {
+            dmAdminPass.focus();
+          }
+        }
+      });
+    }
+    if (dmAdminLoginBtn) dmAdminLoginBtn.addEventListener('click', dmAdminAuth);
+    if (dmAdminPass) {
+      dmAdminPass.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') dmAdminAuth();
+      });
+    }
+    if (dmAdminClear) {
+      dmAdminClear.addEventListener('click', function () {
+        if (!window.confirm('确定清空全部弹幕吗？此操作不可恢复。')) return;
+        var ctrl5 = new AbortController();
+        var timer5 = setTimeout(function () { ctrl5.abort(); }, 8000);
+        fetch(ADMIN_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: dmAdminPass ? dmAdminPass.value : '', action: 'clear' }),
+          signal: ctrl5.signal,
+        })
+          .then(function (r) { clearTimeout(timer5); return r.json(); })
+          .then(function (res) {
+            if (res && res.ok) {
+              dmItems = [];
+              if (dmAdminList) dmAdminList.innerHTML = '<span style="font-size:0.72rem;color:var(--text-tertiary)">已清空。</span>';
+              dmAdminMsg('已清空全部弹幕。');
+            } else {
+              dmAdminMsg((res && res.error) || '清空失败', true);
+            }
+          })
+          .catch(function () { clearTimeout(timer5); dmAdminMsg('清空失败，请重试', true); });
+      });
+    }
 
     // ===== 4. 工作/休息提醒 =====
     var toast = document.getElementById('work-toast');
@@ -1159,7 +1400,7 @@ const defaultCity = '你所在的城市';
       try {
         var ctrl = new AbortController();
         var timer = setTimeout(function () { ctrl.abort(); }, 4000);
-        fetch('https://dengzhimin-guestbook-api.leooelcn.workers.dev/api/health', { signal: ctrl.signal })
+        fetch('https://1303737693-hqp1nw586s.ap-shanghai.tencentscf.com/api/health', { signal: ctrl.signal })
           .then(function (r) {
             clearTimeout(timer);
             if (!r.ok) throw new Error('bad');

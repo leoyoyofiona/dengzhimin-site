@@ -154,13 +154,17 @@ import { SITE } from '../lib/site';
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: nameInput.value.trim(), text: text }),
       });
-      if (!res.ok) throw new Error('send failed');
+      if (!res.ok) {
+        let msg = '';
+        try { msg = (await res.json()).error || ''; } catch (e) {}
+        throw new Error(msg || 'send failed');
+      }
       textInput.value = '';
       nameInput.value = '';
       countHint.textContent = '0 / 500';
       await load();
     } catch (e) {
-      statusEl.textContent = '发布失败，请稍后重试。';
+      statusEl.textContent = e.message && e.message !== 'send failed' ? e.message : '发布失败，请稍后重试。';
       statusEl.hidden = false;
     }
     sendBtn.disabled = false;

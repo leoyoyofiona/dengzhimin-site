@@ -86,7 +86,7 @@ const { variant = 'footer', id = 'visitor-counter' } = Astro.props;
   // Astro 会把组件脚本打包为单份执行，因此用 querySelectorAll 遍历页面上所有实例
   import { probeApi, fetchWithTimeout } from '../lib/netcheck';
   (function () {
-    const API = 'https://dengzhimin-guestbook-api.leooelcn.workers.dev/api/visits';
+    const API = 'https://1303737693-hqp1nw586s.ap-shanghai.tencentscf.com/api/visits';
     const uidKey = 'leodeng:visitor-uid';
     const localKey = 'leodeng:visits-local';
 

@@ -1,0 +1,9 @@
+{
+  "name": "dengzhimin-scf-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "dependencies": {
+    "cos-nodejs-sdk-v5": "^2.14.1"
+  }
+}

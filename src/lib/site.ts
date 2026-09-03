@@ -1,5 +1,12 @@
 /** 站点全局配置 —— 修改这里即可更新全站信息 */
 
+/** API 后端基地址。
+ *  2026-09-03 起迁移至腾讯云 SCF（上海），大陆可直连：
+ *  函数 URL https://1303737693-hqp1nw586s.ap-shanghai.tencentscf.com
+ *  旧的 Cloudflare Workers 域名保留作注释备查（不可用时前端会自动降级本地模式）。
+ */
+export const API_BASE = 'https://1303737693-hqp1nw586s.ap-shanghai.tencentscf.com';
+
 export const SITE = {
   name: 'LEODENG',
   tagline: '随手记下一些思考与日常，慢慢分享给路过的你。',
@@ -8,10 +15,10 @@ export const SITE = {
   email: 'leooelcn@gmail.com',
   github: 'leoyoyofiona',
   domain: 'www.dengzhimin.cn',
-  /** 留言板 API（Cloudflare Workers 上的留言服务） */
-  guestbookApi: 'https://dengzhimin-guestbook-api.leooelcn.workers.dev/api/guestbook',
-  /** 收藏/足迹 API（Cloudflare Workers，按访客 uid 存取） */
-  favoritesApi: 'https://dengzhimin-guestbook-api.leooelcn.workers.dev/api/favorites',
+  /** 留言板 API（腾讯云 SCF 上海区） */
+  guestbookApi: API_BASE + '/api/guestbook',
+  /** 收藏/足迹 API（按访客 uid 存取） */
+  favoritesApi: API_BASE + '/api/favorites',
 } as const;
 
 export interface Section {

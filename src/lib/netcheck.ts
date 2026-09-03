@@ -1,5 +1,7 @@
-/** 网络连通性自适应探测：Cloudflare API（大陆被墙时连不上）→ 自动进入本地模式 */
-export const HEALTH_API = 'https://dengzhimin-guestbook-api.leooelcn.workers.dev/api/health';
+/** 网络连通性自适应探测：SCF API（大陆可直连）→ 连不上时自动进入本地模式 */
+import { API_BASE } from './site';
+
+export const HEALTH_API = API_BASE + '/api/health';
 
 const KEY = 'leodeng:api-mode'; // 'cloud' | 'local'
 const PROBE_MS = 4000;

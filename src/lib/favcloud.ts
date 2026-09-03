@@ -1,7 +1,8 @@
-/** 收藏/足迹云端同步 —— 与访问统计同 uid（leodeng:visitor-uid），存 Cloudflare KV */
+/** 收藏/足迹云端同步 —— 与访问统计同 uid（leodeng:visitor-uid），存腾讯云 SCF(上海) */
+import { API_BASE } from './site';
 import { probeApi, fetchWithTimeout } from './netcheck';
 
-export const FAV_API = 'https://dengzhimin-guestbook-api.leooelcn.workers.dev/api/favorites';
+export const FAV_API = API_BASE + '/api/favorites';
 export const FAV_KEY = 'leodeng:favs';
 export const HIST_KEY = 'leodeng:history';
 
