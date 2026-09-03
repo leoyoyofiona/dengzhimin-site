@@ -223,7 +223,17 @@ async function handle(event) {
         const hit = checkBanned(rawText);
         if (hit) return out(422, { error: '内容包含被屏蔽的敏感词，请修改后重试' });
         const name = String(body.name || '').trim().slice(0, MAX_NAME) || '匿名';
-        list.push({ name, text: rawText, time: Date.now(), likes: 0 });
+        const uid = String(body.uid || '').trim().slice(0, 64);
+        // 防重复：同一个人(uid，兼容旧数据用 name)的相同文本不重复入库
+        const isDup = list.some(function (it) {
+          if (!it || it.text !== rawText) return false;
+          if (uid) return String(it.uid || '') === uid;
+          return String(it.name || '匿名') === name;
+        });
+        if (isDup) {
+          return out(409, { error: '这条你已经发过啦，换个说法吧 😄' });
+        }
+        list.push({ name, text: rawText, time: Date.now(), likes: 0, uid: uid || undefined });
         await cosPutJSON(keyOf('suggestions:list'), list.slice(-MAX_SUGGESTIONS));
         return out(200, { ok: true });
       }

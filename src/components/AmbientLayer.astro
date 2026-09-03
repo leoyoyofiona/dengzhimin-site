@@ -1061,7 +1061,18 @@ const defaultCity = '你所在的城市';
 
     // 顶部发射一条弹幕
     function dmFire(item) {
-      if (!dmLayer || dmPaused || !item || !item.text) return;
+      if (!dmLayer || dmPaused || !item || !item.text) return false;
+      // 同一条文本当前已在屏上飘着 → 不重复叠加
+      var sameOnAir = false;
+      var children = dmLayer.children;
+      for (var c = 0; c < children.length; c++) {
+        var child = children[c];
+        if (child.classList && child.classList.contains('dm-item') && child.textContent.indexOf(item.text) !== -1) {
+          sameOnAir = true;
+          break;
+        }
+      }
+      if (sameOnAir) return false;
       var span = document.createElement('span');
       span.className = 'dm-item';
       var who = (item.name && item.name !== '匿名' && item.name !== '匿名 ') ? item.name : DM_NAMES[Math.floor(Math.random() * DM_NAMES.length)];
@@ -1081,6 +1092,7 @@ const defaultCity = '你所在的城市';
         if (btn) btn.click();
       });
       dmBindLike(span, item);
+      return true;
     }
 
     // hover 任一条弹幕 → 所有弹幕暂停（防止后方的撞上来）；移开全部后继续
@@ -1100,11 +1112,26 @@ const defaultCity = '你所在的城市';
       dmLayer.addEventListener('mouseout', dmItemOut);
     }
 
+    var dmLastText = null; // 上一条发射的文本，避免紧挨重复
     function dmNext() {
       if (dmPaused || !dmItems.length) return;
-      dmFire(dmItems[dmIdx % dmItems.length]);
-      dmIdx++;
-      dmTimer = setTimeout(dmNext, 4000 + Math.random() * 6000); // 4–10 秒一条
+      var n = dmItems.length;
+      // 顺序轮转，最多找一圈：跳过上一条文本与已在屏上的文本
+      for (var t = 0; t < n; t++) {
+        var idx = (dmIdx + t) % n;
+        var item = dmItems[idx];
+        if (!item || !item.text) continue;
+        if (dmLastText && item.text === dmLastText) continue;
+        if (dmFire(item)) {
+          dmLastText = item.text;
+          dmIdx = idx + 1;
+          // 间隔保持 4–10 秒
+          dmTimer = setTimeout(dmNext, 4000 + Math.random() * 6000);
+          return;
+        }
+      }
+      // 全部已在屏上（或仅一条在循环）：稍等再试，避免贴脸重复
+      dmTimer = setTimeout(dmNext, 6000 + Math.random() * 4000);
     }
 
     // 拉取建议并开始播放
@@ -1114,7 +1141,25 @@ const defaultCity = '你所在的城市';
       fetch(SUG_API, { signal: ctrl.signal })
         .then(function (r) { clearTimeout(timer); return r.ok ? r.json() : Promise.reject(); })
         .then(function (list) {
-          dmItems = Array.isArray(list) ? list : [];
+          // 播放列表去重：同一个人(昵称)的同一条文本只保留一份，避免重复出现
+          var seen = {};
+          dmItems = [];
+          var arr = Array.isArray(list) ? list : [];
+          for (var i = arr.length - 1; i >= 0; i--) { // 从新到旧，保留最新
+            var it = arr[i];
+            if (!it || !it.text) continue;
+            var key = String(it.name || '匿名') + '|' + String(it.text);
+            if (seen[key]) {
+              // 合并点赞数到保留的那条
+              var keep = seen[key];
+              if (Number(it.likes)) keep.likes = (Number(keep.likes) || 0) + (Number(it.likes) || 0);
+              continue;
+            }
+            if (typeof it.likes !== 'number') it.likes = Number(it.likes) || 0;
+            seen[key] = it;
+            dmItems.push(it);
+          }
+          dmItems.reverse(); // 恢复 旧→新
           dmIdx = 0;
           if (dmItems.length && !dmTimer && !dmPaused) dmNext();
         })
@@ -1172,12 +1217,34 @@ const defaultCity = '你所在的城市';
       }
       return null;
     }
+    function dmGetUid() {
+      try {
+        let u = localStorage.getItem('leodeng:visitor-uid');
+        if (!u) {
+          u = (crypto.randomUUID && crypto.randomUUID()) || 'v-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+          localStorage.setItem('leodeng:visitor-uid', u);
+        }
+        return u;
+      } catch (_) { return ''; }
+    }
     function dmSubmit() {
       var text = (dmText && dmText.value || '').trim();
       if (!text) { if (dmText) dmText.focus(); return; }
       var banned = dmLocalBanned(text);
       if (banned) {
         if (dmStatus) { dmStatus.textContent = '内容包含被屏蔽的敏感词，请修改后重试'; dmStatus.hidden = false; }
+        return;
+      }
+      var name = (dmName && dmName.value.trim()) || '匿名';
+      var uid = dmGetUid();
+      // 本地去重：同一个人同一条不重复提交（与后端口径一致，快速反馈）
+      var dup = dmItems.some(function (it) {
+        if (!it || it.text !== text) return false;
+        if (uid && it.uid) return String(it.uid) === String(uid);
+        return String(it.name || '匿名') === name;
+      });
+      if (dup) {
+        if (dmStatus) { dmStatus.textContent = '这条你已经发过啦，换个说法吧 😄'; dmStatus.hidden = false; }
         return;
       }
       if (dmSendBtn) dmSendBtn.disabled = true;
@@ -1187,12 +1254,12 @@ const defaultCity = '你所在的城市';
       fetch(SUG_API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: dmName ? dmName.value.trim() : '', text: text }),
+        body: JSON.stringify({ name: name, text: text, uid: uid }),
         signal: ctrl.signal,
       })
         .then(async function (r) { clearTimeout(timer); if (!r.ok) { let m = ''; try { m = (await r.json()).error || ''; } catch (_) {} throw new Error(m || 'http'); }
           // 乐观加入并立即发射
-          var rec = { name: (dmName && dmName.value.trim()) || '匿名', text: text, time: Date.now() };
+          var rec = { name: name, text: text, time: Date.now(), likes: 0, uid: uid };
           dmItems.push(rec);
           dmFire(rec);
           if (dmText) dmText.value = '';
