@@ -10,7 +10,7 @@ const defaultCity = '你所在的城市';
 
 <!-- 发弹幕：桌面 = 导航"今日更新"右侧按钮（在 Header 中）；移动 = 右下角按钮 -->
 <div class="dm-send" id="dm-send">
-  <button class="dm-open" id="dm-open" type="button" title="发条弹幕/建议（公开可见）" aria-label="发弹幕">💬 弹幕</button>
+  <button class="dm-open" id="dm-open" type="button" title="发条弹幕交流/建议（公开可见）" aria-label="弹幕交流">💬 弹幕交流</button>
 </div>
 <div class="dm-card" id="dm-card" hidden>
   <div class="dm-card-title">发条建议 / 弹幕（公开可见）</div>
@@ -96,6 +96,12 @@ const defaultCity = '你所在的城市';
     z-index: 260;
     pointer-events: none;
     overflow: visible;
+  }
+  /* 桌面：第二行还有栏目导航（约 --header-h + 37px 高），弹幕再下移避开标签文字 */
+  @media (min-width: 1025px) {
+    .dm-layer {
+      top: calc(var(--header-h) + 2.5rem);
+    }
   }
   .dm-layer .dm-item {
     position: absolute;
