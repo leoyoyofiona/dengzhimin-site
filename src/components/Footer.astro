@@ -274,5 +274,14 @@ const year = new Date().getFullYear();
     probeApi().then(function (mode) {
       if (mode === 'cloud') report();
     });
+    // 若一开始 API 不可达（local）：每 20s 自动重探，网络恢复后自动显示真实计数
+    setInterval(function () {
+      probeApi().then(function (mode) {
+        if (mode === 'cloud') {
+          report();
+          counter.title = '访问统计';
+        }
+      });
+    }, 20000);
   })();
 </script>

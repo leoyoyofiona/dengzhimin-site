@@ -867,11 +867,21 @@ const defaultCity = '你所在的城市';
       return tryOne(0);
     }
 
-    (function loadWeather() {
-      if (!weatherEl || !bgEl) return;
-      locate()
+    function renderWeather(geo, data) {
+      if (!weatherEl || !data || !data.current_weather) return Promise.reject();
+      var cw = data.current_weather;
+      var hour = new Date().getHours();
+      var info = weatherInfo(cw.weathercode, hour >= 6 && hour < 19, cw.windspeed);
+      weatherEl.hidden = false;
+      iconEl.textContent = info.icon;
+      textEl.textContent = (geo.city || defaultCity) + ' · ' + info.label + ' ' + Math.round(cw.temperature) + '°C';
+      renderWeatherBG(info.effect, info.sky);
+      return Promise.resolve();
+    }
+    function loadWeatherOnce() {
+      if (!weatherEl || !bgEl) return Promise.resolve();
+      return locate()
         .then(function (geo) {
-          // open-meteo 天气（免费，无需 key；大陆一般可直连）
           var api =
             'https://api.open-meteo.com/v1/forecast?latitude=' +
             geo.lat +
@@ -881,23 +891,20 @@ const defaultCity = '你所在的城市';
           return wfetch(api, 7000).then(function (r2) {
             if (!r2.ok) return Promise.reject();
             return r2.json().then(function (w) {
-              return { city: geo.city, w: w };
+              return renderWeather(geo, w);
             });
           });
-        })
-        .then(function (data) {
-          var cw = data.w.current_weather;
-          var hour = new Date().getHours();
-          var info = weatherInfo(cw.weathercode, hour >= 6 && hour < 19, cw.windspeed);
-          weatherEl.hidden = false;
-          iconEl.textContent = info.icon;
-          textEl.textContent = (data.city || defaultCity) + ' · ' + info.label + ' ' + Math.round(cw.temperature) + '°C';
-          renderWeatherBG(info.effect, info.sky);
-        })
-        .catch(function () {
-          // 定位或天气失败：隐藏天气，保持时间显示
-          if (weatherEl) weatherEl.hidden = true;
         });
+    }
+    (function () {
+      if (!weatherEl || !bgEl) return;
+      loadWeatherOnce().catch(function () {
+        // 定位或天气失败：先隐藏，30s 后自动重试（网络抖动/服务限流时可恢复）
+        if (weatherEl) weatherEl.hidden = true;
+        setTimeout(function () {
+          loadWeatherOnce().catch(function () {});
+        }, 30000);
+      });
     })();
 
     // ===== 3. 全站建议弹幕（顶部飘过 + 右下角发弹幕） =====

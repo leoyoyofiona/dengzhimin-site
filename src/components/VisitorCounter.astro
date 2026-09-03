@@ -168,6 +168,15 @@ const { variant = 'footer', id = 'visitor-counter' } = Astro.props;
       probeApi().then((mode) => {
         if (mode === 'cloud') report();
       });
+      // 若一开始 API 不可达（local）：每 20s 自动重探，恢复后自动切回真实计数
+      setInterval(() => {
+        probeApi().then((mode) => {
+          if (mode === 'cloud') {
+            report();
+            counter.title = '访问统计';
+          }
+        });
+      }, 20000);
     }
 
     document.querySelectorAll('.visitor-counter').forEach((el) => {
