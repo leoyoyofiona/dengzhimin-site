@@ -211,18 +211,39 @@ const year = new Date().getFullYear();
       return String(n);
     }
 
-    // 本机累计访问（每次页面加载 +1），作为 API 不可用时的兜底
+    // 本机累计访问（每次页面加载 +1）+ 本机今日浏览，作为 API 不可用时的兜底
+    function todayKey() {
+      try {
+        const d = new Date(Date.now() + 8 * 3600 * 1000);
+        return d.toISOString().slice(0, 10);
+      } catch (_) { return ''; }
+    }
     function bumpLocal() {
       try {
         const n = (parseInt(localStorage.getItem(localKey), 10) || 0) + 1;
         localStorage.setItem(localKey, String(n));
-        return n;
+        // 今日
+        const tk = todayKey();
+        const tKey = localKey + ':day';
+        let td = 0;
+        try {
+          const s = JSON.parse(localStorage.getItem(tKey) || '{}');
+          td = s && s.date === tk ? (Number(s.count) || 0) + 1 : 1;
+          localStorage.setItem(tKey, JSON.stringify({ date: tk, count: td }));
+        } catch (_) { td = 1; }
+        return { total: n, today: td };
       } catch (_) {
-        return 0;
+        return { total: 0, today: 0 };
       }
     }
-    const localVisits = bumpLocal();
+    const localV = bumpLocal();
+    const localVisits = localV.total;
     const text = counter.querySelector('span');
+    function localText() {
+      const v = Math.max(localVisits || 0, 1);
+      const t = Math.max(localV.today || 0, 1);
+      return '累计访问 1 人 · 累计浏览 ' + fmt(v) + ' 次 · 今日浏览 ' + fmt(t) + ' 次';
+    }
 
     async function report(attempt = 0) {
       try {
@@ -234,7 +255,7 @@ const year = new Date().getFullYear();
         });
         if (!res.ok) throw new Error('bad status');
         const data = await res.json();
-        if (text) text.textContent = '访问 ' + fmt(data.visitors || 0) + ' 人 · 浏览 ' + fmt(data.views || 0) + ' 次';
+        if (text) text.textContent = '累计访问 ' + fmt(data.visitors || 0) + ' 人 · 累计浏览 ' + fmt(data.views || 0) + ' 次 · 今日浏览 ' + fmt(data.todayViews || 0) + ' 次';
       } catch (_) {
         // 网络偶发抖动重试一次；仍失败（或被墙）则本机累计
         if (attempt < 1) {
@@ -244,12 +265,12 @@ const year = new Date().getFullYear();
           return;
         }
         // API 不可用：显示本机累计（本机视为 1 位访客，浏览为本地累计次数）
-        if (text) text.textContent = localVisits > 0 ? '访问 1 人 · 浏览 ' + fmt(localVisits) + ' 次' : '访问 1 人 · 浏览 1 次';
+        if (text) text.textContent = localText();
         counter.title = '全站统计暂不可用，当前为本机累计';
       }
     }
     // 立即显示本机计数（保证秒开），探测 API 可达才拉全站统计
-    if (text) text.textContent = localVisits > 0 ? '访问 1 人 · 浏览 ' + fmt(localVisits) + ' 次' : '访问 1 人 · 浏览 1 次';
+    if (text) text.textContent = localText();
     probeApi().then(function (mode) {
       if (mode === 'cloud') report();
     });

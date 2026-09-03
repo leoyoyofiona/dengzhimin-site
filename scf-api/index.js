@@ -89,6 +89,11 @@ function out(status, obj) {
     body: JSON.stringify(obj),
   };
 }
+// 中国时区(UTC+8)当天日期 YYYY-MM-DD
+function todayCN() {
+  const d = new Date(Date.now() + 8 * 3600 * 1000);
+  return d.toISOString().slice(0, 10);
+}
 function notFound() {
   return out(404, { error: 'Not Found' });
 }
@@ -147,7 +152,9 @@ async function handle(event) {
     if (path === '/api/visits') {
       if (method === 'GET') {
         const v = await cosGetJSON(keyOf('visits:data'), { visitors: 0, views: 0 });
-        return out(200, { visitors: (v && v.visitors) || 0, views: (v && v.views) || 0 });
+        const t = (v && v.today) || {};
+        const todayViews = t && t.date === todayCN() ? Number(t.count) || 0 : 0;
+        return out(200, { visitors: (v && v.visitors) || 0, views: (v && v.views) || 0, todayViews });
       }
       if (method === 'POST') {
         const body = JSON.parse(readBodyStr(event) || '{}');
@@ -156,6 +163,12 @@ async function handle(event) {
         if (!v || typeof v !== 'object') v = { visitors: 0, views: 0, seen: {} };
         if (!v.seen || typeof v.seen !== 'object') v.seen = {};
         v.views = (v.views || 0) + 1;
+        // 今日浏览人次：按中国时区自然日计数，跨天自动重置
+        const d = todayCN();
+        if (!v.today || typeof v.today !== 'object' || v.today.date !== d) {
+          v.today = { date: d, count: 0 };
+        }
+        v.today.count = (Number(v.today.count) || 0) + 1;
         if (uid && !v.seen[uid]) {
           v.seen[uid] = true;
           v.visitors = (v.visitors || 0) + 1;
@@ -165,7 +178,7 @@ async function handle(event) {
           }
         }
         await cosPutJSON(keyOf('visits:data'), v);
-        return out(200, { visitors: v.visitors, views: v.views });
+        return out(200, { visitors: v.visitors, views: v.views, todayViews: v.today.count });
       }
     }
 
