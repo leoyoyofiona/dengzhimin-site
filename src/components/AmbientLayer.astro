@@ -5,6 +5,24 @@ const now = new Date();
 const defaultCity = '你所在的城市';
 ---
 
+<!-- 全站建议弹幕（顶部飘过，pointer-events:none） -->
+<div class="dm-layer" id="dm-layer" aria-hidden="true"></div>
+
+<!-- 发弹幕：右下角按钮 + 输入卡 -->
+<div class="dm-send" id="dm-send">
+  <button class="dm-open" id="dm-open" type="button" title="发条弹幕/建议（公开可见）" aria-label="发弹幕">💬 弹幕</button>
+  <div class="dm-card" id="dm-card" hidden>
+    <div class="dm-card-title">发条建议 / 弹幕（公开可见）</div>
+    <input id="dm-name" class="dm-name" type="text" maxlength="20" placeholder="昵称（可选，默认匿名）" autocomplete="off" />
+    <textarea id="dm-text" class="dm-text" rows="2" maxlength="500" placeholder="想说什么…（⌘/Ctrl+Enter 发送）"></textarea>
+    <div class="dm-card-foot">
+      <span class="dm-count" id="dm-count">0/500</span>
+      <button class="dm-sendbtn" id="dm-sendbtn" type="button">发送 💬</button>
+    </div>
+    <p class="dm-status" id="dm-status" hidden></p>
+  </div>
+</div>
+
 <!-- 天气背景动画层（不遮挡内容） -->
 <div class="weather-bg" id="weather-bg" aria-hidden="true"></div>
 
@@ -51,6 +69,115 @@ const defaultCity = '你所在的城市';
 </style>
 
 <style is:global>
+  /* ===== 全站建议弹幕层（顶部飘过，不遮挡内容） ===== */
+  .dm-layer {
+    position: fixed;
+    top: calc(var(--header-h) + 4px);
+    left: 0;
+    right: 0;
+    height: 0;
+    z-index: 260;
+    pointer-events: none;
+    overflow: visible;
+  }
+  .dm-layer .dm-item {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    white-space: nowrap;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--bg-glass-strong);
+    -webkit-backdrop-filter: saturate(180%) blur(10px);
+    backdrop-filter: saturate(180%) blur(10px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    padding: 0.3rem 0.9rem;
+    box-shadow: var(--shadow-sm);
+    opacity: 0.94;
+    animation: dm-fly linear forwards;
+  }
+  @keyframes dm-fly {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(-100vw - 120%)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dm-layer .dm-item { animation: none; }
+  }
+  /* 弹幕内昵称高亮 */
+  .dm-item .dm-who { color: var(--accent); font-weight: 700; margin-right: 0.35em; }
+
+  /* ===== 发弹幕：右下角 ===== */
+  .dm-send {
+    position: fixed;
+    right: max(0.9rem, env(safe-area-inset-right));
+    bottom: max(3.6rem, calc(env(safe-area-inset-bottom) + 2.8rem));
+    z-index: 320;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+  .dm-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.42rem 0.85rem;
+    border: none;
+    border-radius: var(--radius-full);
+    background: var(--gradient);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--speed) var(--ease), box-shadow var(--speed) var(--ease);
+  }
+  .dm-open:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+  .dm-card {
+    width: min(300px, calc(100vw - 2rem));
+    padding: 0.9rem 1rem;
+    border-radius: var(--radius-lg);
+    background: var(--bg-glass-strong);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .dm-card[hidden], .dm-send[hidden] { display: none; }
+  .dm-card-title { font-size: var(--text-xs); font-weight: 650; color: var(--text-tertiary); letter-spacing: 0.03em; }
+  .dm-name, .dm-text {
+    width: 100%;
+    padding: 0.45rem 0.6rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text);
+    font-family: inherit;
+    font-size: var(--text-sm);
+  }
+  .dm-text { resize: vertical; min-height: 60px; line-height: 1.5; }
+  .dm-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+  .dm-count { font-size: 0.72rem; color: var(--text-tertiary); }
+  .dm-sendbtn {
+    padding: 0.4rem 0.9rem;
+    border: none;
+    border-radius: var(--radius-full);
+    background: var(--gradient);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform var(--speed) var(--ease);
+  }
+  .dm-sendbtn:hover { transform: scale(1.05); }
+  .dm-status { margin: 0; font-size: 0.78rem; color: #e03131; }
+  .dm-status[hidden] { display: none; }
+
   /* ===== 天气背景动画层（JS 动态创建元素，需全局样式） ===== */
   .weather-bg {
     position: fixed;
@@ -529,7 +656,130 @@ const defaultCity = '你所在的城市';
         });
     })();
 
-    // ===== 3. 工作/休息提醒 =====
+    // ===== 3. 全站建议弹幕（顶部飘过 + 右下角发弹幕） =====
+    var SUG_API = 'https://dengzhimin-guestbook-api.leooelcn.workers.dev/api/suggestions';
+    var dmLayer = document.getElementById('dm-layer');
+    var dmSend = document.getElementById('dm-send');
+    var dmOpen = document.getElementById('dm-open');
+    var dmCard = document.getElementById('dm-card');
+    var dmName = document.getElementById('dm-name');
+    var dmText = document.getElementById('dm-text');
+    var dmSendBtn = document.getElementById('dm-sendbtn');
+    var dmCount = document.getElementById('dm-count');
+    var dmStatus = document.getElementById('dm-status');
+    var dmItems = []; // 建议缓存（旧→新）
+    var dmIdx = 0;
+    var dmTimer = null;
+    var dmPaused = false;
+
+    var DM_TRAVEL_SEC = 14; // 单条飘完时间
+    var DM_NAMES = ['游客', '路过的人', '一位朋友', '访客', '你'];
+
+    function dmFmt(t) {
+      var d = new Date(t);
+      var p = function (n) { return n < 10 ? '0' + n : '' + n; };
+      return p(d.getHours()) + ':' + p(d.getMinutes());
+    }
+
+    function dmEsc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+        return c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : c === '"' ? '&quot;' : '&#39;';
+      });
+    }
+
+    // 顶部发射一条弹幕
+    function dmFire(item) {
+      if (!dmLayer || dmPaused || !item || !item.text) return;
+      var span = document.createElement('span');
+      span.className = 'dm-item';
+      var who = (item.name && item.name !== '匿名' && item.name !== '匿名 ') ? item.name : DM_NAMES[Math.floor(Math.random() * DM_NAMES.length)];
+      span.innerHTML = '<span class="dm-who">' + dmEsc(who) + '</span>' + dmEsc(item.text);
+      dmLayer.appendChild(span);
+      span.addEventListener('animationend', function () { span.remove(); });
+      span.style.animationDuration = DM_TRAVEL_SEC + 's';
+    }
+
+    function dmNext() {
+      if (dmPaused || !dmItems.length) return;
+      dmFire(dmItems[dmIdx % dmItems.length]);
+      dmIdx++;
+      dmTimer = setTimeout(dmNext, 4000 + Math.random() * 6000); // 4–10 秒一条
+    }
+
+    // 拉取建议并开始播放
+    function dmLoad() {
+      var ctrl = new AbortController();
+      var timer = setTimeout(function () { ctrl.abort(); }, 6000);
+      fetch(SUG_API, { signal: ctrl.signal })
+        .then(function (r) { clearTimeout(timer); return r.ok ? r.json() : Promise.reject(); })
+        .then(function (list) {
+          dmItems = Array.isArray(list) ? list : [];
+          dmIdx = 0;
+          if (dmItems.length && !dmTimer && !dmPaused) dmNext();
+        })
+        .catch(function () { clearTimeout(timer); /* 网络不可用：静默，不打扰 */ });
+    }
+
+    // 打开/关闭发送卡片
+    if (dmOpen && dmCard) {
+      dmOpen.addEventListener('click', function () {
+        var show = dmCard.hidden;
+        dmCard.hidden = !show;
+        dmSend.classList.toggle('open', show);
+        if (show) dmText.focus();
+      });
+    }
+    if (dmText) {
+      dmText.addEventListener('input', function () {
+        if (dmCount) dmCount.textContent = dmText.value.length + '/500';
+      });
+      dmText.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) dmSubmit();
+      });
+    }
+    function dmSubmit() {
+      var text = (dmText && dmText.value || '').trim();
+      if (!text) { if (dmText) dmText.focus(); return; }
+      if (dmSendBtn) dmSendBtn.disabled = true;
+      if (dmStatus) dmStatus.hidden = true;
+      var ctrl = new AbortController();
+      var timer = setTimeout(function () { ctrl.abort(); }, 6000);
+      fetch(SUG_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: dmName ? dmName.value.trim() : '', text: text }),
+        signal: ctrl.signal,
+      })
+        .then(function (r) { clearTimeout(timer); if (!r.ok) throw new Error(); 
+          // 乐观加入并立即发射
+          var rec = { name: (dmName && dmName.value.trim()) || '匿名', text: text, time: Date.now() };
+          dmItems.push(rec);
+          dmFire(rec);
+          if (dmText) dmText.value = '';
+          if (dmName) dmName.value = '';
+          if (dmCount) dmCount.textContent = '0/500';
+          if (dmCard) dmCard.hidden = true;
+          dmSend.classList.remove('open');
+          if (!dmTimer) dmNext();
+          return null; })
+        .catch(function () {
+          clearTimeout(timer);
+          if (dmStatus) { dmStatus.textContent = '发送失败，请稍后重试。'; dmStatus.hidden = false; }
+        })
+        .finally(function () { if (dmSendBtn) dmSendBtn.disabled = false; });
+    }
+    if (dmSendBtn) dmSendBtn.addEventListener('click', dmSubmit);
+
+    // 页面隐藏时暂停弹幕，回来继续
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { dmPaused = true; if (dmTimer) { clearTimeout(dmTimer); dmTimer = null; } }
+      else { dmPaused = false; if (dmItems.length && !dmTimer) dmNext(); }
+    });
+
+    // 首次加载：延迟一会儿（页面稳定后再弹），避免与初始布局冲突
+    setTimeout(dmLoad, 2500);
+
+    // ===== 4. 工作/休息提醒 =====
     var toast = document.getElementById('work-toast');
     var STORAGE = 'leodeng:work';
     var MINS = 60000;
