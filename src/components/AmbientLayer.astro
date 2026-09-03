@@ -1095,22 +1095,28 @@ const defaultCity = '你所在的城市';
       return true;
     }
 
-    // hover 任一条弹幕 → 所有弹幕暂停（防止后方的撞上来）；移开全部后继续
-    function dmItemOn(e) {
-      if (!e.target || !e.target.closest) return;
-      if (e.target.closest('.dm-item')) dmLayer.classList.add('pause-all');
+    // hover 任一条弹幕 → 所有弹幕暂停（防止后方的撞上来）；鼠标离开所有弹幕 → 恢复
+    // 用 document 级 mouseover 实时判断 + 超时兜底，避免暂停后永远卡住
+    var dmPauseTimer = null;
+    function dmSetPause(on) {
+      if (on) {
+        dmLayer.classList.add('pause-all');
+        // 兜底：即便鼠标事件异常，最多 3.5s 后强制恢复，弹幕不会永久卡住
+        if (dmPauseTimer) clearTimeout(dmPauseTimer);
+        dmPauseTimer = setTimeout(function () {
+          dmLayer.classList.remove('pause-all');
+        }, 3500);
+      } else {
+        if (dmPauseTimer) { clearTimeout(dmPauseTimer); dmPauseTimer = null; }
+        dmLayer.classList.remove('pause-all');
+      }
     }
-    function dmItemOut(e) {
-      var to = e.relatedTarget;
-      var leavingItem = e.target && e.target.closest && e.target.closest('.dm-item');
-      var enteringItem = to && to.closest ? to.closest('.dm-item') : null;
-      // 从一条弹幕移到另一条：保持暂停
-      if (leavingItem && !enteringItem) dmLayer.classList.remove('pause-all');
+    function dmDocOver(e) {
+      if (dmPaused) return;
+      var onItem = e.target && e.target.closest ? !!e.target.closest('.dm-item') : false;
+      dmSetPause(onItem);
     }
-    if (dmLayer) {
-      dmLayer.addEventListener('mouseover', dmItemOn);
-      dmLayer.addEventListener('mouseout', dmItemOut);
-    }
+    document.addEventListener('mouseover', dmDocOver);
 
     var dmLastText = null; // 上一条发射的文本，避免紧挨重复
     function dmNext() {
