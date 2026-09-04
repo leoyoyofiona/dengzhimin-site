@@ -32,7 +32,7 @@ const todayPosts = (
     SECTIONS.map(async (s) => {
       const all = await getCollection(s.slug);
       return all
-        .filter((p) => !p.data.draft && !p.slug.startsWith('maoxuan/') && todayKey(p.data.date) === todayStr)
+        .filter((p) => !p.data.draft && todayKey(p.data.date) === todayStr)
         .map((p) => ({
           href: `/${s.slug}/${p.slug}/`,
           title: p.data.title,

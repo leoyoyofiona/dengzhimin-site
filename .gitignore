@@ -17,3 +17,4 @@ npm-debug.log*
 # python venv (pdf tooling)
 .pdfvenv/
 coscli_output/
+.local/

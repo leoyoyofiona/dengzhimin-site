@@ -10,8 +10,6 @@ interface Props {
   description?: string;
   noindex?: boolean;
   footer?: boolean;
-  /** 访问口令门：site=全站门（默认），maoxuan=毛选学习独立门 */
-  gate?: 'site' | 'maoxuan';
 }
 
 const {
@@ -19,7 +17,6 @@ const {
   description = SITE.description,
   noindex = false,
   footer = true,
-  gate = 'site',
 } = Astro.props;
 
 const pageTitle = title ? `${title} · ${SITE.name}` : SITE.name;
@@ -27,7 +24,7 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
 ---
 
 <!doctype html>
-<html lang="zh-CN" data-theme="light" data-theme-mode="auto" data-gate={gate}>
+<html lang="zh-CN" data-theme="light" data-theme-mode="auto">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -71,14 +68,8 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
     <script is:inline>
       (function () {
         // 访问口令（混淆存储，避免源码直接可见）
-        // gate 类型：site=全站，maoxuan=毛选学习（从 html data-gate 读取）
-        var GATE = document.documentElement.getAttribute('data-gate') === 'maoxuan' ? 'maoxuan' : 'site';
-        var KEY = GATE === 'maoxuan' ? 'maoxuan-access' : 'dengzhimin-access';
-        var GATE_ID = GATE === 'maoxuan' ? 'maoxuan-gate' : 'site-gate';
-        // 口令混淆存储：site=leo2026；maoxuan=Monkey422710~
-        var PASS = GATE === 'maoxuan'
-          ? String.fromCharCode(77, 111, 110, 107, 101, 121, 52, 50, 50, 55, 49, 48, 126)
-          : String.fromCharCode(108, 101, 111, 50, 48, 50, 54);
+        var PASS = String.fromCharCode(108, 101, 111, 50, 48, 50, 54); // 站点口令
+        var KEY = 'dengzhimin-access';
         var gate = null;
         var input = null;
         var btn = null;
@@ -96,32 +87,22 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
           if (input) input.focus();
         }
         function unlock() {
-          // 毛选学习门不做记忆：每次进入都要重新输入
-          if (GATE !== 'maoxuan') {
-            try {
-              sessionStorage.setItem(KEY, 'ok');
-            } catch (e) {}
-          }
+          try {
+            sessionStorage.setItem(KEY, 'ok');
+          } catch (e) {}
           if (gate) gate.hidden = true;
           if (input) input.value = '';
           if (err) err.hidden = true;
-          // 通知页面：毛选门已解锁（列表页据此恢复被模糊的标题等）
-          document.dispatchEvent(new CustomEvent('maoxuan-unlocked'));
         }
         function check() {
-          if (GATE === 'maoxuan') {
-            // 毛选学习：无条件弹门，每次进入都要口令
-            showGate();
-          } else if (!entered()) {
-            showGate();
-          }
+          if (!entered()) showGate();
         }
         // 等待 DOM 加载完成后再绑定（脚本在 head，gate 元素在 body）
         document.addEventListener('DOMContentLoaded', function () {
-          gate = document.getElementById(GATE_ID);
-          input = document.getElementById(GATE_ID + '-input');
-          btn = document.getElementById(GATE_ID + '-btn');
-          err = document.getElementById(GATE_ID + '-error');
+          gate = document.getElementById('site-gate');
+          input = document.getElementById('site-gate-input');
+          btn = document.getElementById('site-gate-btn');
+          err = document.getElementById('site-gate-error');
           if (btn) {
             btn.addEventListener('click', function () {
               if (input && input.value === PASS) {
@@ -145,47 +126,25 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
   </head>
   <body>
     {
-      gate === 'maoxuan' ? (
-        <!-- 毛选学习口令门 -->
-        <div class="gate" id="maoxuan-gate" hidden>
-          <div class="gate-card glass">
-            <h1 class="gate-title">毛选学习</h1>
-            <p class="gate-sub">这个栏目暂未公开，输入口令继续访问。</p>
-            <div class="gate-form">
-              <input
-                class="gate-input"
-                id="maoxuan-gate-input"
-                type="password"
-                placeholder="输入访问口令"
-                autocomplete="off"
-                autofocus
-              />
-              <button class="btn btn-primary gate-btn" id="maoxuan-gate-btn">进入</button>
-            </div>
-            <p class="gate-error" id="maoxuan-gate-error" hidden>口令不正确，请重试。</p>
+      <!-- 访问口令门 -->
+      <div class="gate" id="site-gate" hidden>
+        <div class="gate-card glass">
+          <h1 class="gate-title">LEODENG</h1>
+          <p class="gate-sub">这个站点暂未公开，输入口令继续访问。</p>
+          <div class="gate-form">
+            <input
+              class="gate-input"
+              id="site-gate-input"
+              type="password"
+              placeholder="输入访问口令"
+              autocomplete="off"
+              autofocus
+            />
+            <button class="btn btn-primary gate-btn" id="site-gate-btn">进入</button>
           </div>
+          <p class="gate-error" id="site-gate-error" hidden>口令不正确，请重试。</p>
         </div>
-      ) : (
-        <!-- 访问口令门 -->
-        <div class="gate" id="site-gate" hidden>
-          <div class="gate-card glass">
-            <h1 class="gate-title">LEODENG</h1>
-            <p class="gate-sub">这个站点暂未公开，输入口令继续访问。</p>
-            <div class="gate-form">
-              <input
-                class="gate-input"
-                id="site-gate-input"
-                type="password"
-                placeholder="输入访问口令"
-                autocomplete="off"
-                autofocus
-              />
-              <button class="btn btn-primary gate-btn" id="site-gate-btn">进入</button>
-            </div>
-            <p class="gate-error" id="site-gate-error" hidden>口令不正确，请重试。</p>
-          </div>
-        </div>
-      )
+      </div>
     }
 
     <a class="skip-link" href="#main">跳到主要内容</a>
