@@ -6,7 +6,6 @@
 :root {
   /* ---- 色彩（浅色 · 暖白纸感，柔和护眼） ---- */
   --bg: #f6f5f2;
-  /* deploy-stamp: 2026-09-04-b */
   --bg-elevated: #fdfdfb;
   --bg-glass: rgba(253, 253, 251, 0.72);
   --bg-glass-strong: rgba(253, 253, 251, 0.88);
