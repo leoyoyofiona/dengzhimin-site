@@ -12,7 +12,7 @@ export async function GET(context) {
     ])
   )
     .flat()
-    .filter((p) => !p.data.draft)
+    .filter((p) => !p.data.draft && !p.slug.startsWith('maoxuan/'))
     .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
   return rss({

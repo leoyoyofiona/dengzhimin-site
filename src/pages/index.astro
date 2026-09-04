@@ -7,7 +7,8 @@ import { getCollection } from 'astro:content';
 // 聚合所有栏目文章，按栏目分组
 const sectionPosts = await Promise.all(
   SECTIONS.map(async (s) => {
-    const all = (await getCollection(s.slug)).filter((p) => !p.data.draft);
+    // 首页对外展示：毛选学习不在此列出（仅经 /teaching/maoxuan/ 加密入口访问）
+    const all = (await getCollection(s.slug)).filter((p) => !p.data.draft && !p.slug.startsWith('maoxuan/'));
     const sorted = [...all].sort((a, b) => {
       const ao = a.data.order ?? 999;
       const bo = b.data.order ?? 999;

@@ -5,7 +5,11 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://www.dengzhimin.cn',
   devToolbar: { enabled: false },
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      filter: (page) => !page.includes('/maoxuan/'),
+    }),
+  ],
   markdown: {
     shikiConfig: {
       theme: 'github-light',

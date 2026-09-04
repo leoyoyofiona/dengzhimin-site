@@ -104,10 +104,10 @@ const posts = sortPosts(all.filter((p) => !p.data.draft && !p.slug.startsWith('m
             </div>
             <div class="grid dock-grid">
               {
-                v.items.slice(0, 6).map((post) => (
+                v.items.slice(0, 6).map((post, i) => (
                   <PostCard
-                    title={post.data.title}
-                    description={post.data.description}
+                    title={`第 ${i + 1} 篇 · 已加密`}
+                    description="输入访问口令后可查看"
                     date={post.data.date}
                     tags={post.data.tags}
                     href={`/teaching/${post.slug}/`}
@@ -115,7 +115,7 @@ const posts = sortPosts(all.filter((p) => !p.data.draft && !p.slug.startsWith('m
                     featured={post.data.featured}
                     section="毛选学习"
                     sectionColor={v.color}
-                    image={firstImage(post.body) ?? undefined}
+                    image={undefined}
                   />
                 ))
               }

@@ -75,7 +75,10 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
         var GATE = document.documentElement.getAttribute('data-gate') === 'maoxuan' ? 'maoxuan' : 'site';
         var KEY = GATE === 'maoxuan' ? 'maoxuan-access' : 'dengzhimin-access';
         var GATE_ID = GATE === 'maoxuan' ? 'maoxuan-gate' : 'site-gate';
-        var PASS = String.fromCharCode(108, 101, 111, 50, 48, 50, 54);
+        // 口令混淆存储：site=leo2026；maoxuan=Monkey422710~
+        var PASS = GATE === 'maoxuan'
+          ? String.fromCharCode(77, 111, 110, 107, 101, 121, 52, 50, 50, 55, 49, 48, 126)
+          : String.fromCharCode(108, 101, 111, 50, 48, 50, 54);
         var gate = null;
         var input = null;
         var btn = null;
@@ -102,6 +105,8 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
           if (gate) gate.hidden = true;
           if (input) input.value = '';
           if (err) err.hidden = true;
+          // 通知页面：毛选门已解锁（列表页据此恢复被模糊的标题等）
+          document.dispatchEvent(new CustomEvent('maoxuan-unlocked'));
         }
         function check() {
           if (GATE === 'maoxuan') {

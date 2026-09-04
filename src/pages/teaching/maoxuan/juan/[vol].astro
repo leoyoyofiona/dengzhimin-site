@@ -41,7 +41,7 @@ const groups = periods.map((period) => ({
 const section = { title: '毛选学习', en: 'Teaching', color: info.color };
 ---
 
-<BaseLayout title={info.title} description={`《毛泽东选集》${info.title}原文`} gate="maoxuan">
+<BaseLayout title={info.title} description={`《毛泽东选集》${info.title}原文`} gate="maoxuan" noindex>
   <section class="page-head">
     <div class="container">
       <p class="eyebrow">
@@ -63,9 +63,13 @@ const section = { title: '毛选学习', en: 'Teaching', color: info.color };
           </div>
           <div class="article-list">
             {
-              g.items.map((post) => (
-                <a class="article-item" href={`/teaching/${post.slug}/`}>
-                  <span class="article-title">{post.data.title}</span>
+              g.items.map((post, i) => (
+                <a
+                  class="article-item mx-locked"
+                  href={`/teaching/${post.slug}/`}
+                  data-title={post.data.title}
+                >
+                  <span class="article-title">第 {i + 1} 篇 · 已加密</span>
                   <Icon name="arrow-right" size={14} />
                 </a>
               ))
@@ -76,6 +80,25 @@ const section = { title: '毛选学习', en: 'Teaching', color: info.color };
     }
   </section>
 </BaseLayout>
+
+<script is:inline>
+  // 毛选列表：默认标题模糊（只显示"第 N 篇 · 已加密"）；输入口令解锁后恢复真实篇名
+  function mxReveal() {
+    document.querySelectorAll('.mx-locked').forEach(function (el) {
+      var t = el.getAttribute('data-title');
+      if (t) {
+        var span = el.querySelector('.article-title');
+        if (span) span.textContent = t;
+      }
+      el.classList.remove('mx-locked');
+    });
+  }
+  document.addEventListener('maoxuan-unlocked', mxReveal);
+  // 若本会话已解锁过（例如从文章返回），直接恢复
+  try {
+    if (sessionStorage.getItem('maoxuan-access') === 'ok') mxReveal();
+  } catch (e) {}
+</script>
 
 <style>
   .page-head {

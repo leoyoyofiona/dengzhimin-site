@@ -20,7 +20,7 @@ const postSection = isMaoxuanPost ? '毛选学习' : section.title;
 const postColor = isMaoxuanPost ? '#b91c1c' : section.color;
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description} gate={gate}>
+<BaseLayout title={post.data.title} description={post.data.description} gate={gate} noindex={isMaoxuanPost}>
   <article class="article">
     <div class="container">
       <header class="article-head">

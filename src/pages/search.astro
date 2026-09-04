@@ -8,7 +8,7 @@ import { getCollection } from 'astro:content';
 // 聚合全站文章，生成搜索索引
 const index = [];
 for (const s of SECTIONS) {
-  const posts = (await getCollection(s.slug)).filter((p) => !p.data.draft);
+  const posts = (await getCollection(s.slug)).filter((p) => !p.data.draft && !p.slug.startsWith('maoxuan/'));
   for (const p of posts) {
     index.push({
       title: p.data.title,
