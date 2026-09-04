@@ -439,10 +439,10 @@ const defaultCity = '你所在的城市';
     display: block;
   }
   .weather-bg .w-drop {
-    width: 3px;
-    border-radius: 2px;
-    background: linear-gradient(180deg, transparent, rgba(96, 148, 232, 0.85));
-    box-shadow: 0 0 3px rgba(96, 148, 232, 0.35);
+    width: 2px;
+    border-radius: 1px;
+    background: linear-gradient(180deg, transparent, rgba(96, 148, 232, 0.42));
+    box-shadow: 0 0 2px rgba(96, 148, 232, 0.18);
     animation: w-fall linear infinite;
   }
   .weather-bg .w-flake {
@@ -515,7 +515,7 @@ const defaultCity = '你所在的城市';
     }
   }
   html[data-theme='dark'] .weather-bg .w-drop {
-    background: linear-gradient(180deg, transparent, rgba(130, 180, 255, 0.45));
+    background: linear-gradient(180deg, transparent, rgba(130, 180, 255, 0.26));
   }
 
   /* ===== 右上角天空图标：表达当前天气（低调不抢眼） ===== */
@@ -781,14 +781,14 @@ const defaultCity = '你所在的城市';
       bgEl.appendChild(skyEl);
       var count = 0;
       if (effect === 'rain' || effect === 'rain-heavy' || effect === 'drizzle' || effect === 'rain-wind') {
-        count = effect === 'rain-heavy' ? 140 : effect === 'drizzle' ? 55 : 95;
+        count = effect === 'rain-heavy' ? 85 : effect === 'drizzle' ? 40 : 55;
         for (var i = 0; i < count; i++) {
           var d = document.createElement('span');
           d.className = 'w-drop';
           d.style.left = Math.random() * 100 + '%';
-          d.style.height = 22 + Math.random() * 26 + 'px';
-          d.style.animationDuration = 0.55 + Math.random() * 0.7 + 's';
-          d.style.animationDelay = Math.random() * 2 + 's';
+          d.style.height = 16 + Math.random() * 18 + 'px';
+          d.style.animationDuration = 0.7 + Math.random() * 0.9 + 's';
+          d.style.animationDelay = Math.random() * 2.5 + 's';
           bgEl.appendChild(d);
         }
       } else if (effect === 'snow' || effect === 'snow-wind') {
@@ -806,13 +806,13 @@ const defaultCity = '你所在的城市';
         var fl = document.createElement('span');
         fl.className = 'w-flash';
         bgEl.appendChild(fl);
-        for (var k = 0; k < 110; k++) {
+        for (var k = 0; k < 70; k++) {
           var dd = document.createElement('span');
           dd.className = 'w-drop';
           dd.style.left = Math.random() * 100 + '%';
-          dd.style.height = 24 + Math.random() * 28 + 'px';
-          dd.style.animationDuration = 0.5 + Math.random() * 0.6 + 's';
-          dd.style.animationDelay = Math.random() * 2 + 's';
+          dd.style.height = 18 + Math.random() * 20 + 'px';
+          dd.style.animationDuration = 0.65 + Math.random() * 0.8 + 's';
+          dd.style.animationDelay = Math.random() * 2.5 + 's';
           bgEl.appendChild(dd);
         }
       } else if (effect === 'wind') {
