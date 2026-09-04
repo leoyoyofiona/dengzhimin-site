@@ -8,6 +8,7 @@ order: 2
 ---
 
 Vibe Coding分类下，按 star 从高到低第 11-20 名：
+> 说明：本榜条目为 GitHub 项目简介的英文原文索引（含 star 快照与仓库链接），项目版权归原作者；中文精读见站内「文献精选」等栏目。
 
 ## 11. tiann/hapi
 
@@ -29,7 +30,6 @@ Vibe Coding分类下，按 star 从高到低第 11-20 名：
   <img src="/images/github/cat-vibecoding-12.png" alt="vibe-coding" loading="lazy" />
 </figure>
 
-> 
 
 → [github.com/EnzeD/vibe-coding](https://github.com/EnzeD/vibe-coding)
 

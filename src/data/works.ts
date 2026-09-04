@@ -33,12 +33,12 @@ export interface Work {
 export const works: Work[] = [
   {
     title: '大乐透',
-    description: '超级大乐透走势分析与预测面板。',
+    description: '超级大乐透历史数据走势分析面板。',
     detail:
-      '基于历史开奖数据构建的超级大乐透走势分析与预测面板。对号码频率、冷热走势、区间分布做可视化统计，辅助选号参考。数据更新、图表渲染都做成了可复用模块，方便扩展其他彩种。',
+      '基于历史开奖数据构建的超级大乐透走势分析面板。对号码频率、冷热走势、区间分布做可视化统计，帮助快速查看历史数据。数据更新、图表渲染都做成了可复用模块，方便扩展其他彩种。彩票有风险，本工具仅供历史数据整理参考，不构成购彩建议。',
     url: 'https://github.com/leoyoyofiona/super-lotto-trend-model',
     site: 'https://super-lotto-trend-model.onrender.com',
-    tags: ['彩票', '数据分析', '预测'],
+    tags: ['彩票', '数据分析'],
     featured: true,
     poster: 'poster-lotto.png',
     posterHd: 'poster-lotto.png',
@@ -46,9 +46,9 @@ export const works: Work[] = [
   },
   {
     title: '福彩',
-    description: '福利彩票相关的玩法记录与分析小工具。',
+    description: '福利彩票历史数据记录与统计小工具。',
     detail:
-      '面向福利彩票的玩法记录与分析小工具。支持开奖数据录入、历史查询、简单的号码统计与走势查看，把繁琐的整理工作自动化。',
+      '面向福利彩票历史开奖数据的记录与统计小工具。支持开奖数据录入、历史查询、简单的号码统计与走势查看，把繁琐的整理工作自动化。彩票有风险，本工具仅供历史数据整理参考，不构成购彩建议。',
     url: 'https://github.com/leoyoyofiona/leo-welfare-lottery',
     site: 'https://leo-welfare-lottery.onrender.com',
     tags: ['彩票', '工具'],
@@ -58,9 +58,9 @@ export const works: Work[] = [
   },
   {
     title: '足彩',
-    description: '足球彩票相关的数据与计算小工具。',
+    description: '足球赛事历史数据整理与统计小工具。',
     detail:
-      '足球彩票相关的数据整理与计算小工具。围绕比赛数据进行清洗、汇总与计算，辅助赛果分析，减少手工算来算去的时间。',
+      '围绕足球比赛历史数据的整理与统计小工具。对比赛数据进行清洗、汇总与计算，辅助复盘赛事数据，减少手工整理的时间。彩票有风险，本工具仅供历史数据整理参考，不构成投注建议。',
     url: 'https://github.com/leoyoyofiona/leo-football-lottery',
     site: 'https://leo-football-lottery.onrender.com',
     tags: ['足球', '彩票', '工具'],
@@ -70,12 +70,12 @@ export const works: Work[] = [
   },
   {
     title: '世界杯',
-    description: '2026 世界杯预测 Web 应用。',
+    description: '2026 世界杯观赛数据应用。',
     detail:
-      '2026 世界杯预测 Web 应用。整合球队实力、历史交锋与赛程数据，用统一的数据模型给出赛事预测，界面交互简洁，赛事数据一目了然。',
+      '2026 世界杯观赛数据应用。整合球队实力、历史交锋与赛程信息，用统一的数据模型展示赛事资料，界面交互简洁，赛事数据一目了然。',
     url: 'https://github.com/leoyoyofiona/worldcup-prediction',
     site: 'https://worldcup-prediction-peur.onrender.com',
-    tags: ['世界杯', '足球', '预测'],
+    tags: ['世界杯', '足球', '数据'],
     poster: 'poster-worldcup.png',
     posterHd: 'poster-worldcup.png',
     demo: 'demo-worldcup.webp',
@@ -153,9 +153,9 @@ export const works: Work[] = [
   },
   {
     title: 'learn vlog',
-    description: '像刷短视频一样学英语（待推送）。',
+    description: '像刷短视频一样学英语。',
     detail:
-      '像刷短视频一样学英语：把学习内容做成短平快的视频节奏，降低坚持学习的门槛。代码仓库还在整理，即将推送上线。',
+      '像刷短视频一样学英语：把学习内容做成短平快的视频节奏，降低坚持学习的门槛。',
     url: 'https://github.com/leoyoyofiona',
     tags: ['英语', '短视频', '学习'],
     poster: 'poster-vlog.png',

@@ -7,6 +7,8 @@ category: ecommerce
 featured: true
 ---
 
+> 📄 本卡片为**摘要级**精读：按论文官方摘要转述整理，未经逐章核对全文；如需引用具体数字、效应量或方法细节，请以原文为准。
+
 **文献**：Jie Jin；Dongzhi Zhang；Yu Hao（2025）*Optimizing the Environmental Value Transmission Chain of Green Agricultural Products: An Evolutionary Game Analysis with Livestream E-Commerce*。Computers & Industrial Engineering，Volume 207，Article 111359。DOI 10.1016/j.cie.2025.111359。IF 6.5，Asta 引用 10 次。
 
 **研究问题**：绿色农产品环境价值传递链与直播电商。

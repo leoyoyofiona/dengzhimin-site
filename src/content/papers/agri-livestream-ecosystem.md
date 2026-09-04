@@ -7,6 +7,8 @@ category: ecommerce
 featured: true
 ---
 
+> 📄 本卡片为**摘要级**精读：按论文官方摘要转述整理，未经逐章核对全文；如需引用具体数字、效应量或方法细节，请以原文为准。
+
 **文献**：Guoyu Zhao（2025）*Agricultural Products Live Streaming E-Commerce Ecosystem Dynamics Research*。Frontiers in Sustainable Food Systems，Volume 9。DOI 10.3389/fsufs.2025.1685996。IF 4.1，Asta 引用 7 次。
 
 **研究问题**：农产品直播电商生态系统动力学。

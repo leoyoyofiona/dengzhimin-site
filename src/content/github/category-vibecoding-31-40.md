@@ -8,6 +8,7 @@ order: 4
 ---
 
 Vibe Coding分类下，按 star 从高到低第 31-40 名：
+> 说明：本榜条目为 GitHub 项目简介的英文原文索引（含 star 快照与仓库链接），项目版权归原作者；中文精读见站内「文献精选」等栏目。
 
 ## 31. itwanger/PaiAgent
 
@@ -125,7 +126,6 @@ Vibe Coding分类下，按 star 从高到低第 31-40 名：
   <img src="/images/github/cat-vibecoding-40.png" alt="Agent-Skills-4-Vibe-Coding-CLI" loading="lazy" />
 </figure>
 
-> 
 
 → [github.com/Dokhacgiakhoa/Agent-Skills-4-Vibe-Coding-CLI](https://github.com/Dokhacgiakhoa/Agent-Skills-4-Vibe-Coding-CLI)
 

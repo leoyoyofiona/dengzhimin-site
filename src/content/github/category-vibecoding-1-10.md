@@ -8,6 +8,7 @@ order: 1
 ---
 
 Vibe Coding分类下，按 star 从高到低第 1-10 名：
+> 说明：本榜条目为 GitHub 项目简介的英文原文索引（含 star 快照与仓库链接），项目版权归原作者；中文精读见站内「文献精选」等栏目。
 
 ## 1. shanraisshan/claude-code-best-practice
 
@@ -29,7 +30,6 @@ Vibe Coding分类下，按 star 从高到低第 1-10 名：
   <img src="/images/github/cat-vibecoding-2.png" alt="vibe-coding-cn" loading="lazy" />
 </figure>
 
-> 
 
 → [github.com/2025Emma/vibe-coding-cn](https://github.com/2025Emma/vibe-coding-cn)
 

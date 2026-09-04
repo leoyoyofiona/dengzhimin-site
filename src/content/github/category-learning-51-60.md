@@ -8,6 +8,7 @@ order: 6
 ---
 
 学习与面试分类下，按 star 从高到低第 51-60 名：
+> 说明：本榜条目为 GitHub 项目简介的英文原文索引（含 star 快照与仓库链接），项目版权归原作者；中文精读见站内「文献精选」等栏目。
 
 ## 51. liyupi/free-programming-resources
 
@@ -113,7 +114,6 @@ order: 6
   <img src="/images/github/cat-learning-59.png" alt="handong1587.github.io" loading="lazy" />
 </figure>
 
-> 
 
 → [github.com/handong1587/handong1587.github.io](https://github.com/handong1587/handong1587.github.io)
 

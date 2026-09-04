@@ -8,6 +8,7 @@ order: 7
 ---
 
 电子商务分类下，按 star 从高到低第 61-70 名：
+> 说明：本榜条目为 GitHub 项目简介的英文原文索引（含 star 快照与仓库链接），项目版权归原作者；中文精读见站内「文献精选」等栏目。
 
 ## 61. buluslan/gpt-image2-ecommerce
 
@@ -101,7 +102,6 @@ order: 7
   <img src="/images/github/cat-ecommerce-68.png" alt="React-Ecommerce-App-with-Redux" loading="lazy" />
 </figure>
 
-> 
 
 → [github.com/TheCoderDream/React-Ecommerce-App-with-Redux](https://github.com/TheCoderDream/React-Ecommerce-App-with-Redux)
 

@@ -7,6 +7,8 @@ category: ecommerce
 featured: true
 ---
 
+> 📄 本卡片为**摘要级**精读：按论文官方摘要转述整理，未经逐章核对全文；如需引用具体数字、效应量或方法细节，请以原文为准。
+
 **文献**：Xiaojun Fan；Lu Zhang（2026）*Social E-Commerce Operations: Is It Wise to Adopt Short Video and Live-Streaming Together?*。Omega，Volume 138，Article 103440。DOI 10.1016/j.omega.2025.103440。IF 6.9，Asta 引用 7 次。
 
 **研究问题**：短视频与直播是否应该协同采用。

@@ -7,6 +7,8 @@ category: ecommerce
 featured: true
 ---
 
+> 📄 本卡片为**摘要级**精读：按论文官方摘要转述整理，未经逐章核对全文；如需引用具体数字、效应量或方法细节，请以原文为准。
+
 **文献**：Shuai Liu；Xiaoyan Xu；T. C. E. Cheng（2026）*Equilibrium Analysis of Live-Streaming E-Commerce Supply Chain in the AI Era*。International Journal of Production Research，64(6)，2292–2310。DOI 10.1080/00207543.2025.2577169。IF 8.7，Asta 引用 23 次。
 
 **研究问题**：AI 时代直播电商供应链均衡分析。
