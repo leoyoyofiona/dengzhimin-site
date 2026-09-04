@@ -557,6 +557,13 @@ html[data-theme="dark"] .badge {
   font-size: 0.875rem;
   color: var(--text-muted);
 }
+/* 无可用配图时的说明占位（版权/订阅原因未嵌入原图） */
+.prose .fig-note {
+  margin: 0.4rem 0 0.9rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
 .prose .table-wrap {
   overflow-x: auto;
   margin: 1.5rem 0;
